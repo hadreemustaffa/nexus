@@ -40,7 +40,7 @@ export default class SQLiteTagRepository implements TagRepository {
         WHERE id = @id
       `);
 
-    const row = stmt.get(id) as TagRow | undefined;
+    const row = stmt.get({ id }) as TagRow | undefined;
 
     if (!row) return null;
 
@@ -70,11 +70,11 @@ export default class SQLiteTagRepository implements TagRepository {
   async findAllByNoteId(id: string): Promise<Tag[]> {
     const stmt = this.db.prepare(`
         SELECT tags.* FROM tags
-        INNER JOIN note_tags ON tags.id = note.tag_id
+        INNER JOIN note_tags ON tags.id = note_tags.tag_id
         WHERE note_tags.note_id = @id
       `);
 
-    const rows = stmt.all(id) as TagRow[];
+    const rows = stmt.all({ id }) as TagRow[];
 
     return rows.map((row) =>
       Tag.fromPersistence({

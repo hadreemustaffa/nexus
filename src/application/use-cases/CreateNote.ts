@@ -28,6 +28,11 @@ export default class CreateNote {
       })
     );
 
-    return { note, tags };
+    const result = {
+      note: note,
+      tags: tags,
+    };
+
+    return result;
   }
 }
