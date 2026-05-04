@@ -16,17 +16,33 @@ export default class CreateNote {
 
     await this.noteRepository.save(note);
 
+    const filteredLinks = [...note.getContent().matchAll(/\[\[([^\]]+)\]\]/g)]
+      .map((match) => match[1])
+      .filter(Boolean);
+
+    await Promise.all(
+      filteredLinks.map(async (link) => {
+        if (!link) return null;
+
+        const relatedNote = await this.noteRepository.findByTitle(link);
+
+        if (relatedNote) {
+          await this.noteRepository.saveLink(note.getId(), relatedNote.getId());
+        }
+      })
+    );
+
     const tagNames = await this.aiService.generateTags(note.getContent());
     const tags: Tag[] = [];
 
-    await Promise.all(
-      tagNames.map(async (name) => {
+    await Promise.all([
+      ...tagNames.map(async (name) => {
         const newTag = Tag.create(name);
         await this.tagRepository.save(newTag);
         await this.tagRepository.attachTagToNote(note.getId(), newTag.getId());
         tags.push(newTag);
-      })
-    );
+      }),
+    ]);
 
     const result = {
       note: note,

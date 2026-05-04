@@ -95,4 +95,50 @@ export default class SQLiteNoteRepository implements NoteRepository {
       id: id,
     });
   }
+
+  async findLinks(noteId: string): Promise<string[]> {
+    const stmt = this.db.prepare(`
+        SELECT target_id 
+        FROM note_links 
+        WHERE source_id = @noteId
+      `);
+
+    const rows = stmt.all({ noteId }) as { target_id: string }[];
+
+    return rows.map((row) => row.target_id);
+  }
+
+  async saveLink(sourceId: string, targetId: string): Promise<void> {
+    const stmt = this.db.prepare(`
+        INSERT INTO note_links (
+        source_id,
+        target_id
+        )
+        VALUES (@source_id, @target_id)
+      `);
+
+    stmt.run({
+      source_id: sourceId,
+      target_id: targetId,
+    });
+  }
+
+  async findByTitle(title: string): Promise<Note | null> {
+    const stmt = this.db.prepare(`
+        SELECT * FROM notes
+        WHERE LOWER(title) = LOWER(@title)
+      `);
+
+    const row = stmt.get({ title }) as NoteRow | undefined;
+
+    if (!row) return null;
+
+    return Note.fromPersistence({
+      id: row.id,
+      title: row.title,
+      content: row.content,
+      created_at: new Date(row.created_at),
+      updated_at: new Date(row.updated_at),
+    });
+  }
 }

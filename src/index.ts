@@ -8,6 +8,7 @@ import SQLiteTagRepository from './infrastructure/database/SQLiteTagRepository';
 import OllamaAIService from './infrastructure/ai/OllamaAIService';
 import InMemorySearchService from './infrastructure/search/InMemorySearchService';
 import SearchNotes from './application/use-cases/SearchNotes';
+import GetRelatedNotes from './application/use-cases/GetRelatedNotes';
 
 const app = express();
 const port = 3000;
@@ -56,6 +57,36 @@ app.get('/notes/search', async (req, res) => {
     res.status(200).json({
       message: 'Search found some notes.',
       data: results,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({
+        error: 'Bad Request',
+        message: error.message,
+      });
+    }
+  }
+});
+
+app.get('/notes/:id/related', async (req, res) => {
+  try {
+    const relatedNoteId = req.params.id;
+
+    const note = await noteRepository.findById(relatedNoteId);
+
+    if (!note) {
+      return res
+        .status(404)
+        .json({ error: 'Not Found', message: 'Note not found' });
+    }
+
+    const getRelatedNotes = new GetRelatedNotes(noteRepository);
+
+    const relatedNotes = await getRelatedNotes.execute(relatedNoteId);
+
+    res.status(200).json({
+      message: 'Found related notes.',
+      data: relatedNotes,
     });
   } catch (error) {
     if (error instanceof Error) {
