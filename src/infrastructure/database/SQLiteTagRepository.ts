@@ -87,7 +87,7 @@ export default class SQLiteTagRepository implements TagRepository {
 
   async attachTagToNote(note_id: string, tag_id: string): Promise<void> {
     const stmt = this.db.prepare(`
-        INSERT INTO note_tags (
+        INSERT OR IGNORE INTO note_tags (
         note_id, 
         tag_id
         ) 
@@ -97,6 +97,23 @@ export default class SQLiteTagRepository implements TagRepository {
     stmt.run({
       note_id: note_id,
       tag_id: tag_id,
+    });
+  }
+
+  async findByName(name: string): Promise<Tag | null> {
+    const stmt = this.db.prepare(`
+        SELECT * FROM tags 
+        WHERE LOWER(name) = LOWER(@name)
+      `);
+
+    const row = stmt.get({ name }) as TagRow | undefined;
+
+    if (!row) return null;
+
+    return Tag.fromPersistence({
+      id: row.id,
+      name: row.name,
+      created_at: new Date(row.created_at),
     });
   }
 }

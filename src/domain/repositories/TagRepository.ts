@@ -7,4 +7,5 @@ export default interface TagRepository {
   findAll(): Promise<Tag[]>;
   findAllByNoteId(note_id: Note['id']): Promise<Tag[]>;
   attachTagToNote(note_id: Note['id'], tag_id: Tag['id']): Promise<void>;
+  findByName(name: string): Promise<Tag | null>;
 }

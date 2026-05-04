@@ -37,10 +37,15 @@ export default class CreateNote {
 
     await Promise.all([
       ...tagNames.map(async (name) => {
-        const newTag = Tag.create(name);
-        await this.tagRepository.save(newTag);
-        await this.tagRepository.attachTagToNote(note.getId(), newTag.getId());
-        tags.push(newTag);
+        let tag = await this.tagRepository.findByName(name);
+
+        if (!tag) {
+          tag = Tag.create(name);
+          await this.tagRepository.save(tag);
+        }
+
+        await this.tagRepository.attachTagToNote(note.getId(), tag.getId());
+        tags.push(tag);
       }),
     ]);
 
