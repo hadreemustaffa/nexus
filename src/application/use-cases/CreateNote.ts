@@ -3,6 +3,8 @@ import Tag from '../../domain/entities/Tag';
 import NoteRepository from '../../domain/repositories/NoteRepository';
 import TagRepository from '../../domain/repositories/TagRepository';
 import AIService from '../../domain/services/AIService';
+import GenerateAndAttachTags from './GenerateAndAttachTags';
+import ParseAndSaveLinks from './ParseAndSaveLinks';
 
 export default class CreateNote {
   constructor(
@@ -16,38 +18,18 @@ export default class CreateNote {
 
     await this.noteRepository.save(note);
 
-    const filteredLinks = [...note.getContent().matchAll(/\[\[([^\]]+)\]\]/g)]
-      .map((match) => match[1])
-      .filter(Boolean);
+    const parseAndSaveLinks = new ParseAndSaveLinks(this.noteRepository);
+    await parseAndSaveLinks.execute(note.getId(), note.getContent());
 
-    await Promise.all(
-      filteredLinks.map(async (link) => {
-        if (!link) return null;
-
-        const relatedNote = await this.noteRepository.findByTitle(link);
-
-        if (relatedNote) {
-          await this.noteRepository.saveLink(note.getId(), relatedNote.getId());
-        }
-      })
+    const generateAndAttachTags = new GenerateAndAttachTags(
+      this.tagRepository,
+      this.aiService
     );
 
-    const tagNames = await this.aiService.generateTags(note.getContent());
-    const tags: Tag[] = [];
-
-    await Promise.all([
-      ...tagNames.map(async (name) => {
-        let tag = await this.tagRepository.findByName(name);
-
-        if (!tag) {
-          tag = Tag.create(name);
-          await this.tagRepository.save(tag);
-        }
-
-        await this.tagRepository.attachTagToNote(note.getId(), tag.getId());
-        tags.push(tag);
-      }),
-    ]);
+    const tags = await generateAndAttachTags.execute(
+      note.getId(),
+      note.getContent()
+    );
 
     const result = {
       note: note,

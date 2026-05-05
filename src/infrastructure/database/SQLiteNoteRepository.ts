@@ -123,6 +123,15 @@ export default class SQLiteNoteRepository implements NoteRepository {
     });
   }
 
+  async deleteLink(sourceId: string): Promise<void> {
+    const stmt = this.db.prepare(`
+        DELETE FROM note_links
+        WHERE source_id = @sourceId
+      `);
+
+    stmt.run({ sourceId });
+  }
+
   async findByTitle(title: string): Promise<Note | null> {
     const stmt = this.db.prepare(`
         SELECT * FROM notes

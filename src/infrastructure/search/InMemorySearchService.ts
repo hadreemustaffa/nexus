@@ -44,4 +44,10 @@ export default class InMemorySearchService implements SearchService {
 
     return sortedScoreMap;
   }
+
+  async deleteNote(noteId: string, content: string): Promise<void> {
+    const tokenizedContent = this.tokenizer.tokenize(content);
+
+    return this.index.deleteNote(noteId, tokenizedContent);
+  }
 }

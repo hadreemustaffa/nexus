@@ -2,12 +2,6 @@ import Database from 'better-sqlite3';
 import TagRepository from '../../domain/repositories/TagRepository';
 import Tag from '../../domain/entities/Tag';
 
-// save(tag: Tag): Promise<void>;
-// findById(id: string): Promise<Tag | null>;
-// findAll(): Promise<Tag[]>;
-// findAllByNoteId(note_id: Note['id']): Promise<Tag[]>;
-// attachTagToNote(note_id: Note['id'], tag_id: Tag['id']): Promise<void>;
-
 type TagRow = {
   id: string;
   name: string;
@@ -67,14 +61,14 @@ export default class SQLiteTagRepository implements TagRepository {
     );
   }
 
-  async findAllByNoteId(id: string): Promise<Tag[]> {
+  async findAllByNoteId(noteId: string): Promise<Tag[]> {
     const stmt = this.db.prepare(`
         SELECT tags.* FROM tags
         INNER JOIN note_tags ON tags.id = note_tags.tag_id
-        WHERE note_tags.note_id = @id
+        WHERE note_tags.note_id = @noteId
       `);
 
-    const rows = stmt.all({ id }) as TagRow[];
+    const rows = stmt.all({ noteId }) as TagRow[];
 
     return rows.map((row) =>
       Tag.fromPersistence({
@@ -85,19 +79,16 @@ export default class SQLiteTagRepository implements TagRepository {
     );
   }
 
-  async attachTagToNote(note_id: string, tag_id: string): Promise<void> {
+  async attachTagToNote(noteId: string, tagId: string): Promise<void> {
     const stmt = this.db.prepare(`
         INSERT OR IGNORE INTO note_tags (
         note_id, 
         tag_id
         ) 
-        VALUES (@note_id, @tag_id)
+        VALUES (@noteId, @tagId)
       `);
 
-    stmt.run({
-      note_id: note_id,
-      tag_id: tag_id,
-    });
+    stmt.run({ noteId, tagId });
   }
 
   async findByName(name: string): Promise<Tag | null> {
@@ -115,5 +106,14 @@ export default class SQLiteTagRepository implements TagRepository {
       name: row.name,
       created_at: new Date(row.created_at),
     });
+  }
+
+  async deleteByNoteId(noteId: string): Promise<void> {
+    const stmt = this.db.prepare(`
+        DELETE FROM note_tags 
+        WHERE note_id = @noteId
+      `);
+
+    stmt.run({ noteId });
   }
 }

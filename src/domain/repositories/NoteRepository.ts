@@ -8,5 +8,6 @@ export default interface NoteRepository {
   delete(id: string): Promise<void>;
   findLinks(noteId: string): Promise<string[]>; // returns neighbor IDs
   saveLink(sourceId: string, targetId: string): Promise<void>;
+  deleteLink(sourceId: string): Promise<void>;
   findByTitle(title: string): Promise<Note | null>;
 }

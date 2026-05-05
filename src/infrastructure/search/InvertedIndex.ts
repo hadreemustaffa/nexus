@@ -32,7 +32,7 @@ export default class InvertedIndex {
     }
   }
 
-  removeNote(noteId: string, tokens: string[]): void {
+  deleteNote(noteId: string, tokens: string[]): void {
     if (tokens) {
       tokens.forEach((token) => {
         if (this.index.has(token)) {
