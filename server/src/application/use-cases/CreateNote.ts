@@ -1,5 +1,4 @@
 import Note from '../../domain/entities/Note';
-import Tag from '../../domain/entities/Tag';
 import NoteRepository from '../../domain/repositories/NoteRepository';
 import TagRepository from '../../domain/repositories/TagRepository';
 import AIService from '../../domain/services/AIService';

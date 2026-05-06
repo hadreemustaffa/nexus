@@ -1,24 +1,19 @@
 {
-  "name": "nexus",
-  "version": "1.0.0",
-  "description": "AI Knowledge Engine",
-  "license": "ISC",
-  "author": "Hadree Mustaffa",
+  "name": "server",
+  "private": "true",
   "type": "module",
-  "main": "index.ts",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts"
-  },
-  "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
-    "@types/express": "^5.0.6",
-    "typescript": "^6.0.3"
   },
   "dependencies": {
     "better-sqlite3": "^12.9.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "tsx": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6"
   }
 }

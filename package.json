@@ -1,0 +1,24 @@
+{
+  "name": "nexus",
+  "private": true,
+  "version": "0.0.0",
+  "description": "AI Knowledge Engine",
+  "author": "Hadree Mustaffa",
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "lint:client": "eslint client",
+    "lint:server": "eslint server"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.59.2"
+  }
+}
