@@ -1,0 +1,9 @@
+services:
+  nexus:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./nexus.db:/app/nexus.db
+    environment:
+      - NODE_ENV=production
