@@ -1,9 +1,28 @@
 services:
-  nexus:
-    build: .
+  frontend:
+    image: nexus/client
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+    develop:
+      watch:
+        - action: sync
+          path: ./client/src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+  backend:
+    image: nexus/server
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
     ports:
       - '3000:3000'
     volumes:
-      - ./nexus.db:/app/nexus.db
-    environment:
-      - NODE_ENV=production
+      - ./server/nexus.db:/app/nexus.db
