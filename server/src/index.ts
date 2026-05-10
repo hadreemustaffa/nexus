@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import Database from 'better-sqlite3';
 import express from 'express';
+import cors from 'cors';
 import initDatabase from './infrastructure/database/init';
 import SQLiteNoteRepository from './infrastructure/database/SQLiteNoteRepository';
 import CreateNote from './application/use-cases/CreateNote';
@@ -15,7 +16,14 @@ import GenerateAndAttachTags from './application/use-cases/GenerateAndAttachTags
 const app = express();
 const port = 3000;
 
+const CLIENT_URL = process.env.CLIENT_URL;
+
 app.use(express.json());
+app.use(
+  cors({
+    origin: CLIENT_URL,
+  })
+);
 
 const searchService = new InMemorySearchService();
 
