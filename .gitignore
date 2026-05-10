@@ -1,5 +1,12 @@
 /node_modules
+/.env
+/dist
 
-.env
+# global
+**/*.log
+**/.DS_Store
+**/.idea
 
-*.db
+# editor
+.vscode/*
+!.vscode/extensions.json

@@ -1,3 +1,6 @@
 .env*
 nexus.db
-client/
+.git
+.gitignore
+Dockerfile*
+docker-compose*

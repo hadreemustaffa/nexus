@@ -1,2 +1,5 @@
 .env*
-server/
+.git
+.gitignore
+Dockerfile*
+docker-compose*
