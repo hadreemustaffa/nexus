@@ -1,14 +1,13 @@
 import './App.css';
+import { ShowAllNotes } from './features/note';
 
 function App() {
   return (
-    <>
-      <section id='center'>
-        <div>
-          <h1>Nexus</h1>
-        </div>
-      </section>
-    </>
+    <main className='container'>
+      <h1>Nexus</h1>
+
+      <ShowAllNotes />
+    </main>
   );
 }
 
