@@ -1,4 +1,4 @@
-import type { ApiResponse } from '../shared/types';
+import type { ApiResponse } from '../types';
 
 export class ApiError extends Error {
   status: number;

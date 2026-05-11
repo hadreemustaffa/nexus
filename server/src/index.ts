@@ -1,17 +1,19 @@
 import 'dotenv/config';
+
 import Database from 'better-sqlite3';
-import express from 'express';
 import cors from 'cors';
-import initDatabase from './infrastructure/database/init';
-import SQLiteNoteRepository from './infrastructure/database/SQLiteNoteRepository';
+import express from 'express';
+
 import CreateNote from './application/use-cases/CreateNote';
-import SQLiteTagRepository from './infrastructure/database/SQLiteTagRepository';
-import OllamaAIService from './infrastructure/ai/OllamaAIService';
-import InMemorySearchService from './infrastructure/search/InMemorySearchService';
-import SearchNotes from './application/use-cases/SearchNotes';
+import GenerateAndAttachTags from './application/use-cases/GenerateAndAttachTags';
 import GetRelatedNotes from './application/use-cases/GetRelatedNotes';
 import ParseAndSaveLinks from './application/use-cases/ParseAndSaveLinks';
-import GenerateAndAttachTags from './application/use-cases/GenerateAndAttachTags';
+import SearchNotes from './application/use-cases/SearchNotes';
+import OllamaAIService from './infrastructure/ai/OllamaAIService';
+import initDatabase from './infrastructure/database/init';
+import SQLiteNoteRepository from './infrastructure/database/SQLiteNoteRepository';
+import SQLiteTagRepository from './infrastructure/database/SQLiteTagRepository';
+import InMemorySearchService from './infrastructure/search/InMemorySearchService';
 
 const app = express();
 const port = 3000;

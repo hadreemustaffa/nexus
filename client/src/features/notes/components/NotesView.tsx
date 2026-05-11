@@ -1,26 +1,23 @@
-import Loader from '../../../components/Loader';
 import { useNotes } from '../../../hooks/useNotes';
+import Loader from '../../../shared/ui/loader/Loader';
 import Note from './Note';
+import styles from './NotesView.module.css';
 
-export default function ShowAllNotes() {
+export default function NotesView() {
   const state = useNotes();
 
   switch (state.status) {
     case 'loading':
-      return (
-        <main className='center'>
-          <Loader />
-        </main>
-      );
+      return <Loader />;
 
     case 'error':
-      return <p>Error: {state.error}</p>;
+      return <p className='error'>{state.error}</p>;
 
     case 'success':
       return (
         <>
           {state.response.data?.length ? (
-            <ul className='container notes'>
+            <ul className={styles.container}>
               {state.response.data.map((item) => (
                 <li key={item.note.id}>
                   <Note note={item.note} />

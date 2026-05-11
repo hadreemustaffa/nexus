@@ -1,8 +1,8 @@
-import InvertedIndex from './InvertedIndex';
-import Tokenizer from './Tokenizer';
 import SearchService, {
   SearchResult,
 } from '../../domain/services/SearchService';
+import InvertedIndex from './InvertedIndex';
+import Tokenizer from './Tokenizer';
 
 export default class InMemorySearchService implements SearchService {
   private index: InvertedIndex;

@@ -1,25 +1,5 @@
 .container {
   display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  gap: 1.25rem;
-  place-items: center;
-  flex-grow: 1;
-
-  .notes {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  @media (max-width: 64rem) {
-    padding: 2rem 1.25rem 1.5rem;
-    gap: 1.125rem;
-  }
-}
-
-.loader-container {
-  display: flex;
   place-items: center;
   flex-grow: 1;
 }

@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
-import TagRepository from '../../domain/repositories/TagRepository';
+
 import Tag from '../../domain/entities/Tag';
+import TagRepository from '../../domain/repositories/TagRepository';
 
 type TagRow = {
   id: string;
