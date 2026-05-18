@@ -3,16 +3,55 @@ import { RouterProvider } from 'react-router/dom';
 
 import { paths } from '../config/paths';
 import {
+  getNote,
+  getNotes,
+  getRelatedNotes,
+} from '../features/notes/api/notes.api';
+import CreateNote from '../features/notes/components/CreateNote';
+import EmptyNote from '../features/notes/components/EmptyNote';
+import NoteDetail from '../features/notes/components/NoteDetail';
+import {
+  AppRootErrorBoundary,
+  AppRootLoader,
   default as AppRoot,
-  ErrorBoundary as AppRootErrorBoundary,
 } from './routes/app/Root';
 
 const router = createBrowserRouter([
   {
     path: paths.app.root.path,
-    element: <AppRoot />,
-    ErrorBoundary: AppRootErrorBoundary,
-    children: [],
+    Component: AppRoot,
+    HydrateFallback: AppRootLoader,
+    loader: async () => {
+      const res = await getNotes();
+      return res;
+    },
+    errorElement: <AppRootErrorBoundary />,
+    children: [
+      {
+        index: true,
+        Component: EmptyNote,
+      },
+      {
+        path: paths.app.note.path,
+        Component: NoteDetail,
+        loader: async ({ params }) => {
+          const { noteId } = params;
+
+          if (!noteId) throw new Error('Note ID is required');
+
+          const [note, related] = await Promise.all([
+            getNote(noteId),
+            getRelatedNotes(noteId),
+          ]);
+
+          return { note, related };
+        },
+      },
+      {
+        path: paths.app.create.path,
+        Component: CreateNote,
+      },
+    ],
   },
   {
     path: '*',

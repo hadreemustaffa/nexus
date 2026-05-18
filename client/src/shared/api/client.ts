@@ -1,5 +1,3 @@
-import type { ApiResponse } from '../types';
-
 export class ApiError extends Error {
   status: number;
 
@@ -29,8 +27,7 @@ export async function apiFetch<T>(
   }
 
   if (!res.ok) {
-    const body = (await res.json()) as ApiResponse<T>;
-    throw new ApiError(body?.message ?? 'Request failed', res.status);
+    throw new ApiError('Request failed', res.status);
   }
 
   return body as T;

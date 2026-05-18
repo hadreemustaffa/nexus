@@ -1,0 +1,41 @@
+.tags {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.content {
+  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  text-align: left;
+  padding: 1rem;
+  border-left: 1px solid var(--border);
+}
+
+.related {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+
+  ul {
+    padding-inline-start: var(--spacing-md);
+    list-style-type: decimal;
+
+    a {
+      font-style: italic;
+      text-decoration: none;
+
+      &:visited {
+        color: currentColor;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

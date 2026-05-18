@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { MainErrorFallback } from '../shared/ui/loader/Errors';
+import { MainErrorFallback } from '../shared/ui/errors/Errors';
 import Loader from '../shared/ui/loader/Loader';
 
 type AppProviderProps = {

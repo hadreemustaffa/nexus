@@ -1,17 +1,26 @@
-// import { Outlet } from 'react-router';
-import { NotesView } from '../../../features/notes';
+import { ERRORS } from '../../../shared';
+import AppLayout from '../../../shared/ui/layouts/AppLayout';
+import NotesLayout from '../../../shared/ui/layouts/NotesLayout';
+import Loader from '../../../shared/ui/loader/Loader';
 import styles from './Root.module.css';
 
-export const ErrorBoundary = () => {
-  return <div>Something went wrong!</div>;
+export const AppRootErrorBoundary = () => {
+  return <div className={styles.error}>{ERRORS.API.SERVER_ERROR}</div>;
+};
+
+export const AppRootLoader = () => {
+  return (
+    <div className={styles.loading}>
+      <Loader />
+    </div>
+  );
 };
 
 const AppRoot = () => {
   return (
-    <main className={styles.container}>
-      <h1>Nexus</h1>
-      <NotesView />
-    </main>
+    <AppLayout>
+      <NotesLayout />
+    </AppLayout>
   );
 };
 

@@ -1,18 +1,27 @@
-import type { Note } from '../types';
+import { NavLink } from 'react-router';
 
-export default function Note({ note }: { note: Note }) {
+import type { NoteWithTags } from '../types';
+import styles from './Note.module.css';
+
+export default function Note({ note }: { note: NoteWithTags }) {
   const formatContent = (content: string) => {
-    const maxLength = 200;
+    const maxLength = 40;
     if (content.length > maxLength) {
-      return content.slice(0, maxLength) + '...';
+      return content.slice(0, maxLength).trim() + '...';
     }
     return content;
   };
 
   return (
-    <div className='note'>
-      <h2>{note.title}</h2>
-      <p>{formatContent(note.content)}</p>
-    </div>
+    <NavLink
+      to={`/notes/${note.note.id}`}
+      className={({ isActive }) =>
+        `${isActive ? styles.active : ''} ${styles.note_link}`
+      }
+    >
+      <div className={styles.note}>
+        <h2 className={styles.note__title}>{formatContent(note.note.title)}</h2>
+      </div>
+    </NavLink>
   );
 }

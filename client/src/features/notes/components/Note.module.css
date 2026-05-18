@@ -1,0 +1,55 @@
+.note {
+  padding: 0.5rem 1rem;
+
+  & .note__title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  & .note__content {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+}
+
+.active {
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 2px;
+    background: var(--text);
+  }
+}
+
+.note_link {
+  text-decoration: none;
+  position: relative;
+  border-top: 1px solid var(--border);
+
+  &:hover:not(.active) {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 2px;
+      background: var(--text);
+      opacity: 0.5;
+    }
+  }
+
+  &:first-child {
+    border-top: none;
+  }
+
+  &:visited {
+    color: currentColor;
+  }
+}
