@@ -111,7 +111,7 @@ export default class SQLiteNoteRepository implements NoteRepository {
 
   async saveLink(sourceId: string, targetId: string): Promise<void> {
     const stmt = this.db.prepare(`
-        INSERT INTO note_links (
+        INSERT OR IGNORE INTO note_links (
         source_id,
         target_id
         )
