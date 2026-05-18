@@ -173,6 +173,13 @@ app.get('/notes/:id/related', async (req, res) => {
 
     const relatedNotes = await getRelatedNotes.execute(relatedNoteId);
 
+    if (relatedNotes.length === 0) {
+      return res.status(200).json({
+        message: 'Success, but no notes found.',
+        data: [],
+      });
+    }
+
     res.status(200).json({
       message: 'Found related notes.',
       data: relatedNotes,
