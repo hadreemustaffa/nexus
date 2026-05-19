@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 
 import Note from '../../domain/entities/Note';
-import NoteRepository from '../../domain/repositories/NoteRepository';
+import type NoteRepository from '../../domain/repositories/NoteRepository';
 
 type NoteRow = {
   id: string;
@@ -12,7 +12,11 @@ type NoteRow = {
 };
 
 export default class SQLiteNoteRepository implements NoteRepository {
-  constructor(private db: Database.Database) {}
+  private db: Database.Database;
+
+  constructor(db: Database.Database) {
+    this.db = db;
+  }
 
   async save(note: Note): Promise<void> {
     const stmt = this.db.prepare(`

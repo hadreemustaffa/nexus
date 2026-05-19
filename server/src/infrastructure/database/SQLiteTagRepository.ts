@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 
 import Tag from '../../domain/entities/Tag';
-import TagRepository from '../../domain/repositories/TagRepository';
+import type TagRepository from '../../domain/repositories/TagRepository';
 
 type TagRow = {
   id: string;
@@ -10,7 +10,11 @@ type TagRow = {
 };
 
 export default class SQLiteTagRepository implements TagRepository {
-  constructor(private db: Database.Database) {}
+  private db: Database.Database;
+
+  constructor(db: Database.Database) {
+    this.db = db;
+  }
 
   async save(tag: Tag): Promise<void> {
     const stmt = this.db.prepare(`

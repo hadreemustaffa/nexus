@@ -1,7 +1,11 @@
-import NoteRepository from '../../domain/repositories/NoteRepository';
+import type NoteRepository from '../../domain/repositories/NoteRepository';
 
 export default class ParseAndSaveLinks {
-  constructor(private noteRepository: NoteRepository) {}
+  private noteRepository: NoteRepository;
+
+  constructor(noteRepository: NoteRepository) {
+    this.noteRepository = noteRepository;
+  }
 
   async execute(noteId: string, content: string): Promise<void> {
     const links = [...content.matchAll(/\[\[([^\]]+)\]\]/g)]

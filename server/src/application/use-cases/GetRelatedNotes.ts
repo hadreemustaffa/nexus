@@ -1,8 +1,12 @@
 import Note from '../../domain/entities/Note';
-import NoteRepository from '../../domain/repositories/NoteRepository';
+import type NoteRepository from '../../domain/repositories/NoteRepository';
 
 export default class GetRelatedNotes {
-  constructor(private noteRepository: NoteRepository) {}
+  private noteRepository: NoteRepository;
+
+  constructor(noteRepository: NoteRepository) {
+    this.noteRepository = noteRepository;
+  }
 
   async execute(noteId: string, maxHops: number = 2): Promise<Note[]> {
     const visited = new Set<string>();

@@ -1,16 +1,24 @@
 import Note from '../../domain/entities/Note';
-import NoteRepository from '../../domain/repositories/NoteRepository';
-import TagRepository from '../../domain/repositories/TagRepository';
-import AIService from '../../domain/services/AIService';
+import type NoteRepository from '../../domain/repositories/NoteRepository';
+import type TagRepository from '../../domain/repositories/TagRepository';
+import type AIService from '../../domain/services/AIService';
 import GenerateAndAttachTags from './GenerateAndAttachTags';
 import ParseAndSaveLinks from './ParseAndSaveLinks';
 
 export default class CreateNote {
+  private noteRepository: NoteRepository;
+  private tagRepository: TagRepository;
+  private aiService: AIService;
+
   constructor(
-    private noteRepository: NoteRepository,
-    private tagRepository: TagRepository,
-    private aiService: AIService
-  ) {}
+    noteRepository: NoteRepository,
+    tagRepository: TagRepository,
+    aiService: AIService
+  ) {
+    this.noteRepository = noteRepository;
+    this.tagRepository = tagRepository;
+    this.aiService = aiService;
+  }
 
   async execute(title: string, content: string) {
     const note = Note.create(title, content);

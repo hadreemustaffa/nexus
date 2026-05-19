@@ -1,6 +1,5 @@
-import SearchService, {
-  SearchResult,
-} from '../../domain/services/SearchService';
+import type SearchService from '../../domain/services/SearchService';
+import type { SearchResult } from '../../domain/services/SearchService';
 import InvertedIndex from './InvertedIndex';
 import Tokenizer from './Tokenizer';
 

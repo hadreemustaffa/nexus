@@ -1,8 +1,8 @@
 import Note from '../../domain/entities/Note';
 import Tag from '../../domain/entities/Tag';
-import NoteRepository from '../../domain/repositories/NoteRepository';
-import TagRepository from '../../domain/repositories/TagRepository';
-import SearchService from '../../domain/services/SearchService';
+import type NoteRepository from '../../domain/repositories/NoteRepository';
+import type TagRepository from '../../domain/repositories/TagRepository';
+import type SearchService from '../../domain/services/SearchService';
 
 export type NoteWithTags = {
   note: Note;
@@ -10,11 +10,19 @@ export type NoteWithTags = {
 };
 
 export default class SearchNotes {
+  private noteRepository: NoteRepository;
+  private tagRepository: TagRepository;
+  private searchService: SearchService;
+
   constructor(
-    private noteRepository: NoteRepository,
-    private tagRepository: TagRepository,
-    private searchService: SearchService
-  ) {}
+    noteRepository: NoteRepository,
+    tagRepository: TagRepository,
+    searchService: SearchService
+  ) {
+    this.noteRepository = noteRepository;
+    this.tagRepository = tagRepository;
+    this.searchService = searchService;
+  }
 
   async execute(query: string): Promise<NoteWithTags[]> {
     const searchResults = await this.searchService.search(query);

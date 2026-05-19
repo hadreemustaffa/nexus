@@ -1,12 +1,15 @@
 import Tag from '../../domain/entities/Tag';
-import TagRepository from '../../domain/repositories/TagRepository';
-import AIService from '../../domain/services/AIService';
+import type TagRepository from '../../domain/repositories/TagRepository';
+import type AIService from '../../domain/services/AIService';
 
 export default class GenerateAndAttachTags {
-  constructor(
-    private tagRepository: TagRepository,
-    private aiService: AIService
-  ) {}
+  private tagRepository: TagRepository;
+  private aiService: AIService;
+
+  constructor(tagRepository: TagRepository, aiService: AIService) {
+    this.tagRepository = tagRepository;
+    this.aiService = aiService;
+  }
 
   async execute(noteId: string, content: string): Promise<Tag[]> {
     const tagNames = await this.aiService.generateTags(content);

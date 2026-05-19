@@ -1,11 +1,23 @@
 export default class Note {
-  private constructor(
-    public readonly id: string,
-    private title: string,
-    private content: string,
-    public readonly created_at: Date,
-    public updated_at: Date
-  ) {}
+  public readonly id: string;
+  private title: string;
+  private content: string;
+  public readonly created_at: Date;
+  public updated_at: Date;
+
+  constructor(
+    id: string,
+    title: string,
+    content: string,
+    created_at: Date,
+    updated_at: Date
+  ) {
+    this.id = id;
+    this.title = title;
+    this.content = content;
+    this.created_at = created_at;
+    this.updated_at = updated_at;
+  }
 
   static create(title: string, content: string): Note {
     this.validateTitle(title);
