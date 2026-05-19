@@ -48,3 +48,21 @@
   color: var(--error);
   font-style: italic;
 }
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+
+  .actions__cancel {
+    text-decoration: none;
+
+    &:visited {
+      color: currentColor;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

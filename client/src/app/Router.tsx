@@ -8,6 +8,7 @@ import {
   getRelatedNotes,
 } from '../features/notes/api/notes.api';
 import CreateNote from '../features/notes/components/CreateNote';
+import EditNote from '../features/notes/components/EditNote';
 import EmptyNote from '../features/notes/components/EmptyNote';
 import NoteDetail from '../features/notes/components/NoteDetail';
 import {
@@ -32,24 +33,46 @@ const router = createBrowserRouter([
         Component: EmptyNote,
       },
       {
-        path: paths.app.note.path,
-        Component: NoteDetail,
-        loader: async ({ params }) => {
-          const { noteId } = params;
+        path: paths.app.notes.path,
+        children: [
+          {
+            index: true,
+            Component: EmptyNote,
+          },
+          {
+            path: paths.app.notes.note.path,
+            Component: NoteDetail,
+            loader: async ({ params }) => {
+              const { noteId } = params;
 
-          if (!noteId) throw new Error('Note ID is required');
+              if (!noteId) throw new Error('Note ID is required');
 
-          const [note, related] = await Promise.all([
-            getNote(noteId),
-            getRelatedNotes(noteId),
-          ]);
+              const [note, related] = await Promise.all([
+                getNote(noteId),
+                getRelatedNotes(noteId),
+              ]);
 
-          return { note, related };
-        },
-      },
-      {
-        path: paths.app.create.path,
-        Component: CreateNote,
+              return { note, related };
+            },
+          },
+          {
+            path: paths.app.notes.create.path,
+            Component: CreateNote,
+          },
+          {
+            path: paths.app.notes.edit.path,
+            Component: EditNote,
+            loader: async ({ params }) => {
+              const { noteId } = params;
+
+              if (!noteId) throw new Error('Note ID is required');
+
+              const note = await getNote(noteId);
+
+              return { note };
+            },
+          },
+        ],
       },
     ],
   },

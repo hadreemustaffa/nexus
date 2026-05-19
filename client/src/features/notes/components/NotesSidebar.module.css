@@ -15,3 +15,9 @@
   font-size: var(--fs-sm);
   border-bottom: 1px solid var(--border);
 }
+
+.sidebar__empty {
+  padding: var(--spacing-sm);
+  font-size: var(--fs-sm);
+  font-style: italic;
+}

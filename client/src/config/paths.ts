@@ -7,14 +7,21 @@ export const paths = {
     notes: {
       path: '/notes',
       getHref: () => '/notes',
-    },
-    note: {
-      path: '/notes/:noteId',
-      getHref: (noteId: string) => `/notes/${noteId}`,
-    },
-    create: {
-      path: '/notes/create',
-      getHref: () => '/notes/create',
+
+      note: {
+        path: ':noteId',
+        getHref: (noteId: string) => `/notes/${noteId}`,
+      },
+
+      create: {
+        path: 'create',
+        getHref: () => '/notes/create',
+      },
+
+      edit: {
+        path: ':noteId/edit',
+        getHref: (noteId: string) => `/notes/${noteId}/edit`,
+      },
     },
   },
 } as const;
