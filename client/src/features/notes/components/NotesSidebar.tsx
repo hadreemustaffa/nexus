@@ -2,11 +2,11 @@ import { Plus } from 'lucide-react';
 import { NavLink } from 'react-router';
 
 import { paths } from '../../../config/paths';
-import type { NoteWithTags } from '../types';
+import type { Note as NoteType } from '../types';
 import Note from './Note';
 import styles from './NotesSidebar.module.css';
 
-export default function NotesSidebar({ notes }: { notes: NoteWithTags[] }) {
+export default function NotesSidebar({ notes }: { notes: NoteType[] }) {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebar__actions}>
@@ -14,16 +14,16 @@ export default function NotesSidebar({ notes }: { notes: NoteWithTags[] }) {
           New <Plus size={16} />
         </NavLink>
       </div>
-      {notes.length > 0 ? (
+      {notes && notes.length > 0 ? (
         <ul>
           {notes
             .sort(
               (a, b) =>
-                new Date(b.note.created_at).getTime() -
-                new Date(a.note.created_at).getTime()
+                new Date(b.created_at).getTime() -
+                new Date(a.created_at).getTime()
             )
             .map((note) => (
-              <Note key={note.note.id} note={note} />
+              <Note key={note.id} note={note} />
             ))}
         </ul>
       ) : (
