@@ -14,7 +14,7 @@ export type Tag = {
 
 export type NoteWithTags = {
   note: Note;
-  tags: Tag[];
+  tags?: Tag[];
 };
 
 export type Response<T> = {

@@ -12,7 +12,7 @@ import { paths } from '../../../config/paths';
 import Button from '../../../shared/ui/button/Button';
 import Tag from '../../tags/Tag';
 import { deleteNote } from '../api/notes.api';
-import type { Note, NoteWithTags, Response } from '../types';
+import type { Note, NoteWithTags, Response, Tag as TagType } from '../types';
 import styles from './NoteDetail.module.css';
 
 export default function NoteDetail() {
@@ -24,6 +24,33 @@ export default function NoteDetail() {
   const noteData = note.data;
   const relatedData = related.data;
 
+  const [tags, setTags] = useState<TagType[]>(noteData.tags ?? []);
+
+  console.log(note);
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      `http://localhost:3000/notes/${noteData.note.id}/events`
+    );
+
+    const handleTagsGenerated = (event: MessageEvent) => {
+      const data = JSON.parse(event.data);
+
+      setTags(data.tags);
+    };
+
+    eventSource.addEventListener('NOTE_TAGS_GENERATED', handleTagsGenerated);
+
+    return () => {
+      eventSource.removeEventListener(
+        'NOTE_TAGS_GENERATED',
+        handleTagsGenerated
+      );
+
+      eventSource.close();
+    };
+  }, [noteData.note.id]);
+
   return (
     <div className={styles.content}>
       <div className={styles.content__header}>
@@ -32,7 +59,8 @@ export default function NoteDetail() {
         <NoteDetailOptions note={noteData.note} />
       </div>
 
-      {noteData.tags.length > 0 && (
+      {/* Note with existing tags → should show noteData.tags  */}
+      {noteData.tags && noteData.tags.length > 0 ? (
         <ul className={styles.tags}>
           {noteData.tags.map((tag) => (
             <li key={tag.id}>
@@ -40,10 +68,23 @@ export default function NoteDetail() {
             </li>
           ))}
         </ul>
+      ) : (
+        <>
+          {tags.length > 0 ? (
+            <ul className={styles.tags}>
+              {tags.map((tag) => (
+                <li key={tag.id}>
+                  <Tag label={tag.name} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Tags are being generated.</p>
+          )}
+        </>
       )}
 
       <p className={styles.content__text}>{noteData.note.content}</p>
-
       {relatedData.length > 0 && (
         <div className={styles.related}>
           <p>Related Notes</p>
