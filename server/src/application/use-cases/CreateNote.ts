@@ -1,23 +1,18 @@
 import Note from '../../domain/entities/Note';
 import type NoteRepository from '../../domain/repositories/NoteRepository';
-import type TagRepository from '../../domain/repositories/TagRepository';
-import type AIService from '../../domain/services/AIService';
-import GenerateAndAttachTags from './GenerateAndAttachTags';
+import type Dispatcher from '../../infrastructure/queues/Dispatcher';
 import ParseAndSaveLinks from './ParseAndSaveLinks';
 
 export default class CreateNote {
   private noteRepository: NoteRepository;
-  private tagRepository: TagRepository;
-  private aiService: AIService;
+  private dispatcher: Dispatcher<'GENERATE_TAGS'>;
 
   constructor(
     noteRepository: NoteRepository,
-    tagRepository: TagRepository,
-    aiService: AIService
+    dispatcher: Dispatcher<'GENERATE_TAGS'>
   ) {
     this.noteRepository = noteRepository;
-    this.tagRepository = tagRepository;
-    this.aiService = aiService;
+    this.dispatcher = dispatcher;
   }
 
   async execute(title: string, content: string) {
@@ -28,21 +23,15 @@ export default class CreateNote {
     const parseAndSaveLinks = new ParseAndSaveLinks(this.noteRepository);
     await parseAndSaveLinks.execute(note.getId(), note.getContent());
 
-    const generateAndAttachTags = new GenerateAndAttachTags(
-      this.tagRepository,
-      this.aiService
-    );
+    await this.dispatcher.dispatch({
+      noteId: note.getId(),
+      content: note.getContent(),
+    });
 
-    const tags = await generateAndAttachTags.execute(
-      note.getId(),
-      note.getContent()
-    );
+    console.log('Job dispatched for note:', note.getId());
 
-    const result = {
-      note: note,
-      tags: tags,
+    return {
+      note,
     };
-
-    return result;
   }
 }
