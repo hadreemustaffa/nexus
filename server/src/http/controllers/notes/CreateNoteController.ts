@@ -9,7 +9,7 @@ export default class CreateNoteController {
     this.createNote = createNote;
   }
 
-  async handle(req: Request, res: Response): Promise<Response> {
+  handle = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { title, content } = req.body;
 
@@ -31,5 +31,5 @@ export default class CreateNoteController {
         error: 'Internal Server Error',
       });
     }
-  }
+  };
 }

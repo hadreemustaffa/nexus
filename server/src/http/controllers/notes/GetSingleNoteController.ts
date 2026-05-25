@@ -9,7 +9,7 @@ export default class GetSingleNoteController {
     this.getSingleNote = getSingleNote;
   }
 
-  async handle(req: Request, res: Response): Promise<Response> {
+  handle = async (req: Request, res: Response): Promise<Response> => {
     try {
       const noteId = req.params.id as string;
 
@@ -31,5 +31,5 @@ export default class GetSingleNoteController {
         error: 'Internal Server Error',
       });
     }
-  }
+  };
 }

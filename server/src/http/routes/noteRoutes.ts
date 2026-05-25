@@ -62,20 +62,11 @@ export function createNoteRouter() {
   const updateNoteController = new UpdateNoteController(updateNoteUseCase);
   const deleteNoteController = new DeleteNoteController(deleteNoteUseCase);
 
-  router.post('/', createNoteController.handle.bind(createNoteController));
-  router.get('/', getAllNotesController.handle.bind(getAllNotesController));
-  router.get(
-    '/search',
-    searchNotesController.handle.bind(searchNotesController)
-  );
-  router.get(
-    '/:id',
-    getSingleNoteController.handle.bind(getSingleNoteController)
-  );
-  router.get(
-    '/:id/related',
-    getRelatedNotesController.handle.bind(getRelatedNotesController)
-  );
+  router.post('/', createNoteController.handle);
+  router.get('/', getAllNotesController.handle);
+  router.get('/search', searchNotesController.handle);
+  router.get('/:id', getSingleNoteController.handle);
+  router.get('/:id/related', getRelatedNotesController.handle);
   router.put('/:id', updateNoteController.handle);
   router.delete('/:id', deleteNoteController.handle);
 

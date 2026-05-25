@@ -9,7 +9,7 @@ export default class GetAllNotesController {
     this.getAllNotes = getAllNotes;
   }
 
-  async handle(req: Request, res: Response): Promise<Response> {
+  handle = async (req: Request, res: Response): Promise<Response> => {
     try {
       const notes = await this.getAllNotes.execute();
 
@@ -36,5 +36,5 @@ export default class GetAllNotesController {
         error: 'Internal Server Error',
       });
     }
-  }
+  };
 }

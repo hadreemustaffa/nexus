@@ -9,7 +9,7 @@ export default class SearchNotesController {
     this.searchNotes = searchNotes;
   }
 
-  async handle(req: Request, res: Response): Promise<Response> {
+  handle = async (req: Request, res: Response): Promise<Response> => {
     try {
       const q = req.query.q as string;
 
@@ -38,5 +38,5 @@ export default class SearchNotesController {
         error: 'Internal Server Error',
       });
     }
-  }
+  };
 }

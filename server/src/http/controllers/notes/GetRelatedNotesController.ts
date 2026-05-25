@@ -15,7 +15,7 @@ export default class GetRelatedNotesController {
     this.noteRepository = noteRepository;
   }
 
-  async handle(req: Request, res: Response): Promise<Response> {
+  handle = async (req: Request, res: Response): Promise<Response> => {
     try {
       const relatedNoteId = req.params.id as string;
 
@@ -52,5 +52,5 @@ export default class GetRelatedNotesController {
         error: 'Internal Server Error',
       });
     }
-  }
+  };
 }
