@@ -39,6 +39,9 @@ export default class OllamaAIService implements AIService {
         },
         stream: false,
       }),
+    }).catch((error) => {
+      console.error('Ollama request failed:', error);
+      throw new Error(`Ollama not reachable at ${url} — is it running?`);
     });
 
     if (!response.ok) {
