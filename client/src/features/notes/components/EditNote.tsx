@@ -1,22 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  NavLink,
-  useLoaderData,
-  useNavigate,
-  useRevalidator,
-} from 'react-router';
+import { NavLink, useFetcher, useLoaderData } from 'react-router';
 import { z } from 'zod';
 
 import { paths } from '../../../config/paths';
 import useDebounce from '../../../hooks/useDebounce';
 import Button from '../../../shared/ui/button/Button';
-import { updateNote } from '../api/notes.api';
 import type { NoteWithTags, Response } from '../types';
 import styles from './EditNote.module.css';
 
 const schema = z.object({
+  id: z.string(),
   title: z.string().min(1, 'Title is required'),
   content: z
     .string()
@@ -34,6 +29,9 @@ export default function EditNote() {
     note: Response<NoteWithTags>;
   };
 
+  const fetcher = useFetcher<{ error?: string }>();
+  const isSubmitting = fetcher.state !== 'idle';
+
   const noteData = note.data;
   const wordCount = noteData.note.content
     .trim()
@@ -42,13 +40,10 @@ export default function EditNote() {
 
   const [contentLength, setContentLength] = useState(wordCount);
 
-  const navigate = useNavigate();
-  const { revalidate } = useRevalidator();
-
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -57,10 +52,11 @@ export default function EditNote() {
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
-    await updateNote(noteData.note.id, data);
-    navigate(paths.app.notes.note.getHref(noteData.note.id));
-    await revalidate();
+  const onSubmit = (data: FormValues) => {
+    fetcher.submit(data, {
+      method: 'post',
+      action: paths.app.notes.edit.getHref(noteData.note.id),
+    });
   };
 
   const handleChange = useDebounce((value: string) => {
@@ -73,6 +69,7 @@ export default function EditNote() {
       <h2>Edit note</h2>
 
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        <input type='hidden' {...register('id')} value={noteData.note.id} />
         <div>
           <div className={styles.form__group}>
             <label htmlFor='title'>Title:</label>
@@ -128,6 +125,10 @@ export default function EditNote() {
           </Button>
         </div>
       </form>
+
+      {fetcher.data?.error && (
+        <p className={styles.form__error}>{fetcher.data.error}</p>
+      )}
     </div>
   );
 }

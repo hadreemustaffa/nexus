@@ -3,16 +3,19 @@ import { RouterProvider } from 'react-router/dom';
 
 import { paths } from '../config/paths';
 import {
+  createNote,
   deleteNote,
   getNote,
   getNotes,
   getRelatedNotes,
   regenerateNoteTags,
+  updateNote,
 } from '../features/notes/api/notes.api';
 import CreateNote from '../features/notes/components/CreateNote';
 import EditNote from '../features/notes/components/EditNote';
 import EmptyNote from '../features/notes/components/EmptyNote';
 import NoteDetail from '../features/notes/components/NoteDetail';
+import { ApiError } from '../shared/api/client';
 import {
   AppRootErrorBoundary,
   AppRootLoader,
@@ -25,8 +28,14 @@ const router = createBrowserRouter([
     Component: AppRoot,
     HydrateFallback: AppRootLoader,
     loader: async () => {
-      const res = await getNotes();
-      return res;
+      try {
+        return await getNotes();
+      } catch (error) {
+        if (error instanceof ApiError) {
+          throw new Response('Failed to load notes', { status: error.status });
+        }
+        throw error;
+      }
     },
     errorElement: <AppRootErrorBoundary />,
     children: [
@@ -47,24 +56,68 @@ const router = createBrowserRouter([
             loader: async ({ params }) => {
               const { noteId } = params;
 
-              if (!noteId) throw new Error('Note ID is required');
+              if (!noteId)
+                throw new Response('Note ID is required', { status: 400 });
 
-              const [note, related] = await Promise.all([
-                getNote(noteId),
-                getRelatedNotes(noteId),
-              ]);
-
-              return { note, related };
+              try {
+                const [note, related] = await Promise.all([
+                  getNote(noteId),
+                  getRelatedNotes(noteId),
+                ]);
+                return { note, related };
+              } catch (error) {
+                if (error instanceof ApiError) {
+                  if (error.status === 404) {
+                    throw new Response('Note not found', { status: 404 });
+                  }
+                  throw new Response('Failed to load note', {
+                    status: error.status,
+                  });
+                }
+                throw error;
+              }
             },
             action: async ({ params }) => {
-              const noteId = params.noteId!;
-              await deleteNote(noteId);
-              return redirect(paths.app.notes.path);
+              const { noteId } = params;
+
+              if (!noteId)
+                throw new Response('Note ID is required', { status: 400 });
+
+              try {
+                await deleteNote(noteId);
+                return redirect(paths.app.notes.path);
+              } catch (error) {
+                if (error instanceof ApiError) {
+                  return { error: 'Failed to delete note' };
+                }
+                throw error;
+              }
             },
           },
           {
             path: paths.app.notes.create.path,
             Component: CreateNote,
+            action: async ({ request }) => {
+              const formData = await request.formData();
+
+              const title = formData.get('title') as string;
+              const content = formData.get('content') as string;
+
+              try {
+                const { data } = await createNote({ title, content });
+
+                if (!data?.note.id) {
+                  throw new Error('Note not found');
+                }
+
+                return redirect(paths.app.notes.note.getHref(data.note.id));
+              } catch (error) {
+                if (error instanceof ApiError) {
+                  return { error: 'Failed to create note' };
+                }
+                throw error;
+              }
+            },
           },
           {
             path: paths.app.notes.edit.path,
@@ -72,18 +125,64 @@ const router = createBrowserRouter([
             loader: async ({ params }) => {
               const { noteId } = params;
 
-              if (!noteId) throw new Error('Note ID is required');
+              if (!noteId)
+                throw new Response('Note ID is required', { status: 400 });
 
-              const note = await getNote(noteId);
+              try {
+                const note = await getNote(noteId);
+                return { note };
+              } catch (error) {
+                if (error instanceof ApiError) {
+                  if (error.status === 404) {
+                    throw new Response('Note not found', { status: 404 });
+                  }
+                  throw new Response('Failed to load note', {
+                    status: error.status,
+                  });
+                }
+                throw error;
+              }
+            },
+            action: async ({ request }) => {
+              const formData = await request.formData();
 
-              return { note };
+              const id = formData.get('id') as string;
+              const title = formData.get('title') as string;
+              const content = formData.get('content') as string;
+
+              try {
+                const { data } = await updateNote(id, { title, content });
+
+                if (!data?.note.id) {
+                  throw new Error('Note not found');
+                }
+
+                return redirect(paths.app.notes.note.getHref(data.note.id));
+              } catch (error) {
+                if (error instanceof ApiError) {
+                  if (error.status === 404) {
+                    return { error: 'Note no longer exists' };
+                  }
+                  return { error: 'Failed to update note' };
+                }
+                throw error;
+              }
             },
           },
           {
             path: paths.app.notes.regenerateNoteTags.path,
             action: async ({ params }) => {
               const noteId = params.noteId!;
-              await regenerateNoteTags(noteId);
+
+              try {
+                await regenerateNoteTags(noteId);
+                return null;
+              } catch (error) {
+                if (error instanceof ApiError) {
+                  return { error: 'Failed to regenerate tags' };
+                }
+                throw error;
+              }
             },
           },
         ],

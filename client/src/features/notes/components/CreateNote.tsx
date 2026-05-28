@@ -1,13 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useRevalidator } from 'react-router';
+import { useFetcher } from 'react-router';
 import { z } from 'zod';
 
 import { paths } from '../../../config/paths';
 import useDebounce from '../../../hooks/useDebounce';
 import Button from '../../../shared/ui/button/Button';
-import { createNote } from '../api/notes.api';
 import styles from './CreateNote.module.css';
 
 const schema = z.object({
@@ -25,8 +24,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function CreateNote() {
   const [contentLength, setContentLength] = useState(0);
-  const navigate = useNavigate();
-  const { revalidate } = useRevalidator();
+  const fetcher = useFetcher();
 
   const {
     register,
@@ -36,12 +34,11 @@ export default function CreateNote() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data: FormValues) => {
-    const res = await createNote(data);
-    if (res.data) {
-      navigate(paths.app.notes.note.getHref(res.data?.note.id));
-      await revalidate();
-    }
+  const onSubmit = (data: FormValues) => {
+    fetcher.submit(data, {
+      method: 'post',
+      action: paths.app.notes.create.getHref(),
+    });
   };
 
   const handleChange = useDebounce((value: string) => {
