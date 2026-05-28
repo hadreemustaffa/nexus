@@ -1,11 +1,13 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, redirect } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 
 import { paths } from '../config/paths';
 import {
+  deleteNote,
   getNote,
   getNotes,
   getRelatedNotes,
+  regenerateNoteTags,
 } from '../features/notes/api/notes.api';
 import CreateNote from '../features/notes/components/CreateNote';
 import EditNote from '../features/notes/components/EditNote';
@@ -54,6 +56,11 @@ const router = createBrowserRouter([
 
               return { note, related };
             },
+            action: async ({ params }) => {
+              const noteId = params.noteId!;
+              await deleteNote(noteId);
+              return redirect(paths.app.notes.path);
+            },
           },
           {
             path: paths.app.notes.create.path,
@@ -70,6 +77,13 @@ const router = createBrowserRouter([
               const note = await getNote(noteId);
 
               return { note };
+            },
+          },
+          {
+            path: paths.app.notes.regenerateNoteTags.path,
+            action: async ({ params }) => {
+              const noteId = params.noteId!;
+              await regenerateNoteTags(noteId);
             },
           },
         ],

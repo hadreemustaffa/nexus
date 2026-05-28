@@ -38,3 +38,8 @@ export const searchNotes = (query: string) =>
   apiFetch<ApiResponse<NoteWithTags[]>>(
     `/notes/search?q=${encodeURIComponent(query)}`
   );
+
+export const regenerateNoteTags = (id: string) =>
+  apiFetch<ApiResponse<NoteWithTags>>(`/notes/${id}/tags`, {
+    method: 'POST',
+  });

@@ -1,17 +1,10 @@
-import { Edit, EllipsisVertical, Trash } from 'lucide-react';
+import { Edit, EllipsisVertical, RefreshCw, Trash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import {
-  NavLink,
-  useLoaderData,
-  useNavigate,
-  useRevalidator,
-} from 'react-router';
+import { Form, NavLink, useFetcher, useLoaderData } from 'react-router';
 
 import { paths } from '../../../config/paths';
 import Button from '../../../shared/ui/button/Button';
 import Tag from '../../tags/Tag';
-import { deleteNote } from '../api/notes.api';
 import type { Note, NoteWithTags, Response, Tag as TagType } from '../types';
 import styles from './NoteDetail.module.css';
 
@@ -25,18 +18,20 @@ export default function NoteDetail() {
   const relatedData = related.data;
 
   const [tags, setTags] = useState<TagType[]>(noteData.tags ?? []);
-
-  console.log(note);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const eventSource = new EventSource(
       `http://localhost:3000/notes/${noteData.note.id}/events`
     );
 
+    // handle state on our own rather than depend on fetcher.state
+    // fetcher.state returns to idle faster than tags finish generating
+    // this causes brief flicker then showing old tags
     const handleTagsGenerated = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-
       setTags(data.tags);
+      setIsGenerating(false);
     };
 
     eventSource.addEventListener('NOTE_TAGS_GENERATED', handleTagsGenerated);
@@ -46,7 +41,6 @@ export default function NoteDetail() {
         'NOTE_TAGS_GENERATED',
         handleTagsGenerated
       );
-
       eventSource.close();
     };
   }, [noteData.note.id]);
@@ -56,11 +50,13 @@ export default function NoteDetail() {
       <div className={styles.content__header}>
         <h2>{noteData.note.title}</h2>
 
-        <NoteDetailOptions note={noteData.note} />
+        <NoteDetailOptions
+          note={noteData.note}
+          onRegenerate={() => setIsGenerating(true)}
+        />
       </div>
 
-      {/* Note with existing tags → should show noteData.tags  */}
-      {noteData.tags && noteData.tags.length > 0 ? (
+      {!isGenerating && noteData.tags && noteData.tags.length > 0 ? (
         <ul className={styles.tags}>
           {noteData.tags.map((tag) => (
             <li key={tag.id}>
@@ -68,23 +64,20 @@ export default function NoteDetail() {
             </li>
           ))}
         </ul>
+      ) : isGenerating || tags.length === 0 ? (
+        <p>Tags are being generated.</p>
       ) : (
-        <>
-          {tags.length > 0 ? (
-            <ul className={styles.tags}>
-              {tags.map((tag) => (
-                <li key={tag.id}>
-                  <Tag label={tag.name} />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Tags are being generated.</p>
-          )}
-        </>
+        <ul className={styles.tags}>
+          {tags.map((tag) => (
+            <li key={tag.id}>
+              <Tag label={tag.name} />
+            </li>
+          ))}
+        </ul>
       )}
 
       <p className={styles.content__text}>{noteData.note.content}</p>
+
       {relatedData.length > 0 && (
         <div className={styles.related}>
           <p>Related Notes</p>
@@ -103,11 +96,18 @@ export default function NoteDetail() {
   );
 }
 
-function NoteDetailOptions({ note }: { note: Note }) {
+function NoteDetailOptions({
+  note,
+  onRegenerate,
+}: {
+  note: Note;
+  onRegenerate: () => void;
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const navigate = useNavigate();
-  const { revalidate } = useRevalidator();
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const fetcher = useFetcher();
+  const isSubmitting = fetcher.state === 'submitting';
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -124,17 +124,6 @@ function NoteDetailOptions({ note }: { note: Note }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const {
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm();
-
-  const onSubmit = async () => {
-    await deleteNote(note.id);
-    navigate(paths.app.root.getHref());
-    await revalidate();
-  };
 
   const handleClick = () => {
     setIsExpanded((prev) => !prev);
@@ -158,15 +147,36 @@ function NoteDetailOptions({ note }: { note: Note }) {
           <Edit size={16} /> Edit
         </NavLink>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <Form id='delete-form' method='post' replace>
           <button
+            id='delete'
+            type='submit'
+            className={`${styles.option} ${styles.delete}`}
+          >
+            <Trash size={16} />
+            Delete
+          </button>
+        </Form>
+
+        <fetcher.Form
+          id='regenerate-note-tags-form'
+          method='post'
+          action={paths.app.notes.regenerateNoteTags.getHref(note.id)}
+          onSubmit={onRegenerate}
+        >
+          <button
+            id='regenerate-note-tags'
             type='submit'
             className={styles.option}
             disabled={isSubmitting}
           >
-            <Trash size={16} /> Delete
+            <RefreshCw
+              size={16}
+              className={`${isSubmitting ? styles.submitting : ''}`}
+            />
+            Regenerate Tags
           </button>
-        </form>
+        </fetcher.Form>
       </div>
     </div>
   );

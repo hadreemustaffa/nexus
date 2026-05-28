@@ -22,6 +22,11 @@ export const paths = {
         path: ':noteId/edit',
         getHref: (noteId: string) => `/notes/${noteId}/edit`,
       },
+
+      regenerateNoteTags: {
+        path: ':noteId/tags',
+        getHref: (noteId: string) => `/notes/${noteId}/tags`,
+      },
     },
   },
 } as const;

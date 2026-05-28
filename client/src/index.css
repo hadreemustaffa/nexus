@@ -125,6 +125,7 @@
   --bg: #e0e1dd;
   --border: #778da9;
   --accent: #415a77;
+  --accent-hover: #31465e80;
   --error: #c0392b;
 
   --spacing-2xs: 0.25rem;
@@ -167,6 +168,7 @@
     --bg: #0d1b2a;
     --border: #1b263b;
     --accent: #415a77;
+    --accent-hover: #5c759399;
     --error: #e74c3c;
   }
 }
