@@ -5,6 +5,7 @@ import DeleteNote from '../../application/use-cases/DeleteNote';
 import GetAllNotes from '../../application/use-cases/GetAllNotes';
 import GetRelatedNotes from '../../application/use-cases/GetRelatedNotes';
 import GetSingleNote from '../../application/use-cases/GetSingleNote';
+import RegenerateNoteTags from '../../application/use-cases/RegenerateNoteTags';
 import SearchNotes from '../../application/use-cases/SearchNotes';
 import UpdateNote from '../../application/use-cases/UpdateNote';
 import { container } from '../../bootstrap/Container';
@@ -13,6 +14,7 @@ import DeleteNoteController from '../controllers/notes/DeleteNoteController';
 import GetAllNotesController from '../controllers/notes/GetAllNotesController';
 import GetRelatedNotesController from '../controllers/notes/GetRelatedNotesController';
 import GetSingleNoteController from '../controllers/notes/GetSingleNoteController';
+import RegenerateNoteTagsController from '../controllers/notes/RegenerateNoteTagsController';
 import SearchNotesController from '../controllers/notes/SearchNotesController';
 import UpdateNoteController from '../controllers/notes/UpdateNoteController';
 
@@ -40,13 +42,16 @@ export function createNoteRouter() {
   const getRelatedNotesUseCase = new GetRelatedNotes(container.noteRepository);
   const updateNoteUseCase = new UpdateNote(
     container.noteRepository,
-    container.tagRepository,
-    container.searchService,
-    container.tagsDispatcher
+    container.searchService
   );
   const deleteNoteUseCase = new DeleteNote(
     container.noteRepository,
     container.searchService
+  );
+  const regenerateNoteTagsUseCase = new RegenerateNoteTags(
+    container.noteRepository,
+    container.tagRepository,
+    container.tagsDispatcher
   );
 
   const createNoteController = new CreateNoteController(createNoteUseCase);
@@ -61,6 +66,9 @@ export function createNoteRouter() {
   );
   const updateNoteController = new UpdateNoteController(updateNoteUseCase);
   const deleteNoteController = new DeleteNoteController(deleteNoteUseCase);
+  const regenerateNoteTagsController = new RegenerateNoteTagsController(
+    regenerateNoteTagsUseCase
+  );
 
   router.post('/', createNoteController.handle);
   router.get('/', getAllNotesController.handle);
@@ -69,6 +77,7 @@ export function createNoteRouter() {
   router.get('/:id/related', getRelatedNotesController.handle);
   router.put('/:id', updateNoteController.handle);
   router.delete('/:id', deleteNoteController.handle);
+  router.post('/:id/tags', regenerateNoteTagsController.handle);
 
   router.get('/:id/events', (req, res) => {
     const noteId = req.params.id;
