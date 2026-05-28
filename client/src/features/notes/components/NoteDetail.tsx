@@ -65,7 +65,10 @@ export default function NoteDetail() {
           ))}
         </ul>
       ) : isGenerating || tags.length === 0 ? (
-        <p>Tags are being generated.</p>
+        <p className={styles.generating}>
+          <RefreshCw size={16} className={styles.submitting} />
+          <span>Tags are being generated.</span>
+        </p>
       ) : (
         <ul className={styles.tags}>
           {tags.map((tag) => (

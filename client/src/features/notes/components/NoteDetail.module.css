@@ -26,6 +26,16 @@
   .content__text {
     white-space: pre-wrap;
   }
+
+  .generating {
+    display: flex;
+    gap: var(--spacing-xs);
+    font-size: var(--fs-sm);
+
+    svg {
+      animation: rotate 1s linear infinite;
+    }
+  }
 }
 
 .related {
