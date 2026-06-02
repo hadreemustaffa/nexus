@@ -14,15 +14,28 @@ export default function NoteDetail() {
     related: Response<Note[]>;
   };
 
-  const noteData = note.data;
-  const relatedData = related.data;
+  return (
+    <NoteDetailContent
+      key={note.data.note.id}
+      note={note.data}
+      related={related.data}
+    />
+  );
+}
 
-  const [tags, setTags] = useState<TagType[]>(noteData.tags ?? []);
+function NoteDetailContent({
+  note,
+  related,
+}: {
+  note: NoteWithTags;
+  related: Note[];
+}) {
+  const [tags, setTags] = useState<TagType[]>(note.tags ?? []);
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const eventSource = new EventSource(
-      `http://localhost:3000/notes/${noteData.note.id}/events`
+      `http://localhost:3000/notes/${note.note.id}/events`
     );
 
     // handle state on our own rather than depend on fetcher.state
@@ -43,28 +56,20 @@ export default function NoteDetail() {
       );
       eventSource.close();
     };
-  }, [noteData.note.id]);
+  }, [note.note.id]);
 
   return (
     <div className={styles.content}>
       <div className={styles.content__header}>
-        <h2>{noteData.note.title}</h2>
+        <h2>{note.note.title}</h2>
 
         <NoteDetailOptions
-          note={noteData.note}
+          note={note.note}
           onRegenerate={() => setIsGenerating(true)}
         />
       </div>
 
-      {!isGenerating && noteData.tags && noteData.tags.length > 0 ? (
-        <ul className={styles.tags}>
-          {noteData.tags.map((tag) => (
-            <li key={tag.id}>
-              <Tag label={tag.name} />
-            </li>
-          ))}
-        </ul>
-      ) : isGenerating || tags.length === 0 ? (
+      {isGenerating || tags.length === 0 ? (
         <p className={styles.generating}>
           <RefreshCw size={16} className={styles.submitting} />
           <span>Tags are being generated.</span>
@@ -79,13 +84,13 @@ export default function NoteDetail() {
         </ul>
       )}
 
-      <p className={styles.content__text}>{noteData.note.content}</p>
+      <p className={styles.content__text}>{note.note.content}</p>
 
-      {relatedData.length > 0 && (
+      {related.length > 0 && (
         <div className={styles.related}>
           <p>Related Notes</p>
           <ul>
-            {relatedData.map((note) => (
+            {related.map((note) => (
               <li key={note.id}>
                 <NavLink to={paths.app.notes.note.getHref(note.id)}>
                   {note.title}
