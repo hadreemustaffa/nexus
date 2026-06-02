@@ -24,5 +24,10 @@ services:
       dockerfile: ./server/Dockerfile
     ports:
       - '3000:3000'
+    environment:
+      PORT: 3000
+      CLIENT_URL: http://localhost:5173
+      DATABASE_PATH: /app/nexus.db
+      OLLAMA_URL: http://host.docker.internal:11434
     volumes:
       - ./server/nexus.db:/app/nexus.db

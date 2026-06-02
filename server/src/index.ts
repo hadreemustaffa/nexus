@@ -1,18 +1,21 @@
 import 'dotenv/config';
 
 import bootstrap from './bootstrap';
+import { createContainer } from './bootstrap/Container';
+import { loadEnv } from './config/env';
 import { createApp } from './http/app';
 
-const PORT = process.env.PORT || 3000;
+const env = loadEnv();
+const container = createContainer(env);
 
 async function start() {
   try {
-    await bootstrap();
+    await bootstrap(container, env);
 
-    const app = createApp();
+    const app = createApp({ env, container });
 
-    app.listen(PORT, () => {
-      console.log(`Nexus server running on http://localhost:${PORT}`);
+    app.listen(env.PORT, () => {
+      console.log(`Nexus server running on http://localhost:${env.PORT}`);
     });
   } catch (error) {
     console.error('Failed to start application:', error);

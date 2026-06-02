@@ -5,17 +5,28 @@ type TagResponse = {
   tags: string[];
 };
 
-const url = process.env.OLLAMA_URL ?? 'http://localhost:11434';
+export type OllamaConfig = {
+  ollamaUrl: string;
+  ollamaModel: string;
+};
 
 export default class OllamaAIService implements AIService {
+  private readonly ollamaUrl: string;
+  private readonly ollamaModel: string;
+
+  constructor(config: OllamaConfig) {
+    this.ollamaUrl = config.ollamaUrl;
+    this.ollamaModel = config.ollamaModel;
+  }
+
   async generateTags(content: string): Promise<string[]> {
     const basePrompt = await loadPrompt('tagging.v1');
 
-    const response = await fetch(`${url}/api/chat`, {
+    const response = await fetch(`${this.ollamaUrl}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'qwen2.5:7b',
+        model: this.ollamaModel,
         messages: [
           {
             role: 'system',
@@ -41,7 +52,9 @@ export default class OllamaAIService implements AIService {
       }),
     }).catch((error) => {
       console.error('Ollama request failed:', error);
-      throw new Error(`Ollama not reachable at ${url} — is it running?`);
+      throw new Error(
+        `Ollama not reachable at ${this.ollamaUrl} — is it running?`
+      );
     });
 
     if (!response.ok) {

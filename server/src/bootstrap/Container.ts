@@ -1,6 +1,7 @@
 import Database, { type Database as DB } from 'better-sqlite3';
 
 import type EventBus from '../application/events/EventBus';
+import type { Env } from '../config/env';
 import type NoteRepository from '../domain/repositories/NoteRepository';
 import type TagRepository from '../domain/repositories/TagRepository';
 import type AIService from '../domain/services/AIService';
@@ -14,7 +15,7 @@ import SSEConnectionManager from '../infrastructure/messaging/SSEConnectionManag
 import type Dispatcher from '../infrastructure/queues/Dispatcher';
 import InMemorySearchService from '../infrastructure/search/InMemorySearchService';
 
-interface Container {
+export interface Container {
   db: DB;
   noteRepository: NoteRepository;
   tagRepository: TagRepository;
@@ -25,28 +26,28 @@ interface Container {
   tagsDispatcher?: Dispatcher<'GENERATE_TAGS'>;
 }
 
-const db = new Database('nexus.db');
+export function createContainer(env: Env): Container {
+  const db = new Database(env.DATABASE_PATH);
 
-initDatabase(db);
+  initDatabase(db);
 
-const noteRepository = new SQLiteNoteRepository(db);
+  const noteRepository = new SQLiteNoteRepository(db);
+  const tagRepository = new SQLiteTagRepository(db);
+  const aiService = new OllamaAIService({
+    ollamaUrl: env.OLLAMA_URL,
+    ollamaModel: env.OLLAMA_MODEL,
+  });
+  const eventBus = new InMemoryEventBus();
+  const sseConnectionManager = new SSEConnectionManager();
+  const searchService = new InMemorySearchService();
 
-const tagRepository = new SQLiteTagRepository(db);
-
-const aiService = new OllamaAIService();
-
-const eventBus = new InMemoryEventBus();
-
-const sseConnectionManager = new SSEConnectionManager();
-
-const searchService = new InMemorySearchService();
-
-export const container: Container = {
-  db,
-  noteRepository,
-  tagRepository,
-  aiService,
-  eventBus,
-  sseConnectionManager,
-  searchService,
-};
+  return {
+    db,
+    noteRepository,
+    tagRepository,
+    aiService,
+    eventBus,
+    sseConnectionManager,
+    searchService,
+  };
+}

@@ -1,23 +1,23 @@
 import cors from 'cors';
 import express from 'express';
 
+import type { Container } from '../bootstrap/Container';
+import type { Env } from '../config/env';
 import { errorHandler } from './middleware/errorHandler';
 import { createNoteRouter } from './routes/noteRoutes';
 
-export function createApp() {
+export function createApp(deps: { env: Env; container: Container }) {
   const app = express();
-
-  const CLIENT_URL = process.env.CLIENT_URL;
 
   app.use(express.json());
 
   app.use(
     cors({
-      origin: CLIENT_URL,
+      origin: deps.env.CLIENT_URL,
     })
   );
 
-  app.use('/notes', createNoteRouter());
+  app.use('/notes', createNoteRouter(deps.container));
 
   app.use((_req, res) => {
     res.status(404).json({

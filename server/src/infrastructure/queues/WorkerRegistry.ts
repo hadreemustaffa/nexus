@@ -8,10 +8,12 @@ import Worker from './Worker';
 export default class WorkerRegistry {
   private queues: Map<keyof JobMap, Queue<JobMap[keyof JobMap]>>;
   private workers: Worker<JobMap[keyof JobMap]>[];
+  private readonly pollIntervalMs: number;
 
-  constructor() {
+  constructor(pollIntervalMs: number) {
     this.queues = new Map();
     this.workers = [];
+    this.pollIntervalMs = pollIntervalMs;
   }
 
   register<K extends keyof JobMap>(
@@ -20,7 +22,7 @@ export default class WorkerRegistry {
   ): Dispatcher<K> {
     const queue = new InMemoryQueue<JobMap[K]>();
 
-    const worker = new Worker(queue, processor);
+    const worker = new Worker(queue, processor, this.pollIntervalMs);
 
     this.queues.set(type, queue);
     this.workers.push(worker);

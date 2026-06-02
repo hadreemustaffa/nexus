@@ -8,7 +8,7 @@ import GetSingleNote from '../../application/use-cases/GetSingleNote';
 import RegenerateNoteTags from '../../application/use-cases/RegenerateNoteTags';
 import SearchNotes from '../../application/use-cases/SearchNotes';
 import UpdateNote from '../../application/use-cases/UpdateNote';
-import { container } from '../../bootstrap/Container';
+import type { Container } from '../../bootstrap/Container';
 import CreateNoteController from '../controllers/notes/CreateNoteController';
 import DeleteNoteController from '../controllers/notes/DeleteNoteController';
 import GetAllNotesController from '../controllers/notes/GetAllNotesController';
@@ -19,7 +19,7 @@ import SearchNotesController from '../controllers/notes/SearchNotesController';
 import UpdateNoteController from '../controllers/notes/UpdateNoteController';
 import { asyncHandler } from '../middleware/asyncHandler';
 
-export function createNoteRouter() {
+export function createNoteRouter(container: Container) {
   const router = Router();
 
   if (!container.tagsDispatcher) {
