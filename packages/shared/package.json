@@ -1,0 +1,9 @@
+{
+  "name": "@nexus/shared",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./note": "./src/note/index.ts"
+  }
+}

@@ -18,6 +18,14 @@ import RegenerateNoteTagsController from '../controllers/notes/RegenerateNoteTag
 import SearchNotesController from '../controllers/notes/SearchNotesController';
 import UpdateNoteController from '../controllers/notes/UpdateNoteController';
 import { asyncHandler } from '../middleware/asyncHandler';
+import { validate } from '../middleware/validate';
+import {
+  createNoteBodySchema,
+  type NoteIdParams,
+  noteIdParamSchema,
+  searchQuerySchema,
+  updateNoteBodySchema,
+} from '../schemas/noteSchemas';
 
 export function createNoteRouter(container: Container) {
   const router = Router();
@@ -70,17 +78,45 @@ export function createNoteRouter(container: Container) {
     regenerateNoteTagsUseCase
   );
 
-  router.post('/', asyncHandler(createNoteController.handle));
+  router.post(
+    '/',
+    validate({ body: createNoteBodySchema }),
+    asyncHandler(createNoteController.handle)
+  );
   router.get('/', asyncHandler(getAllNotesController.handle));
-  router.get('/search', asyncHandler(searchNotesController.handle));
-  router.get('/:id', asyncHandler(getSingleNoteController.handle));
-  router.get('/:id/related', asyncHandler(getRelatedNotesController.handle));
-  router.put('/:id', asyncHandler(updateNoteController.handle));
-  router.delete('/:id', asyncHandler(deleteNoteController.handle));
-  router.post('/:id/tags', asyncHandler(regenerateNoteTagsController.handle));
+  router.get(
+    '/search',
+    validate({ query: searchQuerySchema }),
+    asyncHandler(searchNotesController.handle)
+  );
+  router.get(
+    '/:id',
+    validate({ params: noteIdParamSchema }),
+    asyncHandler(getSingleNoteController.handle)
+  );
+  router.get(
+    '/:id/related',
+    validate({ params: noteIdParamSchema }),
+    asyncHandler(getRelatedNotesController.handle)
+  );
+  router.put(
+    '/:id',
+    validate({ params: noteIdParamSchema, body: updateNoteBodySchema }),
+    asyncHandler(updateNoteController.handle)
+  );
+  router.delete(
+    '/:id',
+    validate({ params: noteIdParamSchema }),
+    asyncHandler(deleteNoteController.handle)
+  );
+  router.post(
+    '/:id/tags',
+    validate({ params: noteIdParamSchema }),
+    asyncHandler(regenerateNoteTagsController.handle)
+  );
 
-  router.get('/:id/events', (req, res) => {
-    const noteId = req.params.id;
+  router.get('/:id/events', validate({ params: noteIdParamSchema }), (req, res) => {
+    const { id: noteId } = req.params as NoteIdParams;
 
     res.setHeader('Content-Type', 'text/event-stream');
 

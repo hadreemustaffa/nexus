@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { countWords, editNoteFormSchema } from '@nexus/shared/note';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink, useFetcher, useLoaderData } from 'react-router';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 import { paths } from '../../../config/paths';
 import useDebounce from '../../../hooks/useDebounce';
@@ -10,19 +11,7 @@ import Button from '../../../shared/ui/button/Button';
 import type { NoteWithTags, Response } from '../types';
 import styles from './EditNote.module.css';
 
-const schema = z.object({
-  id: z.string(),
-  title: z.string().min(1, 'Title is required'),
-  content: z
-    .string()
-    .min(1, 'Content is required')
-    .refine(
-      (val) => val.trim().split(/\s+/).filter(Boolean).length >= 100,
-      'Content must be at least 100 words'
-    ),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = z.infer<typeof editNoteFormSchema>;
 
 export default function EditNote() {
   const { note } = useLoaderData() as {
@@ -33,20 +22,18 @@ export default function EditNote() {
   const isSubmitting = fetcher.state !== 'idle';
 
   const noteData = note.data;
-  const wordCount = noteData.note.content
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean).length;
+  const initialWordCount = countWords(noteData.note.content);
 
-  const [contentLength, setContentLength] = useState(wordCount);
+  const [contentLength, setContentLength] = useState(initialWordCount);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(editNoteFormSchema),
     defaultValues: {
+      id: noteData.note.id,
       title: noteData.note.title,
       content: noteData.note.content,
     },
@@ -60,8 +47,7 @@ export default function EditNote() {
   };
 
   const handleChange = useDebounce((value: string) => {
-    const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
-    setContentLength(wordCount);
+    setContentLength(countWords(value));
   }, 500);
 
   return (

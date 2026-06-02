@@ -1,26 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { countWords, createNoteBodySchema } from '@nexus/shared/note';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFetcher } from 'react-router';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 import { paths } from '../../../config/paths';
 import useDebounce from '../../../hooks/useDebounce';
 import Button from '../../../shared/ui/button/Button';
 import styles from './CreateNote.module.css';
 
-const schema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  content: z
-    .string()
-    .min(1, 'Content is required')
-    .refine(
-      (val) => val.trim().split(/\s+/).filter(Boolean).length >= 100,
-      'Content must be at least 100 words'
-    ),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = z.infer<typeof createNoteBodySchema>;
 
 export default function CreateNote() {
   const [contentLength, setContentLength] = useState(0);
@@ -31,7 +21,7 @@ export default function CreateNote() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(createNoteBodySchema),
   });
 
   const onSubmit = (data: FormValues) => {
@@ -42,8 +32,7 @@ export default function CreateNote() {
   };
 
   const handleChange = useDebounce((value: string) => {
-    const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
-    setContentLength(wordCount);
+    setContentLength(countWords(value));
   }, 500);
 
   return (

@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express';
 
 import SearchNotes from '../../../application/use-cases/SearchNotes';
-import { ValidationError } from '../../../domain/errors/ValidationError';
 
 export default class SearchNotesController {
   private searchNotes: SearchNotes;
@@ -11,13 +10,7 @@ export default class SearchNotesController {
   }
 
   handle = async (req: Request, res: Response) => {
-    const q = req.query.q as string | undefined;
-
-    if (!q) {
-      throw new ValidationError('Search query is required', [
-        { field: 'q', message: 'query is required' },
-      ]);
-    }
+    const { q } = req.query as { q: string };
 
     const results = await this.searchNotes.execute(q);
 

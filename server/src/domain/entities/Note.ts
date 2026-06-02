@@ -1,4 +1,4 @@
-import { ValidationError } from '../errors/ValidationError';
+import { assertNoteTitle, assertNoteWordCount } from '../note/noteValidators';
 
 export default class Note {
   public readonly id: string;
@@ -22,39 +22,24 @@ export default class Note {
   }
 
   static create(title: string, content: string): Note {
-    this.validateTitle(title);
-
-    const wordCount = this.countWords(content);
-    if (wordCount < 100) {
-      throw new ValidationError('Note cannot be less than 100 words', [
-        { field: 'content', message: `Currently ${wordCount} words` },
-      ]);
-    } else if (wordCount > 7500) {
-      throw new ValidationError('Note cannot be more than 7500 words', [
-        { field: 'content', message: `Currently ${wordCount} words` },
-      ]);
-    }
+    assertNoteTitle(title);
+    assertNoteWordCount(content);
 
     const now = new Date();
 
-    return new Note(crypto.randomUUID(), title, content, now, now);
+    return new Note(crypto.randomUUID(), title.trim(), content, now, now);
   }
 
-  update(title: string = this.title, content: string = this.content) {
-    Note.validateTitle(title);
+  update(title: string = this.title, content: string = this.content): void {
+    assertNoteTitle(title);
+    assertNoteWordCount(content);
 
     if (title === this.title && content === this.content) {
       return;
     }
 
-    if (title !== this.title) {
-      this.title = title;
-    }
-
-    if (content !== this.content) {
-      this.content = content;
-    }
-
+    this.title = title.trim();
+    this.content = content;
     this.updated_at = new Date();
   }
 
@@ -72,18 +57,6 @@ export default class Note {
       new Date(data.created_at),
       new Date(data.updated_at)
     );
-  }
-
-  private static validateTitle(title: string) {
-    if (!title) {
-      throw new ValidationError('Must provide a title', [
-        { field: 'title', message: 'Title is required' },
-      ]);
-    }
-  }
-
-  private static countWords(text: string) {
-    return (text.match(/\b\w+\b/g) || []).length;
   }
 
   getId(): string {
