@@ -1,3 +1,4 @@
+import { NotFoundError } from '../../domain/errors/NotFoundError';
 import type NoteRepository from '../../domain/repositories/NoteRepository';
 import type TagRepository from '../../domain/repositories/TagRepository';
 import type Dispatcher from '../../infrastructure/queues/Dispatcher';
@@ -21,7 +22,7 @@ export default class RegenerateNoteTags {
     const note = await this.noteRepository.findById(id);
 
     if (!note) {
-      throw new Error('Note not found.');
+      throw new NotFoundError('Note', id);
     }
 
     await this.tagRepository.deleteByNoteId(note.getId());

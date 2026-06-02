@@ -27,7 +27,15 @@ export async function apiFetch<T>(
   }
 
   if (!res.ok) {
-    throw new ApiError('Request failed', res.status);
+    const apiError = body as {
+      error?: { message?: string };
+      message?: string;
+    } | null;
+    const message =
+      apiError?.error?.message ??
+      apiError?.message ??
+      'Request failed';
+    throw new ApiError(message, res.status);
   }
 
   return body as T;

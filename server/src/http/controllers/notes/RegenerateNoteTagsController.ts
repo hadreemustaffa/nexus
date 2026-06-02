@@ -9,26 +9,13 @@ export default class RegenerateNoteTagsController {
     this.regenerateNoteTags = regenerateNoteTags;
   }
 
-  handle = async (req: Request, res: Response): Promise<Response> => {
-    try {
-      const noteId = req.params.id as string;
+  handle = async (req: Request, res: Response) => {
+    const noteId = req.params.id as string;
 
-      await this.regenerateNoteTags.execute(noteId);
+    await this.regenerateNoteTags.execute(noteId);
 
-      return res.status(200).json({
-        message: 'Note tags queued for generation successfully.',
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({
-          error: 'Bad Request',
-          message: error.message,
-        });
-      }
-
-      return res.status(500).json({
-        error: 'Internal Server Error',
-      });
-    }
+    return res.status(200).json({
+      message: 'Tag regeneration started.',
+    });
   };
 }

@@ -10,21 +10,12 @@ export default class DeleteNoteController {
   }
 
   handle = async (req: Request, res: Response) => {
-    try {
-      const noteId = req.params.id as string;
+    const noteId = req.params.id as string;
 
-      await this.deleteNote.execute(noteId);
+    await this.deleteNote.execute(noteId);
 
-      return res.status(200).json({
-        message: 'Note deleted successfully.',
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({
-          error: 'Bad Request',
-          message: error.message,
-        });
-      }
-    }
+    return res.status(200).json({
+      message: 'Note deleted successfully.',
+    });
   };
 }

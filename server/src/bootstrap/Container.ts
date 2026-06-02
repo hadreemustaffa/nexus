@@ -6,6 +6,7 @@ import type TagRepository from '../domain/repositories/TagRepository';
 import type AIService from '../domain/services/AIService';
 import type SearchService from '../domain/services/SearchService';
 import OllamaAIService from '../infrastructure/ai/OllamaAIService';
+import initDatabase from '../infrastructure/database/init';
 import SQLiteNoteRepository from '../infrastructure/database/SQLiteNoteRepository';
 import SQLiteTagRepository from '../infrastructure/database/SQLiteTagRepository';
 import InMemoryEventBus from '../infrastructure/events/InMemoryEventBus';
@@ -25,6 +26,8 @@ interface Container {
 }
 
 const db = new Database('nexus.db');
+
+initDatabase(db);
 
 const noteRepository = new SQLiteNoteRepository(db);
 

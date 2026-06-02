@@ -9,27 +9,14 @@ export default class GetSingleNoteController {
     this.getSingleNote = getSingleNote;
   }
 
-  handle = async (req: Request, res: Response): Promise<Response> => {
-    try {
-      const noteId = req.params.id as string;
+  handle = async (req: Request, res: Response) => {
+    const noteId = req.params.id as string;
 
-      const result = await this.getSingleNote.execute(noteId);
+    const result = await this.getSingleNote.execute(noteId);
 
-      return res.status(200).json({
-        message: 'Note found.',
-        data: result,
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({
-          error: 'Bad Request',
-          message: error.message,
-        });
-      }
-
-      return res.status(500).json({
-        error: 'Internal Server Error',
-      });
-    }
+    return res.status(200).json({
+      message: 'Note found.',
+      data: result,
+    });
   };
 }

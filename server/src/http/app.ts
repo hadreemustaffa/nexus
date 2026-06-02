@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 
+import { errorHandler } from './middleware/errorHandler';
 import { createNoteRouter } from './routes/noteRoutes';
 
 export function createApp() {
@@ -17,6 +18,17 @@ export function createApp() {
   );
 
   app.use('/notes', createNoteRouter());
+
+  app.use((_req, res) => {
+    res.status(404).json({
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Route not found',
+      },
+    });
+  });
+
+  app.use(errorHandler);
 
   return app;
 }

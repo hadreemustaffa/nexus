@@ -1,3 +1,5 @@
+import { ValidationError } from '../errors/ValidationError';
+
 export default class Tag {
   public readonly id: string;
   public readonly name: string;
@@ -24,7 +26,11 @@ export default class Tag {
   }
 
   private static validateTitle(title: string) {
-    if (!title) throw new Error('Tag name cannot be empty');
+    if (!title) {
+      throw new ValidationError('Tag name cannot be empty', [
+        { field: 'name', message: 'Tag name is required' },
+      ]);
+    }
   }
 
   getId(): string {

@@ -1,4 +1,5 @@
 import Note from '../../domain/entities/Note';
+import { NotFoundError } from '../../domain/errors/NotFoundError';
 import type NoteRepository from '../../domain/repositories/NoteRepository';
 
 export default class GetRelatedNotes {
@@ -9,6 +10,12 @@ export default class GetRelatedNotes {
   }
 
   async execute(noteId: string, maxHops: number = 2): Promise<Note[]> {
+    const note = await this.noteRepository.findById(noteId);
+
+    if (!note) {
+      throw new NotFoundError('Note', noteId);
+    }
+
     const visited = new Set<string>();
     const queue: { id: string; hop: number }[] = [];
     const relatedIds: string[] = [];

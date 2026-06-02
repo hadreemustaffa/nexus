@@ -1,3 +1,5 @@
+import { ValidationError } from '../errors/ValidationError';
+
 export default class Note {
   public readonly id: string;
   private title: string;
@@ -24,9 +26,13 @@ export default class Note {
 
     const wordCount = this.countWords(content);
     if (wordCount < 100) {
-      throw new Error('Note cannot be less than 100 words');
+      throw new ValidationError('Note cannot be less than 100 words', [
+        { field: 'content', message: `Currently ${wordCount} words` },
+      ]);
     } else if (wordCount > 7500) {
-      throw new Error('Note cannot be more than 7500 words');
+      throw new ValidationError('Note cannot be more than 7500 words', [
+        { field: 'content', message: `Currently ${wordCount} words` },
+      ]);
     }
 
     const now = new Date();
@@ -69,7 +75,11 @@ export default class Note {
   }
 
   private static validateTitle(title: string) {
-    if (!title) throw new Error('Must provide a title');
+    if (!title) {
+      throw new ValidationError('Must provide a title', [
+        { field: 'title', message: 'Title is required' },
+      ]);
+    }
   }
 
   private static countWords(text: string) {

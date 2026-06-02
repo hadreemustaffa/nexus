@@ -17,6 +17,7 @@ import GetSingleNoteController from '../controllers/notes/GetSingleNoteControlle
 import RegenerateNoteTagsController from '../controllers/notes/RegenerateNoteTagsController';
 import SearchNotesController from '../controllers/notes/SearchNotesController';
 import UpdateNoteController from '../controllers/notes/UpdateNoteController';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 export function createNoteRouter() {
   const router = Router();
@@ -61,8 +62,7 @@ export function createNoteRouter() {
     getSingleNoteUseCase
   );
   const getRelatedNotesController = new GetRelatedNotesController(
-    getRelatedNotesUseCase,
-    container.noteRepository
+    getRelatedNotesUseCase
   );
   const updateNoteController = new UpdateNoteController(updateNoteUseCase);
   const deleteNoteController = new DeleteNoteController(deleteNoteUseCase);
@@ -70,14 +70,14 @@ export function createNoteRouter() {
     regenerateNoteTagsUseCase
   );
 
-  router.post('/', createNoteController.handle);
-  router.get('/', getAllNotesController.handle);
-  router.get('/search', searchNotesController.handle);
-  router.get('/:id', getSingleNoteController.handle);
-  router.get('/:id/related', getRelatedNotesController.handle);
-  router.put('/:id', updateNoteController.handle);
-  router.delete('/:id', deleteNoteController.handle);
-  router.post('/:id/tags', regenerateNoteTagsController.handle);
+  router.post('/', asyncHandler(createNoteController.handle));
+  router.get('/', asyncHandler(getAllNotesController.handle));
+  router.get('/search', asyncHandler(searchNotesController.handle));
+  router.get('/:id', asyncHandler(getSingleNoteController.handle));
+  router.get('/:id/related', asyncHandler(getRelatedNotesController.handle));
+  router.put('/:id', asyncHandler(updateNoteController.handle));
+  router.delete('/:id', asyncHandler(deleteNoteController.handle));
+  router.post('/:id/tags', asyncHandler(regenerateNoteTagsController.handle));
 
   router.get('/:id/events', (req, res) => {
     const noteId = req.params.id;
