@@ -1,4 +1,7 @@
-import { assertNoteTitle, assertNoteWordCount } from '../note/noteValidators';
+import {
+  assertNoteTitle,
+  assertNoteWordCount,
+} from '../validators/noteValidators';
 
 export default class Note {
   public readonly id: string;
