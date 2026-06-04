@@ -2,8 +2,23 @@
   "name": "@nexus/shared",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./note": "./src/note/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./note": {
+      "types": "./dist/note/index.d.ts",
+      "import": "./dist/note/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsc -p tsconfig.json --watch",
+    "build": "tsup"
   }
 }

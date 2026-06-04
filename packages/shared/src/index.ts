@@ -1,1 +1,1 @@
-export * from './note/index';
+export * from './note';
