@@ -31,5 +31,17 @@ export default function initDatabase(db: Database.Database) {
       FOREIGN KEY (source_id) REFERENCES notes(id) ON DELETE CASCADE,
       FOREIGN KEY (target_id) REFERENCES notes(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS prompts (
+      id TEXT PRIMARY KEY,
+      key TEXT NOT NULL,
+      content TEXT NOT NULL,
+      version INTEGER NOT NULL,
+      is_default BOOLEAN NOT NULL,
+      is_active BOOLEAN NOT NULL,
+      created_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_prompts_key ON prompts(key);
   `);
 }

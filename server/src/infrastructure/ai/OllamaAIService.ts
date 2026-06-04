@@ -1,5 +1,5 @@
 import type AIService from '../../domain/services/AIService';
-import { loadPrompt } from './prompts/loadPrompts';
+import PromptService from '../../domain/services/PromptService';
 
 type TagResponse = {
   tags: string[];
@@ -8,19 +8,22 @@ type TagResponse = {
 export type OllamaConfig = {
   ollamaUrl: string;
   ollamaModel: string;
+  promptService: PromptService;
 };
 
 export default class OllamaAIService implements AIService {
   private readonly ollamaUrl: string;
   private readonly ollamaModel: string;
+  private readonly promptService: PromptService;
 
   constructor(config: OllamaConfig) {
     this.ollamaUrl = config.ollamaUrl;
     this.ollamaModel = config.ollamaModel;
+    this.promptService = config.promptService;
   }
 
   async generateTags(content: string): Promise<string[]> {
-    const basePrompt = await loadPrompt('tagging.v1');
+    const basePrompt = await this.promptService.get('tagging');
 
     const response = await fetch(`${this.ollamaUrl}/api/chat`, {
       method: 'POST',
