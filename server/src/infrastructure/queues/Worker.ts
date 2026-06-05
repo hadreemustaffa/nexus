@@ -23,7 +23,6 @@ export default class Worker<T> {
   }
 
   private async processNext(): Promise<void> {
-    console.log('Worker polling, queue empty:', this.queue.isEmpty());
     if (this.isProcessing) return;
 
     const job = this.queue.dequeue();
