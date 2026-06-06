@@ -10,8 +10,8 @@
 
 .sidebar__actions {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.25rem;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs);
   font-size: var(--fs-sm);
   border-bottom: 1px solid var(--border);
 }
@@ -20,4 +20,13 @@
   padding: var(--spacing-sm);
   font-size: var(--fs-sm);
   font-style: italic;
+}
+
+.btn_new {
+  color: var(--bg);
+  background-color: var(--accent);
+
+  &:hover {
+    background-color: var(--accent-hover);
+  }
 }

@@ -121,12 +121,15 @@
 }
 
 :root {
-  --text: #0d1b2a;
-  --bg: #e0e1dd;
-  --border: #778da9;
-  --accent: #415a77;
-  --accent-hover: #31465e80;
-  --error: #c0392b;
+  --text: #1d2a25;
+  --text-muted: #5f6d68;
+  --bg: #f8faf9;
+  --surface: #ffffff;
+  --surface-hover: #eef4f1;
+  --border: #d8e2dd;
+  --accent: #2ca66f;
+  --accent-hover: #24885c;
+  --error: #d9534f;
 
   --spacing-2xs: 0.25rem;
   --spacing-xs: 0.5rem;
@@ -164,12 +167,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #e0e1dd;
-    --bg: #0d1b2a;
-    --border: #1b263b;
-    --accent: #415a77;
-    --accent-hover: #5c759399;
-    --error: #e74c3c;
+    --text: #f6faf8;
+    --text-muted: #98aaa2;
+    --bg: #0d1110;
+    --surface: #141a18;
+    --surface-hover: #1b2320;
+    --border: #24302b;
+    --accent: #42c98b;
+    --accent-hover: #5fdba0;
+    --error: #ef6b66;
   }
 }
 
@@ -224,12 +230,12 @@ textarea {
   gap: var(--spacing-2xs);
   border-radius: 4px;
   border: 1px solid var(--border);
-  background-color: transparent;
+  background-color: var(--surface);
   color: currentColor;
   cursor: pointer;
   font-size: 0.875em;
 
   &:hover {
-    border-color: var(--accent-border);
+    background-color: var(--surface-hover);
   }
 }

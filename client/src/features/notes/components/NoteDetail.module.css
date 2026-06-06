@@ -80,7 +80,7 @@
     text-align: right;
     text-wrap: nowrap;
     overflow: hidden;
-    background-color: var(--bg);
+    background-color: var(--surface);
 
     &[aria-expanded='true'] {
       display: flex;
@@ -98,7 +98,6 @@
     color: currentColor;
     background-color: transparent;
     border: none;
-    opacity: 0.9;
 
     svg {
       flex-shrink: 0;
@@ -111,7 +110,7 @@
     &:hover {
       cursor: pointer;
       opacity: 1;
-      background-color: var(--accent-hover);
+      background-color: var(--surface-hover);
     }
 
     &[href]:hover {

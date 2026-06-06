@@ -10,7 +10,10 @@ export default function NotesSidebar({ notes }: { notes: NoteType[] }) {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebar__actions}>
-        <NavLink to={paths.app.notes.create.getHref()} className={`btn`}>
+        <NavLink
+          to={paths.app.notes.create.getHref()}
+          className={`btn  ${styles.btn_new}`}
+        >
           New <Plus size={16} />
         </NavLink>
       </div>
