@@ -1,19 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { countWords } from '@nexus/shared';
-import { createNoteBodySchema } from '@nexus/shared/note';
+import { countCharacters, createPromptBodySchema } from '@nexus/shared';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFetcher } from 'react-router';
-import type { z } from 'zod';
+import type z from 'zod';
 
 import { paths } from '../../../config/paths';
 import useDebounce from '../../../hooks/useDebounce';
 import Button from '../../../shared/ui/button/Button';
-import styles from './CreateNote.module.css';
+import styles from './CreatePrompt.module.css';
 
-type FormValues = z.infer<typeof createNoteBodySchema>;
+type FormValues = z.infer<typeof createPromptBodySchema>;
 
-export default function CreateNote() {
+export default function CreatePrompt() {
   const [contentLength, setContentLength] = useState(0);
   const fetcher = useFetcher();
 
@@ -22,38 +21,38 @@ export default function CreateNote() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    resolver: zodResolver(createNoteBodySchema),
+    resolver: zodResolver(createPromptBodySchema),
   });
 
   const onSubmit = (data: FormValues) => {
     fetcher.submit(data, {
       method: 'post',
-      action: paths.app.notes.create.getHref(),
+      action: paths.app.settings.prompts.create.getHref(),
     });
   };
 
   const handleChange = useDebounce((value: string) => {
-    setContentLength(countWords(value));
+    setContentLength(countCharacters(value));
   }, 500);
 
   return (
     <div className={styles.container}>
-      <h2>Create a new note</h2>
+      <h2>Create a new prompt</h2>
 
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <div>
           <div className={styles.form__group}>
-            <label htmlFor='title'>Title:</label>
+            <label htmlFor='key'>Key:</label>
             <input
-              id='title'
+              id='key'
               type='text'
-              className={styles.form__input_title}
-              {...register('title')}
+              className={styles.form__input_key}
+              {...register('key')}
               disabled={isSubmitting}
             />
           </div>
-          {errors.title && (
-            <span className={styles.form__error}>{errors.title.message}</span>
+          {errors.key && (
+            <span className={styles.form__error}>{errors.key.message}</span>
           )}
         </div>
 
@@ -77,7 +76,7 @@ export default function CreateNote() {
             )}
             {contentLength !== 0 && (
               <p className={styles.form__content_length}>
-                {contentLength} words
+                {contentLength} characters
               </p>
             )}
           </div>

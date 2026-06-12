@@ -28,5 +28,24 @@ export const paths = {
         getHref: (noteId: string) => `/notes/${noteId}/tags`,
       },
     },
+    settings: {
+      path: '/settings',
+      getHref: () => '/settings',
+
+      general: {
+        path: 'general',
+        getHref: () => '/settings/general',
+      },
+
+      prompts: {
+        path: 'prompts',
+        getHref: () => '/settings/prompts',
+
+        create: {
+          path: 'create',
+          getHref: () => '/settings/prompts/create',
+        },
+      },
+    },
   },
 } as const;

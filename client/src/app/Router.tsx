@@ -15,7 +15,15 @@ import CreateNote from '../features/notes/components/CreateNote';
 import EditNote from '../features/notes/components/EditNote';
 import EmptyNote from '../features/notes/components/EmptyNote';
 import NoteDetail from '../features/notes/components/NoteDetail';
+import {
+  createPrompt,
+  getAllPrompts,
+} from '../features/prompts/api/prompts.api';
+import CreatePrompt from '../features/prompts/components/CreatePrompt';
+import PromptList from '../features/prompts/components/PromptList';
+import PromptRoot from '../features/prompts/components/PromptRoot';
 import { ApiError } from '../shared/api/client';
+import Settings from '../shared/ui/settings/Settings';
 import {
   AppRootErrorBoundary,
   AppRootLoader,
@@ -187,8 +195,64 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: paths.app.settings.path,
+        Component: Settings,
+        children: [
+          {
+            path: paths.app.settings.prompts.path,
+            Component: PromptRoot,
+            children: [
+              {
+                index: true,
+                loader: async () => {
+                  try {
+                    const result = await getAllPrompts();
+                    return result;
+                  } catch (error) {
+                    if (error instanceof ApiError) {
+                      return { error: error.message };
+                    }
+                    throw error;
+                  }
+                },
+                Component: PromptList,
+              },
+              {
+                path: paths.app.settings.prompts.create.path,
+                action: async ({ request }) => {
+                  const formData = await request.formData();
+
+                  const key = formData.get('key') as string;
+                  const content = formData.get('content') as string;
+
+                  try {
+                    const { data } = await createPrompt({
+                      key,
+                      content,
+                    });
+
+                    if (!data?.id) {
+                      throw new Error('Prompt not found');
+                    }
+
+                    return redirect(paths.app.settings.prompts.getHref());
+                  } catch (error) {
+                    if (error instanceof ApiError) {
+                      return { error: error.message };
+                    }
+                    throw error;
+                  }
+                },
+                Component: CreatePrompt,
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
+
   {
     path: '*',
     lazy: () =>

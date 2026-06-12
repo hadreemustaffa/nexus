@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  overflow-y: auto;
+  min-height: 0;
+  text-align: left;
+  min-width: 500px;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  font-size: var(--fs-sm);
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.list_container {
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+}
+
+.list_group {
+  display: flex;
+  flex-direction: column;
+
+  .list_group_name {
+    padding: var(--spacing-sm);
+    background-color: var(--surface);
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}

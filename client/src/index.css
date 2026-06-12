@@ -239,3 +239,18 @@ textarea {
     background-color: var(--surface-hover);
   }
 }
+
+.btn_primary_action {
+  color: var(--bg);
+  background-color: var(--accent);
+
+  &:hover {
+    background-color: var(--accent-hover);
+  }
+}
+
+.tag {
+  padding-inline: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+}

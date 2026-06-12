@@ -5,7 +5,8 @@
   overflow-y: auto;
   min-width: 400px;
   max-width: 500px;
-  border-right: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
 }
 
 .sidebar__actions {
@@ -14,19 +15,14 @@
   padding: var(--spacing-xs);
   font-size: var(--fs-sm);
   border-bottom: 1px solid var(--border);
+
+  a {
+    text-decoration: none;
+  }
 }
 
 .sidebar__empty {
   padding: var(--spacing-sm);
   font-size: var(--fs-sm);
   font-style: italic;
-}
-
-.btn_new {
-  color: var(--bg);
-  background-color: var(--accent);
-
-  &:hover {
-    background-color: var(--accent-hover);
-  }
 }

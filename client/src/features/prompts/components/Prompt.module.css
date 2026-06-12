@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  gap: var(--spacing-md);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--spacing-sm);
+}
+
+.status {
+  display: flex;
+  font-size: var(--fs-sm);
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.content {
+  white-space: pre-wrap;
+}

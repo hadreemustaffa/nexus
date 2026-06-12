@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { countWords, editNoteFormSchema } from '@nexus/shared/note';
+import { countWords } from '@nexus/shared';
+import { editNoteFormSchema } from '@nexus/shared/note';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink, useFetcher, useLoaderData } from 'react-router';

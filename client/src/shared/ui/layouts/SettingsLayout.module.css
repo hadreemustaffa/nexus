@@ -2,9 +2,9 @@
   display: grid;
   grid-template-columns: auto 1fr;
   height: calc(100svh - 78px);
-  gap: var(--spacing-md);
-  padding: 1rem;
-  padding-top: 0;
+  padding: var(--spacing-md);
+  gap: var(--spacing-xl);
+  margin-top: 0;
 }
 
 .container {
