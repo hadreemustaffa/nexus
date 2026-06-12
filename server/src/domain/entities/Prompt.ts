@@ -1,3 +1,9 @@
+import {
+  assertPromptCharactersCount,
+  assertPromptKey,
+  assertPromptVersion,
+} from '../validators/promptValidators';
+
 export default class Prompt {
   public readonly id: string;
   public readonly key: string;
@@ -26,6 +32,9 @@ export default class Prompt {
   }
 
   static createDefault(key: string, content: string): Prompt {
+    assertPromptKey(key);
+    assertPromptCharactersCount(content);
+
     return new Prompt(
       crypto.randomUUID(),
       key,
@@ -37,7 +46,11 @@ export default class Prompt {
     );
   }
 
-  static create(key: string, content: string, version: number = 1): Prompt {
+  static create(key: string, content: string, version: number): Prompt {
+    assertPromptKey(key);
+    assertPromptCharactersCount(content);
+    assertPromptVersion(version);
+
     return new Prompt(
       crypto.randomUUID(),
       key,

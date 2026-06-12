@@ -1,17 +1,14 @@
 import { z } from 'zod';
 
+import { countWords } from '../utils';
 import {
-  countWords,
   NOTE_WORD_MAX,
   NOTE_WORD_MIN,
   noteContentMaxWordsMessage,
   noteContentMinWordsMessage,
-} from './wordLimits';
+} from './messages';
 
-export const noteTitleSchema = z
-  .string()
-  .trim()
-  .min(1, 'Title is required');
+export const noteTitleSchema = z.string().trim().min(1, 'Title is required');
 
 export const noteContentSchema = z
   .string()
