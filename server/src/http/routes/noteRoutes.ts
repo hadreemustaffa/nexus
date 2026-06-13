@@ -1,3 +1,4 @@
+import { api } from '@nexus/shared';
 import { Router } from 'express';
 
 import CreateNote from '../../application/use-cases/CreateNote';
@@ -79,59 +80,63 @@ export function createNoteRouter(container: Container) {
   );
 
   router.post(
-    '/',
+    api.notes.root.path,
     validate({ body: createNoteBodySchema }),
     asyncHandler(createNoteController.handle)
   );
-  router.get('/', asyncHandler(getAllNotesController.handle));
+  router.get(api.notes.root.path, asyncHandler(getAllNotesController.handle));
   router.get(
-    '/search',
+    api.notes.search.path,
     validate({ query: searchQuerySchema }),
     asyncHandler(searchNotesController.handle)
   );
   router.get(
-    '/:id',
+    api.notes.byId.path,
     validate({ params: noteIdParamSchema }),
     asyncHandler(getSingleNoteController.handle)
   );
   router.get(
-    '/:id/related',
+    api.notes.related.path,
     validate({ params: noteIdParamSchema }),
     asyncHandler(getRelatedNotesController.handle)
   );
   router.put(
-    '/:id',
+    api.notes.byId.path,
     validate({ params: noteIdParamSchema, body: updateNoteBodySchema }),
     asyncHandler(updateNoteController.handle)
   );
   router.delete(
-    '/:id',
+    api.notes.byId.path,
     validate({ params: noteIdParamSchema }),
     asyncHandler(deleteNoteController.handle)
   );
   router.post(
-    '/:id/tags',
+    api.notes.tags.path,
     validate({ params: noteIdParamSchema }),
     asyncHandler(regenerateNoteTagsController.handle)
   );
 
-  router.get('/:id/events', validate({ params: noteIdParamSchema }), (req, res) => {
-    const { id: noteId } = req.params as NoteIdParams;
+  router.get(
+    api.notes.events.path,
+    validate({ params: noteIdParamSchema }),
+    (req, res) => {
+      const { id: noteId } = req.params as NoteIdParams;
 
-    res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Content-Type', 'text/event-stream');
 
-    res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Cache-Control', 'no-cache');
 
-    res.setHeader('Connection', 'keep-alive');
+      res.setHeader('Connection', 'keep-alive');
 
-    res.flushHeaders();
+      res.flushHeaders();
 
-    container.sseConnectionManager.addConnection(noteId, res);
+      container.sseConnectionManager.addConnection(noteId, res);
 
-    req.on('close', () => {
-      container.sseConnectionManager.removeConnection(noteId);
-    });
-  });
+      req.on('close', () => {
+        container.sseConnectionManager.removeConnection(noteId);
+      });
+    }
+  );
 
   return router;
 }

@@ -8,6 +8,40 @@ export const buildRoute = (
   );
 
 export const api = {
+  notes: {
+    root: {
+      path: '/',
+      getRoute: () => '/notes',
+    },
+    search: {
+      path: '/search',
+      getRoute: () => '/notes/search',
+    },
+    create: {
+      path: '/create',
+      getRoute: () => '/notes/create',
+    },
+    byId: {
+      path: '/:id',
+      getRoute: (id: string) => buildRoute('/notes/:id', { id }),
+    },
+    related: {
+      path: '/:id/related',
+      getRoute: (id: string) => buildRoute('/notes/:id/related', { id }),
+    },
+    tags: {
+      path: '/:id/tags',
+      getRoute: (id: string) => buildRoute('/notes/:id/tags', { id }),
+    },
+    delete: {
+      path: '/:id/delete',
+      getRoute: (id: string) => buildRoute('/notes/:id/delete', { id }),
+    },
+    events: {
+      path: '/:id/events',
+      getRoute: (id: string) => buildRoute('/notes/:id/events', { id }),
+    },
+  },
   prompts: {
     root: {
       path: '/',

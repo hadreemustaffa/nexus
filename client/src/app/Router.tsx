@@ -168,10 +168,7 @@ const router = createBrowserRouter([
                 return redirect(paths.app.notes.note.getHref(data.note.id));
               } catch (error) {
                 if (error instanceof ApiError) {
-                  if (error.status === 404) {
-                    return { error: 'Note no longer exists' };
-                  }
-                  return { error: 'Failed to update note' };
+                  return { error: error.message };
                 }
                 throw error;
               }
