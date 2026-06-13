@@ -21,12 +21,10 @@ export function assertNoteTitle(title: string): void {
     ]);
   }
 
-  if (title.trim().length > NOTE_TITLE_CHARS_MAX) {
-    if (charsCount < NOTE_WORD_MIN) {
-      throw new ValidationError(noteTitleCharsCountTooManyMessage(), [
-        { field: 'title', message: noteCharsCountMessage(charsCount) },
-      ]);
-    }
+  if (charsCount > NOTE_TITLE_CHARS_MAX) {
+    throw new ValidationError(noteTitleCharsCountTooManyMessage(), [
+      { field: 'title', message: noteCharsCountMessage(charsCount) },
+    ]);
   }
 }
 
