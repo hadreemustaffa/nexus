@@ -1,3 +1,4 @@
+import { SearchQuery } from '@nexus/shared';
 import type { Request, Response } from 'express';
 
 import SearchNotes from '../../../application/use-cases/SearchNotes';
@@ -9,8 +10,8 @@ export default class SearchNotesController {
     this.searchNotes = searchNotes;
   }
 
-  handle = async (req: Request, res: Response) => {
-    const { q } = req.query as { q: string };
+  handle = async (_req: Request, res: Response) => {
+    const { q } = res.locals.query as SearchQuery;
 
     const results = await this.searchNotes.execute(q);
 

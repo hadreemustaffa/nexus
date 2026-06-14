@@ -19,13 +19,14 @@ function toValidationError(error: ZodError): ValidationError {
 }
 
 export function validate(schemas: ValidateSchemas): RequestHandler {
-  return (req, _res, next) => {
+  return (req, res, next) => {
     try {
       if (schemas.params) {
         req.params = schemas.params.parse(req.params) as typeof req.params;
       }
       if (schemas.query) {
-        req.query = schemas.query.parse(req.query) as typeof req.query;
+        // req.query is read-only, use res.locals.query instead
+        res.locals.query = schemas.query.parse(req.query) as typeof req.query;
       }
       if (schemas.body) {
         req.body = schemas.body.parse(req.body);
