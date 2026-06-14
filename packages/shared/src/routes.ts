@@ -15,7 +15,7 @@ export const api = {
     },
     search: {
       path: '/search',
-      getRoute: () => '/notes/search',
+      getRoute: (q: string) => buildRoute('/notes/search?q=:q', { q }),
     },
     create: {
       path: '/create',

@@ -1,4 +1,4 @@
-import type { ApiResponse } from '@nexus/shared';
+import { api, type ApiResponse } from '@nexus/shared';
 import { Edit, EllipsisVertical, RefreshCw, Trash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Form, NavLink, useFetcher, useLoaderData } from 'react-router';
@@ -36,7 +36,7 @@ function NoteDetailContent({
 
   useEffect(() => {
     const eventSource = new EventSource(
-      `http://localhost:3000/notes/${note.note.id}/events`
+      `${import.meta.env.VITE_API_URL}${api.notes.events.getRoute(note.note.id)}`
     );
 
     // handle state on our own rather than depend on fetcher.state
