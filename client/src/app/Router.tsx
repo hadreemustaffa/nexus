@@ -22,7 +22,7 @@ import {
 import CreatePrompt from '../features/prompts/components/CreatePrompt';
 import PromptList from '../features/prompts/components/PromptList';
 import PromptRoot from '../features/prompts/components/PromptRoot';
-import { ApiError } from '../shared/api/client';
+import { handleActionError, handleLoaderError } from '../shared';
 import Settings from '../shared/ui/settings/Settings';
 import {
   AppRootErrorBoundary,
@@ -39,10 +39,7 @@ const router = createBrowserRouter([
       try {
         return await getNotes();
       } catch (error) {
-        if (error instanceof ApiError) {
-          throw new Response('Failed to load notes', { status: error.status });
-        }
-        throw error;
+        return handleLoaderError(error, 'Failed to load notes');
       }
     },
     errorElement: <AppRootErrorBoundary />,
@@ -62,10 +59,7 @@ const router = createBrowserRouter([
             path: paths.app.notes.note.path,
             Component: NoteDetail,
             loader: async ({ params }) => {
-              const { noteId } = params;
-
-              if (!noteId)
-                throw new Response('Note ID is required', { status: 400 });
+              const noteId = params.noteId!;
 
               try {
                 const [note, related] = await Promise.all([
@@ -74,31 +68,17 @@ const router = createBrowserRouter([
                 ]);
                 return { note, related };
               } catch (error) {
-                if (error instanceof ApiError) {
-                  if (error.status === 404) {
-                    throw new Response('Note not found', { status: 404 });
-                  }
-                  throw new Response('Failed to load note', {
-                    status: error.status,
-                  });
-                }
-                throw error;
+                return handleLoaderError(error, 'Failed to load note');
               }
             },
             action: async ({ params }) => {
-              const { noteId } = params;
-
-              if (!noteId)
-                throw new Response('Note ID is required', { status: 400 });
+              const noteId = params.noteId!;
 
               try {
                 await deleteNote(noteId);
                 return redirect(paths.app.notes.path);
               } catch (error) {
-                if (error instanceof ApiError) {
-                  return { error: 'Failed to delete note' };
-                }
-                throw error;
+                return handleActionError(error, 'Failed to delete note');
               }
             },
           },
@@ -114,16 +94,9 @@ const router = createBrowserRouter([
               try {
                 const { data } = await createNote({ title, content });
 
-                if (!data?.note.id) {
-                  throw new Error('Note not found');
-                }
-
                 return redirect(paths.app.notes.note.getHref(data.note.id));
               } catch (error) {
-                if (error instanceof ApiError) {
-                  return { error: 'Failed to create note' };
-                }
-                throw error;
+                return handleActionError(error, 'Failed to create note');
               }
             },
           },
@@ -131,24 +104,13 @@ const router = createBrowserRouter([
             path: paths.app.notes.edit.path,
             Component: EditNote,
             loader: async ({ params }) => {
-              const { noteId } = params;
-
-              if (!noteId)
-                throw new Response('Note ID is required', { status: 400 });
+              const noteId = params.noteId!;
 
               try {
                 const note = await getNote(noteId);
                 return { note };
               } catch (error) {
-                if (error instanceof ApiError) {
-                  if (error.status === 404) {
-                    throw new Response('Note not found', { status: 404 });
-                  }
-                  throw new Response('Failed to load note', {
-                    status: error.status,
-                  });
-                }
-                throw error;
+                return handleLoaderError(error, 'Failed to load note');
               }
             },
             action: async ({ request }) => {
@@ -161,16 +123,9 @@ const router = createBrowserRouter([
               try {
                 const { data } = await updateNote(id, { title, content });
 
-                if (!data?.note.id) {
-                  throw new Error('Note not found');
-                }
-
                 return redirect(paths.app.notes.note.getHref(data.note.id));
               } catch (error) {
-                if (error instanceof ApiError) {
-                  return { error: error.message };
-                }
-                throw error;
+                return handleActionError(error, 'Failed to save note');
               }
             },
           },
@@ -183,10 +138,7 @@ const router = createBrowserRouter([
                 await regenerateNoteTags(noteId);
                 return null;
               } catch (error) {
-                if (error instanceof ApiError) {
-                  return { error: 'Failed to regenerate tags' };
-                }
-                throw error;
+                return handleActionError(error, 'Failed to regenerate tags');
               }
             },
           },
@@ -207,10 +159,7 @@ const router = createBrowserRouter([
                     const result = await getAllPrompts();
                     return result;
                   } catch (error) {
-                    if (error instanceof ApiError) {
-                      return { error: error.message };
-                    }
-                    throw error;
+                    return handleLoaderError(error, 'Failed to load prompts');
                   }
                 },
                 Component: PromptList,
@@ -224,21 +173,14 @@ const router = createBrowserRouter([
                   const content = formData.get('content') as string;
 
                   try {
-                    const { data } = await createPrompt({
+                    await createPrompt({
                       key,
                       content,
                     });
 
-                    if (!data?.id) {
-                      throw new Error('Prompt not found');
-                    }
-
                     return redirect(paths.app.settings.prompts.getHref());
                   } catch (error) {
-                    if (error instanceof ApiError) {
-                      return { error: error.message };
-                    }
-                    throw error;
+                    return handleActionError(error, 'Failed to create prompt');
                   }
                 },
                 Component: CreatePrompt,

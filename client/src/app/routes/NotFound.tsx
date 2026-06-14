@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { paths } from '../../config/paths';
 import styles from './NotFound.module.css';
 
-const NotFoundRoute = () => {
+const NotFound = () => {
   return (
     <div className={styles.container}>
       <div>
@@ -17,4 +17,4 @@ const NotFoundRoute = () => {
   );
 };
 
-export default NotFoundRoute;
+export default NotFound;
