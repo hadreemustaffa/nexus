@@ -1,4 +1,11 @@
-import { api } from '@nexus/shared';
+import {
+  api,
+  createNoteBodySchema,
+  NoteIdParams,
+  noteIdParamSchema,
+  searchQuerySchema,
+  updateNoteBodySchema,
+} from '@nexus/shared';
 import { Router } from 'express';
 
 import CreateNote from '../../application/use-cases/CreateNote';
@@ -20,15 +27,8 @@ import SearchNotesController from '../controllers/notes/SearchNotesController';
 import UpdateNoteController from '../controllers/notes/UpdateNoteController';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate } from '../middleware/validate';
-import {
-  createNoteBodySchema,
-  type NoteIdParams,
-  noteIdParamSchema,
-  searchQuerySchema,
-  updateNoteBodySchema,
-} from '../schemas/noteSchemas';
 
-export function createNoteRouter(container: Container) {
+export function createNotesRouter(container: Container) {
   const router = Router();
 
   if (!container.tagsDispatcher) {

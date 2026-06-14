@@ -4,7 +4,7 @@ import express from 'express';
 import type { Container } from '../bootstrap/Container';
 import type { Env } from '../config/env';
 import { errorHandler } from './middleware/errorHandler';
-import { createNoteRouter, createPromptRouter } from './routes';
+import { createRouters } from './routes';
 
 export function createApp(deps: { env: Env; container: Container }) {
   const app = express();
@@ -17,8 +17,7 @@ export function createApp(deps: { env: Env; container: Container }) {
     })
   );
 
-  app.use('/notes', createNoteRouter(deps.container));
-  app.use('/prompts', createPromptRouter(deps.container));
+  app.use('/api/v1', createRouters(deps.container));
 
   app.use((_req, res) => {
     res.status(404).json({

@@ -9,7 +9,7 @@ import GetAllPromptsController from '../controllers/prompts/GetAllPromptsControl
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate } from '../middleware/validate';
 
-export function createPromptRouter(container: Container) {
+export function createPromptsRouter(container: Container) {
   const router = Router();
 
   const createPromptUseCase = new CreatePrompt(container.promptRepository);
