@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { countWords } from '@nexus/shared';
+import { type ApiResponse, countWords } from '@nexus/shared';
 import { editNoteFormSchema } from '@nexus/shared/note';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,14 +9,14 @@ import type { z } from 'zod';
 import { paths } from '../../../config/paths';
 import useDebounce from '../../../hooks/useDebounce';
 import Button from '../../../shared/ui/button/Button';
-import type { NoteWithTags, Response } from '../types';
+import type { NoteWithTags } from '../types';
 import styles from './EditNote.module.css';
 
 type FormValues = z.infer<typeof editNoteFormSchema>;
 
 export default function EditNote() {
   const { note } = useLoaderData() as {
-    note: Response<NoteWithTags>;
+    note: ApiResponse<NoteWithTags>;
   };
 
   const fetcher = useFetcher<{ error?: string }>();

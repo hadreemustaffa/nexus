@@ -1,5 +1,6 @@
+import type { ApiResponse } from '@nexus/shared';
+
 import { apiFetch } from '../../../shared/api/client';
-import type { ApiResponse } from '../../../shared/types';
 import type { NoteWithTags } from '../types';
 
 export const createNote = (data: {

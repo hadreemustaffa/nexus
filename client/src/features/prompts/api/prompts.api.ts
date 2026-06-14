@@ -1,6 +1,6 @@
+import type { ApiResponse } from '@nexus/shared';
 import { api } from '@nexus/shared';
 
-import type { ApiResponse } from '../../../shared';
 import { apiFetch } from '../../../shared/api/client';
 import type { Prompt } from '../types';
 

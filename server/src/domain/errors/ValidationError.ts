@@ -1,6 +1,6 @@
-import { AppError } from './AppError';
+import { FieldError } from '@nexus/shared';
 
-export type FieldError = { field: string; message: string };
+import { AppError } from './AppError';
 
 export class ValidationError extends AppError {
   readonly code = 'VALIDATION_ERROR' as const;

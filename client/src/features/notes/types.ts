@@ -16,8 +16,3 @@ export type NoteWithTags = {
   note: Note;
   tags?: Tag[];
 };
-
-export type Response<T> = {
-  message: string;
-  data: T;
-};

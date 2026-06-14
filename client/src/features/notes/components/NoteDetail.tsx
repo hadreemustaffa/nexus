@@ -1,3 +1,4 @@
+import type { ApiResponse } from '@nexus/shared';
 import { Edit, EllipsisVertical, RefreshCw, Trash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Form, NavLink, useFetcher, useLoaderData } from 'react-router';
@@ -5,13 +6,13 @@ import { Form, NavLink, useFetcher, useLoaderData } from 'react-router';
 import { paths } from '../../../config/paths';
 import Button from '../../../shared/ui/button/Button';
 import Tag from '../../tags/Tag';
-import type { Note, NoteWithTags, Response, Tag as TagType } from '../types';
+import type { Note, NoteWithTags, Tag as TagType } from '../types';
 import styles from './NoteDetail.module.css';
 
 export default function NoteDetail() {
   const { note, related } = useLoaderData() as {
-    note: Response<NoteWithTags>;
-    related: Response<Note[]>;
+    note: ApiResponse<NoteWithTags>;
+    related: ApiResponse<Note[]>;
   };
 
   return (

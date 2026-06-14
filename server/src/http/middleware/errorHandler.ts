@@ -1,8 +1,8 @@
+import { ApiErrorResponse } from '@nexus/shared';
 import type { ErrorRequestHandler } from 'express';
 
 import { AppError } from '../../domain/errors/AppError';
 import { ValidationError } from '../../domain/errors/ValidationError';
-import type { ApiErrorResponse } from '../types/ApiErrorResponse';
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
   if (res.headersSent) {
