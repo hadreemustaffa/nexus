@@ -1,7 +1,17 @@
 import {
-  assertNoteTitle,
-  assertNoteWordCount,
-} from '../validators/noteValidators';
+  countCharacters,
+  countWords,
+  NOTE_TITLE_CHARS_MAX,
+  NOTE_WORD_MAX,
+  NOTE_WORD_MIN,
+  noteCharsCountMessage,
+  noteTitleCharsCountTooManyMessage,
+  noteWordCountMessage,
+  noteWordCountTooFewMessage,
+  noteWordCountTooManyMessage,
+} from '@nexus/shared';
+
+import { ValidationError } from '../errors/ValidationError';
 
 export default class Note {
   public readonly id: string;
@@ -25,8 +35,8 @@ export default class Note {
   }
 
   static create(title: string, content: string): Note {
-    assertNoteTitle(title);
-    assertNoteWordCount(content);
+    this.assertNoteTitle(title);
+    this.assertNoteWordCount(content);
 
     const now = new Date();
 
@@ -34,8 +44,8 @@ export default class Note {
   }
 
   update(title: string = this.title, content: string = this.content): void {
-    assertNoteTitle(title);
-    assertNoteWordCount(content);
+    Note.assertNoteTitle(title);
+    Note.assertNoteWordCount(content);
 
     if (title === this.title && content === this.content) {
       return;
@@ -60,6 +70,44 @@ export default class Note {
       new Date(data.created_at),
       new Date(data.updated_at)
     );
+  }
+
+  private static assertNoteTitle(title: string): void {
+    const charsCount = countCharacters(title);
+
+    if (!title.trim()) {
+      throw new ValidationError('Must provide a title', [
+        { field: 'title', message: 'Title is required' },
+      ]);
+    }
+
+    if (charsCount > NOTE_TITLE_CHARS_MAX) {
+      throw new ValidationError(noteTitleCharsCountTooManyMessage(), [
+        { field: 'title', message: noteCharsCountMessage(charsCount) },
+      ]);
+    }
+  }
+
+  private static assertNoteWordCount(content: string): void {
+    const wordCount = countWords(content);
+
+    if (!content.trim()) {
+      throw new ValidationError('Must provide content', [
+        { field: 'content', message: 'Content is required' },
+      ]);
+    }
+
+    if (wordCount < NOTE_WORD_MIN) {
+      throw new ValidationError(noteWordCountTooFewMessage(), [
+        { field: 'content', message: noteWordCountMessage(wordCount) },
+      ]);
+    }
+
+    if (wordCount > NOTE_WORD_MAX) {
+      throw new ValidationError(noteWordCountTooManyMessage(), [
+        { field: 'content', message: noteWordCountMessage(wordCount) },
+      ]);
+    }
   }
 
   getId(): string {
