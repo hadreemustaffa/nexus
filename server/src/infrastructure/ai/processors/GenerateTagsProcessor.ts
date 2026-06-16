@@ -40,7 +40,7 @@ export default class GenerateTagsProcessor implements JobProcessor<GenerateTagsJ
       })
     );
 
-    this.eventBus.publish({
+    await this.eventBus.publish({
       type: 'NOTE_TAGS_GENERATED',
       occurredAt: new Date(),
       payload: {

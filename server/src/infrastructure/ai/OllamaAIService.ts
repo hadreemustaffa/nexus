@@ -1,5 +1,5 @@
 import type AIService from '../../domain/services/AIService';
-import PromptService from '../../domain/services/PromptService';
+import type PromptService from '../../domain/services/PromptService';
 
 type TagResponse = {
   tags: string[];

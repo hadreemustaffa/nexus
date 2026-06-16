@@ -1,4 +1,4 @@
-import { FieldError } from '@nexus/shared';
+import { type FieldError } from '@nexus/shared';
 
 import { AppError } from './AppError';
 

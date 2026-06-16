@@ -7,9 +7,26 @@ export default [
 
   {
     files: ['**/*.ts'],
-
     languageOptions: {
       globals: globals.node,
+    },
+
+    rules: {
+      'import-x/no-restricted-paths': [
+        'error',
+        {
+          basePath: import.meta.dirname,
+          zones: [
+            // e.g. src/infrastructure can import from src/application but not the other way around
+            {
+              target: './src/application',
+              from: './src/infrastructure',
+              message:
+                'Application layer cannot import from Infrastructure layer.',
+            },
+          ],
+        },
+      ],
     },
   },
 ];

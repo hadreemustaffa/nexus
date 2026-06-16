@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { countCharacters, createPromptBodySchema } from '@nexus/shared';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { type ChangeEvent, useState } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useFetcher } from 'react-router';
 import type z from 'zod';
 
@@ -24,8 +24,8 @@ export default function CreatePrompt() {
     resolver: zodResolver(createPromptBodySchema),
   });
 
-  const onSubmit = (data: FormValues) => {
-    fetcher.submit(data, {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    await fetcher.submit(data, {
       method: 'post',
       action: paths.app.settings.prompts.create.getHref(),
     });
@@ -39,7 +39,10 @@ export default function CreatePrompt() {
     <div className={styles.container}>
       <h2>Create a new prompt</h2>
 
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className={styles.form}
+        onSubmit={(e) => void handleSubmit(onSubmit)(e)}
+      >
         <div>
           <div className={styles.form__group}>
             <label htmlFor='key'>Key:</label>
@@ -63,7 +66,8 @@ export default function CreatePrompt() {
               id='content'
               className={styles.form__input_content}
               {...register('content', {
-                onChange: (e) => handleChange(e.target.value),
+                onChange: (e: ChangeEvent<HTMLTextAreaElement>) =>
+                  handleChange(e.target.value),
               })}
               disabled={isSubmitting}
             />

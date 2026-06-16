@@ -1,3 +1,4 @@
+import { type UpdateNoteBody } from '@nexus/shared';
 import type { Request, Response } from 'express';
 
 import type UpdateNote from '../../../application/use-cases/UpdateNote';
@@ -11,7 +12,7 @@ export default class UpdateNoteController {
 
   handle = async (req: Request, res: Response) => {
     const noteId = req.params.id as string;
-    const { title, content } = req.body;
+    const { title, content } = req.body as UpdateNoteBody;
 
     const result = await this.updateNote.execute(noteId, title, content);
 

@@ -1,29 +1,26 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type ApiResponse, countWords } from '@nexus/shared';
 import { editNoteFormSchema } from '@nexus/shared/note';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { type ChangeEvent, useState } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { NavLink, useFetcher, useLoaderData } from 'react-router';
 import type { z } from 'zod';
 
 import { paths } from '../../../config/paths';
 import useDebounce from '../../../hooks/useDebounce';
 import Button from '../../../shared/ui/button/Button';
-import type { NoteWithTags } from '../types';
+import type { Note } from '../types';
 import styles from './EditNote.module.css';
 
 type FormValues = z.infer<typeof editNoteFormSchema>;
 
 export default function EditNote() {
-  const { note } = useLoaderData() as {
-    note: ApiResponse<NoteWithTags>;
-  };
+  const { data } = useLoaderData<ApiResponse<{ note: Note }>>();
 
   const fetcher = useFetcher<{ error?: string }>();
   const isSubmitting = fetcher.state !== 'idle';
 
-  const noteData = note.data;
-  const initialWordCount = countWords(noteData.note.content);
+  const initialWordCount = countWords(data.note.content);
 
   const [contentLength, setContentLength] = useState(initialWordCount);
 
@@ -34,16 +31,16 @@ export default function EditNote() {
   } = useForm<FormValues>({
     resolver: zodResolver(editNoteFormSchema),
     defaultValues: {
-      id: noteData.note.id,
-      title: noteData.note.title,
-      content: noteData.note.content,
+      id: data.note.id,
+      title: data.note.title,
+      content: data.note.content,
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    fetcher.submit(data, {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    await fetcher.submit(data, {
       method: 'post',
-      action: paths.app.notes.edit.getHref(noteData.note.id),
+      action: paths.app.notes.edit.getHref(data.id),
     });
   };
 
@@ -55,8 +52,13 @@ export default function EditNote() {
     <div className={styles.container}>
       <h2>Edit note</h2>
 
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-        <input type='hidden' {...register('id')} value={noteData.note.id} />
+      <form
+        className={styles.form}
+        onSubmit={(e) => {
+          void handleSubmit(onSubmit)(e);
+        }}
+      >
+        <input type='hidden' {...register('id')} value={data.note.id} />
         <div>
           <div className={styles.form__group}>
             <label htmlFor='title'>Title:</label>
@@ -80,7 +82,8 @@ export default function EditNote() {
               id='content'
               className={styles.form__input_content}
               {...register('content', {
-                onChange: (e) => handleChange(e.target.value),
+                onChange: (e: ChangeEvent<HTMLTextAreaElement>) =>
+                  handleChange(e.target.value),
               })}
               disabled={isSubmitting}
             />
@@ -101,7 +104,7 @@ export default function EditNote() {
 
         <div className={styles.actions}>
           <NavLink
-            to={paths.app.notes.note.getHref(noteData.note.id)}
+            to={paths.app.notes.note.getHref(data.note.id)}
             className={styles.actions__cancel}
           >
             Cancel

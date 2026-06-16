@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 import CreatePrompt from '../../application/use-cases/prompts/CreatePrompt';
 import GetAllPrompts from '../../application/use-cases/prompts/GetAllPrompts';
-import { Container } from '../../bootstrap/Container';
+import { type Container } from '../../bootstrap/Container';
 import CreatePromptController from '../controllers/prompts/CreatePromptController';
 import GetAllPromptsController from '../controllers/prompts/GetAllPromptsController';
 import { asyncHandler } from '../middleware/asyncHandler';

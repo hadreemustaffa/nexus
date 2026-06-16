@@ -1,5 +1,5 @@
 import Prompt from '../../../domain/entities/Prompt';
-import PromptRepository from '../../../domain/repositories/PromptRepository';
+import type PromptRepository from '../../../domain/repositories/PromptRepository';
 
 export default class CreatePrompt {
   private promptRepository: PromptRepository;

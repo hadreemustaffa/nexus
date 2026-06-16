@@ -1,17 +1,17 @@
 import { NotFoundError } from '../../domain/errors/NotFoundError';
 import type NoteRepository from '../../domain/repositories/NoteRepository';
 import type TagRepository from '../../domain/repositories/TagRepository';
-import type Dispatcher from '../../infrastructure/queues/Dispatcher';
+import type JobDispatcher from '../jobs/JobDispatcher';
 
 export default class RegenerateNoteTags {
   private noteRepository: NoteRepository;
   private tagRepository: TagRepository;
-  private dispatcher: Dispatcher<'GENERATE_TAGS'>;
+  private dispatcher: JobDispatcher<'GENERATE_TAGS'>;
 
   constructor(
     noteRepository: NoteRepository,
     tagRepository: TagRepository,
-    dispatcher: Dispatcher<'GENERATE_TAGS'>
+    dispatcher: JobDispatcher<'GENERATE_TAGS'>
   ) {
     this.noteRepository = noteRepository;
     this.tagRepository = tagRepository;

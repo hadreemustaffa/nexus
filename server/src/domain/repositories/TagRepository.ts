@@ -1,4 +1,4 @@
-import Tag from '../entities/Tag';
+import type Tag from '../entities/Tag';
 
 export default interface TagRepository {
   save(tag: Tag): Promise<void>;

@@ -1,4 +1,4 @@
-import Note from '../../domain/entities/Note';
+import type Note from '../../domain/entities/Note';
 import { NotFoundError } from '../../domain/errors/NotFoundError';
 import type NoteRepository from '../../domain/repositories/NoteRepository';
 

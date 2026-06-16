@@ -22,7 +22,7 @@ function ErrorElement({ message }: { message: string }) {
     <div className={styles.error_container}>
       <div className={styles.error}>
         <div>{message}</div>
-        <Button onClick={() => navigate(-1)}>Go back</Button>
+        <Button onClick={() => void navigate(-1)}>Go back</Button>
       </div>
     </div>
   );

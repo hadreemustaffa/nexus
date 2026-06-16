@@ -1,5 +1,5 @@
 import Prompt from '../../../domain/entities/Prompt';
-import PromptRepository from '../../../domain/repositories/PromptRepository';
+import type PromptRepository from '../../../domain/repositories/PromptRepository';
 import { taggingPrompt } from '../default-prompts/tagging';
 
 const DEFAULT_PROMPTS: Record<string, string> = {

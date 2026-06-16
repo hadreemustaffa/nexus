@@ -19,7 +19,7 @@ export default class Worker<T> {
   }
 
   start(): void {
-    this.processNext();
+    void this.processNext();
   }
 
   private async processNext(): Promise<void> {
@@ -28,7 +28,9 @@ export default class Worker<T> {
     const job = this.queue.dequeue();
 
     if (!job) {
-      setTimeout(() => this.processNext(), this.pollInterval);
+      setTimeout(() => {
+        void this.processNext();
+      }, this.pollInterval);
       return;
     }
 
@@ -41,7 +43,9 @@ export default class Worker<T> {
     } finally {
       this.isProcessing = false;
 
-      setTimeout(() => this.processNext(), 0);
+      setTimeout(() => {
+        void this.processNext();
+      }, 0);
     }
   }
 }

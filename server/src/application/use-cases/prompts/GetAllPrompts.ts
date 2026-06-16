@@ -1,4 +1,4 @@
-import PromptRepository from '../../../domain/repositories/PromptRepository';
+import type PromptRepository from '../../../domain/repositories/PromptRepository';
 
 export default class GetAllPrompts {
   private promptRepository: PromptRepository;

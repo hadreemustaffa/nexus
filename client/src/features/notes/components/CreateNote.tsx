@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { countWords } from '@nexus/shared';
 import { createNoteBodySchema } from '@nexus/shared/note';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { type ChangeEvent, useState } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useFetcher } from 'react-router';
 import type { z } from 'zod';
 
@@ -25,8 +25,8 @@ export default function CreateNote() {
     resolver: zodResolver(createNoteBodySchema),
   });
 
-  const onSubmit = (data: FormValues) => {
-    fetcher.submit(data, {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    await fetcher.submit(data, {
       method: 'post',
       action: paths.app.notes.create.getHref(),
     });
@@ -40,7 +40,10 @@ export default function CreateNote() {
     <div className={styles.container}>
       <h2>Create a new note</h2>
 
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className={styles.form}
+        onSubmit={(e) => void handleSubmit(onSubmit)(e)}
+      >
         <div>
           <div className={styles.form__group}>
             <label htmlFor='title'>Title:</label>
@@ -64,7 +67,8 @@ export default function CreateNote() {
               id='content'
               className={styles.form__input_content}
               {...register('content', {
-                onChange: (e) => handleChange(e.target.value),
+                onChange: (e: ChangeEvent<HTMLTextAreaElement>) =>
+                  handleChange(e.target.value),
               })}
               disabled={isSubmitting}
             />

@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 
-import GetRelatedNotes from '../../../application/use-cases/GetRelatedNotes';
+import type GetRelatedNotes from '../../../application/use-cases/GetRelatedNotes';
 
 export default class GetRelatedNotesController {
   private getRelatedNotes: GetRelatedNotes;

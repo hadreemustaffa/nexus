@@ -12,11 +12,7 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "lint:client": "eslint client",
-    "lint:server": "eslint server",
     "lint:fix": "eslint . --fix",
-    "lint:fix:client": "eslint client --fix",
-    "lint:fix:server": "eslint server --fix",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run dev -w client",
@@ -26,19 +22,31 @@
     "build:client": "npm run build -w client",
     "start": "npm run build && concurrently \"npm run start:client\" \"npm run start:server\"",
     "start:server": "npm run start -w server",
-    "start:client": "npm run preview -w client"
+    "start:client": "npm run preview -w client",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "concurrently": "^9.2.1",
+    "concurrently": "^10.0.3",
     "eslint": "^10.3.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-check-file": "^3.3.1",
+    "eslint-plugin-import-x": "^4.16.2",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "globals": "^17.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
     "tsup": "^8.5.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2"
   },
   "dependencies": {
     "zod": "^4.4.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "bash -c 'tsc -p tsconfig.json --pretty --noEmit'"
+    ]
   }
 }

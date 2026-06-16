@@ -1,7 +1,7 @@
-import { SearchQuery } from '@nexus/shared';
+import { type SearchQuery } from '@nexus/shared';
 import type { Request, Response } from 'express';
 
-import SearchNotes from '../../../application/use-cases/SearchNotes';
+import type SearchNotes from '../../../application/use-cases/SearchNotes';
 
 export default class SearchNotesController {
   private searchNotes: SearchNotes;

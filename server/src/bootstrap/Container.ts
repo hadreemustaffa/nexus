@@ -1,9 +1,10 @@
 import Database, { type Database as DB } from 'better-sqlite3';
 
 import type EventBus from '../application/events/EventBus';
+import type JobDispatcher from '../application/jobs/JobDispatcher';
 import type { Env } from '../config/env';
 import type NoteRepository from '../domain/repositories/NoteRepository';
-import PromptRepository from '../domain/repositories/PromptRepository';
+import type PromptRepository from '../domain/repositories/PromptRepository';
 import type TagRepository from '../domain/repositories/TagRepository';
 import type AIService from '../domain/services/AIService';
 import type SearchService from '../domain/services/SearchService';
@@ -15,7 +16,6 @@ import SQLitePromptRepository from '../infrastructure/database/SQLitePromptRepos
 import SQLiteTagRepository from '../infrastructure/database/SQLiteTagRepository';
 import InMemoryEventBus from '../infrastructure/events/InMemoryEventBus';
 import SSEConnectionManager from '../infrastructure/messaging/SSEConnectionManager';
-import type Dispatcher from '../infrastructure/queues/Dispatcher';
 import InMemorySearchService from '../infrastructure/search/InMemorySearchService';
 
 export interface Container {
@@ -27,7 +27,7 @@ export interface Container {
   eventBus: EventBus;
   sseConnectionManager: SSEConnectionManager;
   searchService: SearchService;
-  tagsDispatcher?: Dispatcher<'GENERATE_TAGS'>;
+  tagsDispatcher?: JobDispatcher<'GENERATE_TAGS'>;
 }
 
 export function createContainer(env: Env): Container {

@@ -1,4 +1,5 @@
-import type { JobMap } from '../../application/jobs/JobMap';
+import type JobDispatcher from '../../application/jobs/JobDispatcher';
+import type JobMap from '../../application/jobs/JobMap';
 import type JobProcessor from '../../application/jobs/JobProcessor';
 import Dispatcher from './Dispatcher';
 import InMemoryQueue from './InMemoryQueue';
@@ -19,7 +20,7 @@ export default class WorkerRegistry {
   register<K extends keyof JobMap>(
     type: K,
     processor: JobProcessor<JobMap[K]>
-  ): Dispatcher<K> {
+  ): JobDispatcher<K> {
     const queue = new InMemoryQueue<JobMap[K]>();
 
     const worker = new Worker(queue, processor, this.pollIntervalMs);

@@ -1,5 +1,5 @@
-import Note from '../../domain/entities/Note';
-import Tag from '../../domain/entities/Tag';
+import type Note from '../../domain/entities/Note';
+import type Tag from '../../domain/entities/Tag';
 import type NoteRepository from '../../domain/repositories/NoteRepository';
 import type TagRepository from '../../domain/repositories/TagRepository';
 import type SearchService from '../../domain/services/SearchService';

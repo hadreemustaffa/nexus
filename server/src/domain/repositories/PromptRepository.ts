@@ -1,4 +1,4 @@
-import Prompt from '../entities/Prompt';
+import type Prompt from '../entities/Prompt';
 
 export default interface PromptRepository {
   save(prompt: Prompt): Promise<void>;

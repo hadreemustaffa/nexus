@@ -1,7 +1,10 @@
-import type { JobMap } from '../../application/jobs/JobMap';
+import type JobDispatcher from '../../application/jobs/JobDispatcher';
+import type JobMap from '../../application/jobs/JobMap';
 import type Queue from './Queue';
 
-export default class Dispatcher<K extends keyof JobMap> {
+export default class Dispatcher<
+  K extends keyof JobMap,
+> implements JobDispatcher<K> {
   private queue: Queue<JobMap[K]>;
 
   constructor(queue: Queue<JobMap[K]>) {

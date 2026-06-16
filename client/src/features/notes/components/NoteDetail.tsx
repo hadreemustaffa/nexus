@@ -10,10 +10,10 @@ import type { Note, NoteWithTags, Tag as TagType } from '../types';
 import styles from './NoteDetail.module.css';
 
 export default function NoteDetail() {
-  const { note, related } = useLoaderData() as {
+  const { note, related } = useLoaderData<{
     note: ApiResponse<NoteWithTags>;
     related: ApiResponse<Note[]>;
-  };
+  }>();
 
   return (
     <NoteDetailContent
@@ -42,8 +42,8 @@ function NoteDetailContent({
     // handle state on our own rather than depend on fetcher.state
     // fetcher.state returns to idle faster than tags finish generating
     // this causes brief flicker then showing old tags
-    const handleTagsGenerated = (event: MessageEvent) => {
-      const data = JSON.parse(event.data);
+    const handleTagsGenerated = (event: MessageEvent<string>) => {
+      const data = JSON.parse(event.data) as { tags: TagType[] };
       setTags(data.tags);
       setIsGenerating(false);
     };

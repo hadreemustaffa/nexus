@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3';
+import type Database from 'better-sqlite3';
 
 import Note from '../../domain/entities/Note';
 import type NoteRepository from '../../domain/repositories/NoteRepository';

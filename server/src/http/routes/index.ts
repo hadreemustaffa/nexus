@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { Container } from '../../bootstrap/Container';
+import { type Container } from '../../bootstrap/Container';
 import { createNotesRouter } from './noteRoutes';
 import { createPromptsRouter } from './promptRoutes';
 

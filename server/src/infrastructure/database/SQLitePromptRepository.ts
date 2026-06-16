@@ -1,7 +1,7 @@
-import Database from 'better-sqlite3';
+import type Database from 'better-sqlite3';
 
 import Prompt from '../../domain/entities/Prompt';
-import PromptRepository from '../../domain/repositories/PromptRepository';
+import type PromptRepository from '../../domain/repositories/PromptRepository';
 
 type PromptRow = {
   id: string;

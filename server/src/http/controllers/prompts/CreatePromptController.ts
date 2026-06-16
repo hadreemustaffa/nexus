@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { type CreatePromptBody } from '@nexus/shared';
+import { type Request, type Response } from 'express';
 
-import CreatePrompt from '../../../application/use-cases/prompts/CreatePrompt';
+import type CreatePrompt from '../../../application/use-cases/prompts/CreatePrompt';
 
 export default class CreatePromptController {
   private createPrompt: CreatePrompt;
@@ -10,7 +11,7 @@ export default class CreatePromptController {
   }
 
   handle = async (req: Request, res: Response) => {
-    const { key, content } = req.body;
+    const { key, content } = req.body as CreatePromptBody;
 
     const result = await this.createPrompt.execute(key, content);
 

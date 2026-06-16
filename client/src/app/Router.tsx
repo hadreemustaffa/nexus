@@ -108,7 +108,7 @@ const router = createBrowserRouter([
 
               try {
                 const note = await getNote(noteId);
-                return { note };
+                return note;
               } catch (error) {
                 return handleLoaderError(error, 'Failed to load note');
               }

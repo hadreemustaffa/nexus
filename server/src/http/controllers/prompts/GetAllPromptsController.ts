@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
-import GetAllPrompts from '../../../application/use-cases/prompts/GetAllPrompts';
+import type GetAllPrompts from '../../../application/use-cases/prompts/GetAllPrompts';
 
 export default class GetAllPromptsController {
   private getAllPrompts: GetAllPrompts;

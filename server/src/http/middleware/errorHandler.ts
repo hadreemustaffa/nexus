@@ -1,10 +1,15 @@
-import { ApiErrorResponse } from '@nexus/shared';
+import { type ApiErrorResponse } from '@nexus/shared';
 import type { ErrorRequestHandler } from 'express';
 
 import { AppError } from '../../domain/errors/AppError';
 import { ValidationError } from '../../domain/errors/ValidationError';
 
-export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (
+  err: unknown,
+  _req,
+  res,
+  next
+) => {
   if (res.headersSent) {
     next(err);
     return;

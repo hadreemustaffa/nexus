@@ -1,6 +1,7 @@
+import { type CreateNoteBody } from '@nexus/shared';
 import type { Request, Response } from 'express';
 
-import CreateNote from '../../../application/use-cases/CreateNote';
+import type CreateNote from '../../../application/use-cases/CreateNote';
 
 export default class CreateNoteController {
   private createNote: CreateNote;
@@ -10,7 +11,7 @@ export default class CreateNoteController {
   }
 
   handle = async (req: Request, res: Response) => {
-    const { title, content } = req.body;
+    const { title, content } = req.body as CreateNoteBody;
 
     const result = await this.createNote.execute(title, content);
 

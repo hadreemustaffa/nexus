@@ -1,3 +1,4 @@
+import type { ApiResponse } from '@nexus/shared';
 import { PlusIcon } from 'lucide-react';
 import { NavLink, useLoaderData } from 'react-router';
 
@@ -7,9 +8,9 @@ import Prompt from './Prompt';
 import styles from './PromptList.module.css';
 
 export default function PromptList() {
-  const result = useLoaderData();
+  const { data } = useLoaderData<ApiResponse<{ prompts: PromptType[] }>>();
 
-  const prompts: PromptType[] = result.data.prompts;
+  const prompts = data.prompts;
 
   const grouped = prompts.reduce<Record<string, PromptType[]>>(
     (acc, prompt) => {

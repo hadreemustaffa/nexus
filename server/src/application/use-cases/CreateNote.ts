@@ -1,15 +1,15 @@
 import Note from '../../domain/entities/Note';
 import type NoteRepository from '../../domain/repositories/NoteRepository';
-import type Dispatcher from '../../infrastructure/queues/Dispatcher';
+import type JobDispatcher from '../jobs/JobDispatcher';
 import ParseAndSaveLinks from './ParseAndSaveLinks';
 
 export default class CreateNote {
   private noteRepository: NoteRepository;
-  private dispatcher: Dispatcher<'GENERATE_TAGS'>;
+  private dispatcher: JobDispatcher<'GENERATE_TAGS'>;
 
   constructor(
     noteRepository: NoteRepository,
-    dispatcher: Dispatcher<'GENERATE_TAGS'>
+    dispatcher: JobDispatcher<'GENERATE_TAGS'>
   ) {
     this.noteRepository = noteRepository;
     this.dispatcher = dispatcher;

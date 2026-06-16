@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3';
+import type Database from 'better-sqlite3';
 
 import Tag from '../../domain/entities/Tag';
 import type TagRepository from '../../domain/repositories/TagRepository';

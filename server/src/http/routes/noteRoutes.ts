@@ -1,7 +1,7 @@
 import {
   api,
   createNoteBodySchema,
-  NoteIdParams,
+  type NoteIdParams,
   noteIdParamSchema,
   searchQuerySchema,
   updateNoteBodySchema,

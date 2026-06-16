@@ -1,4 +1,4 @@
-import Note from '../entities/Note';
+import type Note from '../entities/Note';
 
 export default interface NoteRepository {
   save(note: Note): Promise<void>;
