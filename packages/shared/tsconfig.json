@@ -8,7 +8,8 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "types": ["vitest/globals"]
   },
   "include": ["src"],
   "exclude": ["dist"]
