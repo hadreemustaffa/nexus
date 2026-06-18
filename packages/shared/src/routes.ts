@@ -1,11 +1,31 @@
-export const buildRoute = (
+export function buildRoute(
   pattern: string,
   params: Record<string, string>
-): string =>
-  Object.entries(params).reduce(
-    (route, [key, val]) => route.replace(`:${key}`, val),
-    pattern
-  );
+): string {
+  return pattern.replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => {
+    const value = params[key];
+
+    if (value == null) {
+      throw new Error(`Missing route param: ${key}`);
+    }
+
+    return value;
+  });
+}
+
+export const buildQuery = (
+  params: Record<string, string | number | boolean | undefined | null>
+): string => {
+  const search = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === '') return;
+    search.append(key, String(value));
+  });
+
+  const query = search.toString();
+  return query ? `?${query}` : '';
+};
 
 export const api = {
   notes: {
@@ -15,7 +35,7 @@ export const api = {
     },
     search: {
       path: '/search',
-      getRoute: (q: string) => buildRoute('/notes/search?q=:q', { q }),
+      getRoute: (q: string) => '/notes/search' + buildQuery({ q }),
     },
     create: {
       path: '/create',

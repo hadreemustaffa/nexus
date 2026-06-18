@@ -12,3 +12,9 @@ export type ApiErrorResponse = {
     details?: FieldError[];
   };
 };
+
+export type NavigateOptions<T extends string> = {
+  path: T;
+  params?: Record<string, string | number>;
+  query?: Record<string, string | number | boolean | undefined | null>;
+};
