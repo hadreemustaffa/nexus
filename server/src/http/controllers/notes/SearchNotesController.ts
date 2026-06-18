@@ -1,12 +1,12 @@
 import { type SearchQuery } from '@nexus/shared';
 import type { Request, Response } from 'express';
 
-import type SearchNotes from '../../../application/use-cases/SearchNotes';
+import type SearchNotesUseCase from '../../../application/use-cases/notes/SearchNotesUseCase';
 
-export default class SearchNotesController {
-  private searchNotes: SearchNotes;
+export default class SearchNotesUseCaseController {
+  private searchNotes: SearchNotesUseCase;
 
-  constructor(searchNotes: SearchNotes) {
+  constructor(searchNotes: SearchNotesUseCase) {
     this.searchNotes = searchNotes;
   }
 

@@ -1,11 +1,11 @@
 import type { Request, Response } from 'express';
 
-import type GetRelatedNotes from '../../../application/use-cases/GetRelatedNotes';
+import type GetRelatedNotesUseCase from '../../../application/use-cases/notes/GetRelatedNotesUseCase';
 
-export default class GetRelatedNotesController {
-  private getRelatedNotes: GetRelatedNotes;
+export default class GetRelatedNotesUseCaseController {
+  private getRelatedNotes: GetRelatedNotesUseCase;
 
-  constructor(getRelatedNotes: GetRelatedNotes) {
+  constructor(getRelatedNotes: GetRelatedNotesUseCase) {
     this.getRelatedNotes = getRelatedNotes;
   }
 

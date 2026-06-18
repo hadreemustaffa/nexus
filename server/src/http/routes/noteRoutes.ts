@@ -8,14 +8,14 @@ import {
 } from '@nexus/shared';
 import { Router } from 'express';
 
-import CreateNote from '../../application/use-cases/CreateNote';
-import DeleteNote from '../../application/use-cases/DeleteNote';
-import GetAllNotes from '../../application/use-cases/GetAllNotes';
-import GetRelatedNotes from '../../application/use-cases/GetRelatedNotes';
-import GetSingleNote from '../../application/use-cases/GetSingleNote';
-import RegenerateNoteTags from '../../application/use-cases/RegenerateNoteTags';
-import SearchNotes from '../../application/use-cases/SearchNotes';
-import UpdateNote from '../../application/use-cases/UpdateNote';
+import CreateNoteUseCase from '../../application/use-cases/notes/CreateNoteUseCase';
+import DeleteNoteUseCase from '../../application/use-cases/notes/DeleteNoteUseCase';
+import GetAllNotesUseCase from '../../application/use-cases/notes/GetAllNotesUseCase';
+import GetRelatedNotesUseCase from '../../application/use-cases/notes/GetRelatedNotesUseCase';
+import GetSingleNoteUseCase from '../../application/use-cases/notes/GetSingleNoteUseCase';
+import RegenerateNoteTagsUseCase from '../../application/use-cases/notes/RegenerateNoteTagsUseCase';
+import SearchNotesUseCase from '../../application/use-cases/notes/SearchNotesUseCase';
+import UpdateNoteUseCase from '../../application/use-cases/notes/UpdateNoteUseCase';
 import type { Container } from '../../bootstrap/Container';
 import CreateNoteController from '../controllers/notes/CreateNoteController';
 import DeleteNoteController from '../controllers/notes/DeleteNoteController';
@@ -35,30 +35,32 @@ export function createNotesRouter(container: Container) {
     throw new Error('Tags dispatcher is not configured');
   }
 
-  const createNoteUseCase = new CreateNote(
+  const createNoteUseCase = new CreateNoteUseCase(
     container.noteRepository,
     container.tagsDispatcher
   );
-  const getAllNotesUseCase = new GetAllNotes(container.noteRepository);
-  const getSingleNoteUseCase = new GetSingleNote(
+  const getAllNotesUseCase = new GetAllNotesUseCase(container.noteRepository);
+  const getSingleNoteUseCase = new GetSingleNoteUseCase(
     container.noteRepository,
     container.tagRepository
   );
-  const searchNotesUseCase = new SearchNotes(
+  const searchNotesUseCase = new SearchNotesUseCase(
     container.noteRepository,
     container.tagRepository,
     container.searchService
   );
-  const getRelatedNotesUseCase = new GetRelatedNotes(container.noteRepository);
-  const updateNoteUseCase = new UpdateNote(
+  const getRelatedNotesUseCase = new GetRelatedNotesUseCase(
+    container.noteRepository
+  );
+  const updateNoteUseCase = new UpdateNoteUseCase(
     container.noteRepository,
     container.searchService
   );
-  const deleteNoteUseCase = new DeleteNote(
+  const deleteNoteUseCase = new DeleteNoteUseCase(
     container.noteRepository,
     container.searchService
   );
-  const regenerateNoteTagsUseCase = new RegenerateNoteTags(
+  const regenerateNoteTagsUseCase = new RegenerateNoteTagsUseCase(
     container.noteRepository,
     container.tagRepository,
     container.tagsDispatcher

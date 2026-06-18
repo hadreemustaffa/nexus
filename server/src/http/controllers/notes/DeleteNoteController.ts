@@ -1,11 +1,11 @@
 import type { Request, Response } from 'express';
 
-import type DeleteNote from '../../../application/use-cases/DeleteNote';
+import type DeleteNoteUseCase from '../../../application/use-cases/notes/DeleteNoteUseCase';
 
-export default class DeleteNoteController {
-  private deleteNote: DeleteNote;
+export default class DeleteNoteUseCaseController {
+  private deleteNote: DeleteNoteUseCase;
 
-  constructor(deleteNote: DeleteNote) {
+  constructor(deleteNote: DeleteNoteUseCase) {
     this.deleteNote = deleteNote;
   }
 

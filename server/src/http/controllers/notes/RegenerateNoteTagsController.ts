@@ -1,11 +1,11 @@
 import type { Request, Response } from 'express';
 
-import type RegenerateNoteTags from '../../../application/use-cases/RegenerateNoteTags';
+import type RegenerateNoteTagsUseCase from '../../../application/use-cases/notes/RegenerateNoteTagsUseCase';
 
-export default class RegenerateNoteTagsController {
-  private regenerateNoteTags: RegenerateNoteTags;
+export default class RegenerateNoteTagsUseCaseController {
+  private regenerateNoteTags: RegenerateNoteTagsUseCase;
 
-  constructor(regenerateNoteTags: RegenerateNoteTags) {
+  constructor(regenerateNoteTags: RegenerateNoteTagsUseCase) {
     this.regenerateNoteTags = regenerateNoteTags;
   }
 

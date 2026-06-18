@@ -1,11 +1,11 @@
 import { type Request, type Response } from 'express';
 
-import type GetAllPrompts from '../../../application/use-cases/prompts/GetAllPrompts';
+import type GetAllPromptsUseCase from '../../../application/use-cases/prompts/GetAllPromptsUseCase';
 
-export default class GetAllPromptsController {
-  private getAllPrompts: GetAllPrompts;
+export default class GetAllPromptsUseCaseController {
+  private getAllPrompts: GetAllPromptsUseCase;
 
-  constructor(getAllPrompts: GetAllPrompts) {
+  constructor(getAllPrompts: GetAllPromptsUseCase) {
     this.getAllPrompts = getAllPrompts;
   }
 

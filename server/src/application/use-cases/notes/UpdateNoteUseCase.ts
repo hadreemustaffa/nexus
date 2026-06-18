@@ -1,9 +1,9 @@
-import { NotFoundError } from '../../domain/errors/NotFoundError';
-import type NoteRepository from '../../domain/repositories/NoteRepository';
-import type SearchService from '../../domain/services/SearchService';
-import ParseAndSaveLinks from './ParseAndSaveLinks';
+import { NotFoundError } from '../../../domain/errors/NotFoundError';
+import type NoteRepository from '../../../domain/repositories/NoteRepository';
+import type SearchService from '../../../domain/services/SearchService';
+import ParseAndSaveLinksUseCase from './ParseAndSaveLinksUseCase';
 
-export default class UpdateNote {
+export default class UpdateNoteUseCase {
   private noteRepository: NoteRepository;
   private searchService: SearchService;
 
@@ -46,7 +46,7 @@ export default class UpdateNote {
     await this.searchService.indexNote(note.getId(), note.getContent());
 
     // re-parse links
-    const parseAndSaveLinks = new ParseAndSaveLinks(this.noteRepository);
+    const parseAndSaveLinks = new ParseAndSaveLinksUseCase(this.noteRepository);
     await parseAndSaveLinks.execute(note.getId(), note.getContent());
 
     return { note };

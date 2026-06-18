@@ -1,15 +1,15 @@
-import type Note from '../../domain/entities/Note';
-import type Tag from '../../domain/entities/Tag';
-import type NoteRepository from '../../domain/repositories/NoteRepository';
-import type TagRepository from '../../domain/repositories/TagRepository';
-import type SearchService from '../../domain/services/SearchService';
+import type Note from '../../../domain/entities/Note';
+import type Tag from '../../../domain/entities/Tag';
+import type NoteRepository from '../../../domain/repositories/NoteRepository';
+import type TagRepository from '../../../domain/repositories/TagRepository';
+import type SearchService from '../../../domain/services/SearchService';
 
 export type NoteWithTags = {
   note: Note;
   tags: Tag[];
 };
 
-export default class SearchNotes {
+export default class SearchNotesUseCase {
   private noteRepository: NoteRepository;
   private tagRepository: TagRepository;
   private searchService: SearchService;

@@ -1,6 +1,6 @@
-import type NoteRepository from '../../domain/repositories/NoteRepository';
+import type NoteRepository from '../../../domain/repositories/NoteRepository';
 
-export default class GetAllNotes {
+export default class GetAllNotesUseCase {
   private noteRepository: NoteRepository;
 
   constructor(noteRepository: NoteRepository) {

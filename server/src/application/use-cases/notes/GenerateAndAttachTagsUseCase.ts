@@ -1,8 +1,8 @@
-import Tag from '../../domain/entities/Tag';
-import type TagRepository from '../../domain/repositories/TagRepository';
-import type AIService from '../../domain/services/AIService';
+import Tag from '../../../domain/entities/Tag';
+import TagRepository from '../../../domain/repositories/TagRepository';
+import AIService from '../../../domain/services/AIService';
 
-export default class GenerateAndAttachTags {
+export default class GenerateAndAttachTagsUseCase {
   private tagRepository: TagRepository;
   private aiService: AIService;
 

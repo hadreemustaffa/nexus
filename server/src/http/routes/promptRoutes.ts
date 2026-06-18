@@ -1,8 +1,8 @@
 import { api, createPromptBodySchema } from '@nexus/shared';
 import { Router } from 'express';
 
-import CreatePrompt from '../../application/use-cases/prompts/CreatePrompt';
-import GetAllPrompts from '../../application/use-cases/prompts/GetAllPrompts';
+import CreatePromptUseCase from '../../application/use-cases/prompts/CreatePromptUseCase';
+import GetAllPromptsUseCase from '../../application/use-cases/prompts/GetAllPromptsUseCase';
 import { type Container } from '../../bootstrap/Container';
 import CreatePromptController from '../controllers/prompts/CreatePromptController';
 import GetAllPromptsController from '../controllers/prompts/GetAllPromptsController';
@@ -12,8 +12,12 @@ import { validate } from '../middleware/validate';
 export function createPromptsRouter(container: Container) {
   const router = Router();
 
-  const createPromptUseCase = new CreatePrompt(container.promptRepository);
-  const getAllPromptsUseCase = new GetAllPrompts(container.promptRepository);
+  const createPromptUseCase = new CreatePromptUseCase(
+    container.promptRepository
+  );
+  const getAllPromptsUseCase = new GetAllPromptsUseCase(
+    container.promptRepository
+  );
 
   const createPromptController = new CreatePromptController(
     createPromptUseCase

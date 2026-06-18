@@ -1,8 +1,8 @@
-import { NotFoundError } from '../../domain/errors/NotFoundError';
-import type NoteRepository from '../../domain/repositories/NoteRepository';
-import type SearchService from '../../domain/services/SearchService';
+import { NotFoundError } from '../../../domain/errors/NotFoundError';
+import type NoteRepository from '../../../domain/repositories/NoteRepository';
+import type SearchService from '../../../domain/services/SearchService';
 
-export default class DeleteNote {
+export default class DeleteNoteUseCase {
   private noteRepository: NoteRepository;
   private searchService: SearchService;
 

@@ -1,8 +1,8 @@
-import { NotFoundError } from '../../domain/errors/NotFoundError';
-import type NoteRepository from '../../domain/repositories/NoteRepository';
-import type TagRepository from '../../domain/repositories/TagRepository';
+import { NotFoundError } from '../../../domain/errors/NotFoundError';
+import type NoteRepository from '../../../domain/repositories/NoteRepository';
+import type TagRepository from '../../../domain/repositories/TagRepository';
 
-export default class GetSingleNote {
+export default class GetSingleNoteUseCase {
   private noteRepository: NoteRepository;
   private tagRepository: TagRepository;
 

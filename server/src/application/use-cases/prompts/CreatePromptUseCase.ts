@@ -1,7 +1,7 @@
 import Prompt from '../../../domain/entities/Prompt';
 import type PromptRepository from '../../../domain/repositories/PromptRepository';
 
-export default class CreatePrompt {
+export default class CreatePromptUseCase {
   private promptRepository: PromptRepository;
 
   constructor(promptRepository: PromptRepository) {

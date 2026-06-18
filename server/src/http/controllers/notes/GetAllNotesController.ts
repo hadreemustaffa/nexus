@@ -1,11 +1,11 @@
 import type { Request, Response } from 'express';
 
-import type GetAllNotes from '../../../application/use-cases/GetAllNotes';
+import type GetAllNotesUseCase from '../../../application/use-cases/notes/GetAllNotesUseCase';
 
-export default class GetAllNotesController {
-  private getAllNotes: GetAllNotes;
+export default class GetAllNotesUseCaseController {
+  private getAllNotes: GetAllNotesUseCase;
 
-  constructor(getAllNotes: GetAllNotes) {
+  constructor(getAllNotes: GetAllNotesUseCase) {
     this.getAllNotes = getAllNotes;
   }
 

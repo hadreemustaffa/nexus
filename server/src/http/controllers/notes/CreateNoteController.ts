@@ -1,12 +1,12 @@
 import { type CreateNoteBody } from '@nexus/shared';
 import type { Request, Response } from 'express';
 
-import type CreateNote from '../../../application/use-cases/CreateNote';
+import CreateNoteUseCase from '../../../application/use-cases/notes/CreateNoteUseCase';
 
 export default class CreateNoteController {
-  private createNote: CreateNote;
+  private createNote: CreateNoteUseCase;
 
-  constructor(createNote: CreateNote) {
+  constructor(createNote: CreateNoteUseCase) {
     this.createNote = createNote;
   }
 

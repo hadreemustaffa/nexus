@@ -1,12 +1,12 @@
 import { type CreatePromptBody } from '@nexus/shared';
 import { type Request, type Response } from 'express';
 
-import type CreatePrompt from '../../../application/use-cases/prompts/CreatePrompt';
+import type CreatePromptUseCase from '../../../application/use-cases/prompts/CreatePromptUseCase';
 
-export default class CreatePromptController {
-  private createPrompt: CreatePrompt;
+export default class CreatePromptUseCaseController {
+  private createPrompt: CreatePromptUseCase;
 
-  constructor(createPrompt: CreatePrompt) {
+  constructor(createPrompt: CreatePromptUseCase) {
     this.createPrompt = createPrompt;
   }
 

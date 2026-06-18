@@ -1,9 +1,9 @@
-import Note from '../../domain/entities/Note';
-import type NoteRepository from '../../domain/repositories/NoteRepository';
-import type JobDispatcher from '../jobs/JobDispatcher';
-import ParseAndSaveLinks from './ParseAndSaveLinks';
+import Note from '../../../domain/entities/Note';
+import NoteRepository from '../../../domain/repositories/NoteRepository';
+import JobDispatcher from '../../jobs/JobDispatcher';
+import ParseAndSaveLinksUseCase from './ParseAndSaveLinksUseCase';
 
-export default class CreateNote {
+export default class CreateNoteUseCase {
   private noteRepository: NoteRepository;
   private dispatcher: JobDispatcher<'GENERATE_TAGS'>;
 
@@ -20,7 +20,7 @@ export default class CreateNote {
 
     await this.noteRepository.save(note);
 
-    const parseAndSaveLinks = new ParseAndSaveLinks(this.noteRepository);
+    const parseAndSaveLinks = new ParseAndSaveLinksUseCase(this.noteRepository);
     await parseAndSaveLinks.execute(note.getId(), note.getContent());
 
     await this.dispatcher.dispatch({

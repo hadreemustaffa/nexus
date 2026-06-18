@@ -1,6 +1,6 @@
-import type NoteRepository from '../../domain/repositories/NoteRepository';
+import type NoteRepository from '../../../domain/repositories/NoteRepository';
 
-export default class ParseAndSaveLinks {
+export default class ParseAndSaveLinksUseCase {
   private noteRepository: NoteRepository;
 
   constructor(noteRepository: NoteRepository) {

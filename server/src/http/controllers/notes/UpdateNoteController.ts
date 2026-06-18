@@ -1,12 +1,12 @@
 import { type UpdateNoteBody } from '@nexus/shared';
 import type { Request, Response } from 'express';
 
-import type UpdateNote from '../../../application/use-cases/UpdateNote';
+import type UpdateNoteUseCase from '../../../application/use-cases/notes/UpdateNoteUseCase';
 
-export default class UpdateNoteController {
-  private updateNote: UpdateNote;
+export default class UpdateNoteUseCaseController {
+  private updateNote: UpdateNoteUseCase;
 
-  constructor(updateNote: UpdateNote) {
+  constructor(updateNote: UpdateNoteUseCase) {
     this.updateNote = updateNote;
   }
 

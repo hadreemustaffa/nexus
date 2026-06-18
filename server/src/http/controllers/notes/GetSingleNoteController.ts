@@ -1,11 +1,11 @@
 import type { Request, Response } from 'express';
 
-import type GetSingleNote from '../../../application/use-cases/GetSingleNote';
+import type GetSingleNoteUseCase from '../../../application/use-cases/notes/GetSingleNoteUseCase';
 
-export default class GetSingleNoteController {
-  private getSingleNote: GetSingleNote;
+export default class GetSingleNoteUseCaseController {
+  private getSingleNote: GetSingleNoteUseCase;
 
-  constructor(getSingleNote: GetSingleNote) {
+  constructor(getSingleNote: GetSingleNoteUseCase) {
     this.getSingleNote = getSingleNote;
   }
 
