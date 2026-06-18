@@ -27,11 +27,7 @@ export default defineConfig([
     settings: {
       'import-x/resolver-next': [
         createTypeScriptImportResolver({
-          project: [
-            './client/tsconfig.app.json',
-            './server/tsconfig.json',
-            './packages/shared/tsconfig.json',
-          ],
+          project: 'tsconfig.json',
         }),
         createNodeResolver(),
       ],
