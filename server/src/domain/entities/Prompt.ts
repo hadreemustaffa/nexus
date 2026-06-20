@@ -141,6 +141,34 @@ export default class Prompt {
     }
   }
 
+  getId(): string {
+    return this.id;
+  }
+
+  getKey(): string {
+    return this.key;
+  }
+
+  getContent(): string {
+    return this.content;
+  }
+
+  getVersion(): number {
+    return this.version;
+  }
+
+  getIsDefault(): boolean {
+    return this.isDefault;
+  }
+
+  getIsActive(): boolean {
+    return this.isActive;
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt;
+  }
+
   get isEditable(): boolean {
     return !this.isDefault;
   }
