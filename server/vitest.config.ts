@@ -5,6 +5,7 @@ export default defineConfig({
     name: 'server',
     globals: true,
     environment: 'node',
+    silent: 'passed-only',
     include: ['src/**/*.{test,spec}.ts'],
     coverage: {
       provider: 'v8',

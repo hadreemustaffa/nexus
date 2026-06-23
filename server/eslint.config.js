@@ -12,6 +12,10 @@ export default [
     },
 
     rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
       'import-x/no-restricted-paths': [
         'error',
         {
