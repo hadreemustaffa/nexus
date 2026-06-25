@@ -1,18 +1,21 @@
 import Note from '../../../domain/entities/Note';
 import NoteRepository from '../../../domain/repositories/NoteRepository';
 import JobDispatcher from '../../jobs/JobDispatcher';
-import ParseAndSaveLinksUseCase from './ParseAndSaveLinksUseCase';
+import { LinkParser } from '../../ports/LinkParser';
 
 export default class CreateNoteUseCase {
   private noteRepository: NoteRepository;
   private dispatcher: JobDispatcher<'GENERATE_TAGS'>;
+  private linkParser: LinkParser;
 
   constructor(
     noteRepository: NoteRepository,
-    dispatcher: JobDispatcher<'GENERATE_TAGS'>
+    dispatcher: JobDispatcher<'GENERATE_TAGS'>,
+    linkParser: LinkParser
   ) {
     this.noteRepository = noteRepository;
     this.dispatcher = dispatcher;
+    this.linkParser = linkParser;
   }
 
   async execute(title: string, content: string) {
@@ -20,8 +23,7 @@ export default class CreateNoteUseCase {
 
     await this.noteRepository.save(note);
 
-    const parseAndSaveLinks = new ParseAndSaveLinksUseCase(this.noteRepository);
-    await parseAndSaveLinks.execute(note.getId(), note.getContent());
+    await this.linkParser.parse(note.getId(), note.getContent());
 
     await this.dispatcher.dispatch({
       noteId: note.getId(),

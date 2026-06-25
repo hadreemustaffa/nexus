@@ -1,52 +1,54 @@
-type IndexEntry = {
+type NoteFrequencyMap = Map<string, number>;
+type Index = Map<string, NoteFrequencyMap>;
+
+export type IndexEntry = {
   noteId: string;
   frequency: number;
 };
 
-type Index = Map<string, IndexEntry[]>;
-
 export default class InvertedIndex {
-  private index: Index;
+  private readonly index: Index;
 
   constructor() {
-    this.index = new Map<string, IndexEntry[]>();
+    this.index = new Map();
   }
 
   addNote(noteId: string, tokens: string[]): void {
-    if (tokens) {
-      tokens.forEach((token) => {
-        if (!this.index.has(token)) {
-          this.index.set(token, [{ noteId, frequency: 1 }]);
-        } else {
-          const indexedTokenWithId = this.index
-            .get(token)
-            ?.find((entry) => entry.noteId === noteId);
+    for (const token of tokens) {
+      let noteFrequencies = this.index.get(token);
 
-          if (indexedTokenWithId) {
-            indexedTokenWithId.frequency += 1;
-          } else {
-            this.index.get(token)!.push({ noteId, frequency: 1 });
-          }
-        }
-      });
+      if (!noteFrequencies) {
+        noteFrequencies = new Map();
+        this.index.set(token, noteFrequencies);
+      }
+
+      noteFrequencies.set(noteId, (noteFrequencies.get(noteId) ?? 0) + 1);
     }
   }
 
   deleteNote(noteId: string, tokens: string[]): void {
-    if (tokens) {
-      tokens.forEach((token) => {
-        if (this.index.has(token)) {
-          const filtered = this.index
-            .get(token)!
-            .filter((entry) => entry.noteId !== noteId);
+    const uniqueTokens = new Set(tokens);
 
-          this.index.set(token, filtered);
-        }
-      });
+    for (const token of uniqueTokens) {
+      const noteFrequencies = this.index.get(token);
+      if (!noteFrequencies) continue;
+
+      noteFrequencies.delete(noteId);
+
+      if (noteFrequencies.size === 0) {
+        this.index.delete(token);
+      }
     }
   }
 
   search(token: string): IndexEntry[] {
-    return this.index.get(token) ?? [];
+    const noteFrequencies = this.index.get(token);
+
+    if (!noteFrequencies) return [];
+
+    return Array.from(noteFrequencies.entries(), ([noteId, frequency]) => ({
+      noteId,
+      frequency,
+    })).sort((a, b) => b.frequency - a.frequency);
   }
 }

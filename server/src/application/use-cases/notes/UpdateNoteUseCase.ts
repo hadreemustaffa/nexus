@@ -1,15 +1,21 @@
 import { NotFoundError } from '../../../domain/errors/NotFoundError';
 import type NoteRepository from '../../../domain/repositories/NoteRepository';
 import type SearchService from '../../../domain/services/SearchService';
-import ParseAndSaveLinksUseCase from './ParseAndSaveLinksUseCase';
+import { LinkParser } from '../../ports/LinkParser';
 
 export default class UpdateNoteUseCase {
   private noteRepository: NoteRepository;
   private searchService: SearchService;
+  private linkParser: LinkParser;
 
-  constructor(noteRepository: NoteRepository, searchService: SearchService) {
+  constructor(
+    noteRepository: NoteRepository,
+    searchService: SearchService,
+    linkParser: LinkParser
+  ) {
     this.noteRepository = noteRepository;
     this.searchService = searchService;
+    this.linkParser = linkParser;
   }
 
   async execute(id: string, title: string, content: string) {
@@ -46,8 +52,7 @@ export default class UpdateNoteUseCase {
     await this.searchService.indexNote(note.getId(), note.getContent());
 
     // re-parse links
-    const parseAndSaveLinks = new ParseAndSaveLinksUseCase(this.noteRepository);
-    await parseAndSaveLinks.execute(note.getId(), note.getContent());
+    await this.linkParser.parse(note.getId(), note.getContent());
 
     return { note };
   }

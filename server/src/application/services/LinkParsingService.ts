@@ -1,13 +1,14 @@
-import type NoteRepository from '../../../domain/repositories/NoteRepository';
+import NoteRepository from '../../domain/repositories/NoteRepository';
+import { LinkParser } from '../ports/LinkParser';
 
-export default class ParseAndSaveLinksUseCase {
+export default class LinkParsingService implements LinkParser {
   private noteRepository: NoteRepository;
 
   constructor(noteRepository: NoteRepository) {
     this.noteRepository = noteRepository;
   }
 
-  async execute(noteId: string, content: string): Promise<void> {
+  async parse(noteId: string, content: string): Promise<void> {
     const links = [...content.matchAll(/\[\[([^\]]+)\]\]/g)]
       .map((match) => match[1])
       .filter(Boolean);

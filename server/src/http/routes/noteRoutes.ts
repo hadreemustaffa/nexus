@@ -37,7 +37,8 @@ export function createNotesRouter(container: Container) {
 
   const createNoteUseCase = new CreateNoteUseCase(
     container.noteRepository,
-    container.tagsDispatcher
+    container.tagsDispatcher,
+    container.linkParser
   );
   const getAllNotesUseCase = new GetAllNotesUseCase(container.noteRepository);
   const getSingleNoteUseCase = new GetSingleNoteUseCase(
@@ -54,7 +55,8 @@ export function createNotesRouter(container: Container) {
   );
   const updateNoteUseCase = new UpdateNoteUseCase(
     container.noteRepository,
-    container.searchService
+    container.searchService,
+    container.linkParser
   );
   const deleteNoteUseCase = new DeleteNoteUseCase(
     container.noteRepository,

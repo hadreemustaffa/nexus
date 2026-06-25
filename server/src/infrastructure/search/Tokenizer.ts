@@ -1,5 +1,6 @@
 export default class Tokenizer {
-  private stopwords = new Set([
+  private readonly splitRegex = /[^a-z0-9]+/i;
+  private readonly stopwords = new Set([
     'a',
     'an',
     'the',
@@ -21,26 +22,28 @@ export default class Tokenizer {
     'were',
     'be',
     'been',
+    'am',
+    'being',
     'has',
     'have',
     'had',
+    'does',
+    'did',
+    'do',
     'it',
     'its',
     'this',
     'that',
+    'these',
+    'those',
     'as',
-    'not',
-    'but',
-    'what',
     'all',
   ]);
 
   tokenize(text: string): string[] {
-    const regex = /[^a-zA-Z0-9]+/;
-
     const tokenizedText = text
       .toLowerCase()
-      .split(regex)
+      .split(this.splitRegex)
       .filter((word) => word.length > 1 && !this.stopwords.has(word));
 
     return tokenizedText;

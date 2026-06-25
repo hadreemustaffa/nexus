@@ -108,7 +108,7 @@ export default class SQLitePromptRepository implements PromptRepository {
     );
   }
 
-  async findActiveByKey(key: string): Promise<Prompt> {
+  async findActiveByKey(key: string): Promise<Prompt | null> {
     const stmt = this.db.prepare(`
         SELECT * FROM prompts 
         WHERE key = @key AND is_active = 1
@@ -131,27 +131,37 @@ export default class SQLitePromptRepository implements PromptRepository {
     });
   }
 
-  async setActive(key: string, id: string): Promise<Prompt[]> {
+  async setActive(id: string): Promise<void> {
+    const findStmt = this.db.prepare(`
+    SELECT key
+    FROM prompts
+    WHERE id = ?
+  `);
+
     const deactivateStmt = this.db.prepare(`
-        UPDATE prompts
-        SET is_active = 0
-        WHERE key = @key
-      `);
+    UPDATE prompts
+    SET is_active = 0
+    WHERE key = ?
+  `);
 
     const activateStmt = this.db.prepare(`
-        UPDATE prompts
-        SET is_active = 1
-        WHERE id = @id
-      `);
+    UPDATE prompts
+    SET is_active = 1
+    WHERE id = ?
+  `);
 
-    const transaction = this.db.transaction(() => {
-      deactivateStmt.run({ key });
-      activateStmt.run({ id });
+    const transaction = this.db.transaction((promptId: string) => {
+      const row = findStmt.get(promptId) as { key: string } | undefined;
+
+      if (!row) {
+        throw new Error(`Prompt not found: ${promptId}`);
+      }
+
+      deactivateStmt.run(row.key);
+      activateStmt.run(promptId);
     });
 
-    transaction();
-
-    return this.findByKey(key);
+    transaction(id);
   }
 
   async delete(id: string): Promise<void> {

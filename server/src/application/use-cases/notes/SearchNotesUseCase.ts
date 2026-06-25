@@ -30,7 +30,11 @@ export default class SearchNotesUseCase {
     const results = await Promise.all(
       searchResults.map(async (res) => {
         const note = await this.noteRepository.findById(res.noteId);
+
+        if (!note) return null;
+
         const tags = await this.tagRepository.findAllByNoteId(res.noteId);
+
         return { note, tags };
       })
     );
