@@ -1,5 +1,5 @@
 import type { Env } from '../config/env';
-import { seedPrompts } from '../infrastructure/database/seeds/promptSeeds';
+import { seedDefaultPrompts } from '../infrastructure/database/seeds/promptSeeds';
 import type { Container } from './Container';
 import setupEvents from './Events';
 import setupWorkers from './Workers';
@@ -27,5 +27,5 @@ export default async function bootstrap(container: Container, env: Env) {
     await container.searchService.indexNote(note.getId(), note.getContent());
   }
 
-  await seedPrompts(container.promptRepository);
+  await seedDefaultPrompts(container.promptRepository);
 }

@@ -12,9 +12,11 @@ export default class Tag {
   }
 
   static create(name: string): Tag {
-    this.validateTitle(name);
+    this.assertTagName(name);
 
-    return new Tag(crypto.randomUUID(), name, new Date());
+    const normalizedName = this.normalizeName(name);
+
+    return new Tag(crypto.randomUUID(), normalizedName, new Date());
   }
 
   static fromPersistence(data: {
@@ -25,7 +27,11 @@ export default class Tag {
     return new Tag(data.id, data.name, new Date(data.created_at));
   }
 
-  private static validateTitle(title: string) {
+  static normalizeName(name: string): string {
+    return name.trim().toLowerCase();
+  }
+
+  private static assertTagName(title: string) {
     if (!title) {
       throw new ValidationError('Tag name cannot be empty', [
         { field: 'name', message: 'Tag name is required' },

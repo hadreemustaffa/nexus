@@ -97,12 +97,14 @@ export default class SQLiteTagRepository implements TagRepository {
   }
 
   async findByName(name: string): Promise<Tag | null> {
+    const normalizedName = Tag.normalizeName(name);
+
     const stmt = this.db.prepare(`
         SELECT * FROM tags 
-        WHERE LOWER(name) = LOWER(@name)
+        WHERE name = @name
       `);
 
-    const row = stmt.get({ name }) as TagRow | undefined;
+    const row = stmt.get({ name: normalizedName }) as TagRow | undefined;
 
     if (!row) return null;
 

@@ -2,11 +2,11 @@ import Prompt from '../../../domain/entities/Prompt';
 import type PromptRepository from '../../../domain/repositories/PromptRepository';
 import { taggingPrompt } from '../default-prompts/tagging';
 
-const DEFAULT_PROMPTS: Record<string, string> = {
+export const DEFAULT_PROMPTS: Record<string, string> = {
   tagging: taggingPrompt,
 };
 
-export async function seedPrompts(
+export async function seedDefaultPrompts(
   promptRepository: PromptRepository
 ): Promise<void> {
   for (const [key, content] of Object.entries(DEFAULT_PROMPTS)) {

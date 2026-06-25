@@ -24,6 +24,12 @@ describe('Tag', () => {
       expect(result.name).toBe(tagName);
       expect(result.created_at).toEqual(new Date('2026-06-20T12:00:00Z'));
     });
+
+    it('normalizes tag name to lowercase and trims whitespace', () => {
+      const tag = Tag.create('  TypeScript  ');
+
+      expect(tag.getName()).toBe('typescript');
+    });
   });
 
   describe('fromPersistence', () => {
