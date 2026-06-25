@@ -1,4 +1,16 @@
 import { defineConfig } from 'vitest/config';
+import { baseCoverageConfig } from '../vitest.shared';
+
+export const coverage = {
+  include: ['src/**/*.ts'],
+  exclude: ['src/index.ts', '**/bootstrap/**'],
+  thresholds: {
+    branches: 80,
+    functions: 80,
+    lines: 80,
+    statements: 80,
+  },
+};
 
 export default defineConfig({
   test: {
@@ -8,21 +20,9 @@ export default defineConfig({
     silent: 'passed-only',
     include: ['src/**/*.{test,spec}.ts'],
     coverage: {
-      provider: 'v8',
+      ...baseCoverageConfig,
       reporter: ['text', 'json', 'html'],
-      // fails if any metric drops below 80%
-      thresholds: {
-        branches: 80,
-        functions: 80,
-        lines: 80,
-        statements: 80,
-      },
-      include: ['src/**/*.ts'],
-      exclude: [
-        'src/**/*.{test,spec}.ts',
-        'src/index.ts',
-        'src/bootstrap/index.ts',
-      ],
+      ...coverage,
     },
   },
 });

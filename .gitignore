@@ -1,12 +1,13 @@
-/node_modules
+**/node_modules
 /.env
-**/dist
 .cursor
 
 # global
+**/dist
 **/*.log
 **/.DS_Store
 **/.idea
+**/coverage
 
 # editor
 .vscode/*

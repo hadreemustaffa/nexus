@@ -50,8 +50,9 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --fix",
-      "bash -c 'tsc -p tsconfig.json --pretty --noEmit'"
+      "eslint --fix --no-warn-ignored",
+      "bash -c 'tsc -p tsconfig.json --pretty --noEmit'",
+      "vitest related --run"
     ]
   }
 }

@@ -1,7 +1,18 @@
 import { defineConfig, mergeConfig } from 'vitest/config';
 import viteConfig from './vite.config';
+import { baseCoverageConfig } from '../vitest.shared';
 
-// Merge instead of redefine — inherits the React plugin for JSX transform
+export const coverage = {
+  include: ['src/**/*.{ts,tsx}'],
+  exclude: ['src/**/*.{test,spec}.{ts,tsx}', 'src/main.tsx', 'src/test/**'],
+  thresholds: {
+    branches: 65,
+    functions: 70,
+    lines: 70,
+    statements: 70,
+  },
+};
+
 export default mergeConfig(
   viteConfig,
   defineConfig({
@@ -12,14 +23,9 @@ export default mergeConfig(
       setupFiles: ['./src/test/setup.ts'],
       include: ['src/**/*.{test,spec}.{ts,tsx}'],
       coverage: {
-        provider: 'v8',
+        ...baseCoverageConfig,
         reporter: ['text', 'json', 'html'],
-        include: ['src/**/*.{ts,tsx}'],
-        exclude: [
-          'src/**/*.{test,spec}.{ts,tsx}',
-          'src/main.tsx', // entry point, nothing to test
-          'src/test/**',
-        ],
+        ...coverage,
       },
     },
   })

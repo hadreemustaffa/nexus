@@ -13,6 +13,7 @@ export default defineConfig([
     'build',
     'coverage',
     '*.config.{js,ts}',
+    '**/vitest.*.ts',
   ]),
 
   js.configs.recommended,
