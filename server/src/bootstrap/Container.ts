@@ -17,7 +17,7 @@ import SQLiteNoteRepository from '../infrastructure/database/SQLiteNoteRepositor
 import SQLitePromptRepository from '../infrastructure/database/SQLitePromptRepository';
 import SQLiteTagRepository from '../infrastructure/database/SQLiteTagRepository';
 import InMemoryEventBus from '../infrastructure/events/InMemoryEventBus';
-import SSEConnectionManager from '../infrastructure/messaging/SSEConnectionManager';
+import SSEConnectionManager from '../infrastructure/realtime/SSEConnectionManager';
 import InMemorySearchService from '../infrastructure/search/InMemorySearchService';
 
 export interface Container {
