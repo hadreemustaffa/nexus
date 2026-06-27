@@ -13,6 +13,8 @@ const projects = [
 
 export default defineConfig({
   test: {
+    silent: 'passed-only',
+
     projects: [
       './client/vitest.config.ts',
       './server/vitest.config.ts',
