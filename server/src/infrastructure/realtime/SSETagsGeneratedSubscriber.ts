@@ -15,7 +15,8 @@ export default class SSETagsGeneratedSubscriber {
     this.eventBus.subscribe(
       'NOTE_TAGS_GENERATED',
       async (event: NoteTagsGeneratedEvent) => {
-        console.log('SSE event received for note:', event.payload.noteId);
+        console.log(`SSE received ${event.type} for ${event.payload.noteId}`);
+
         const connection = this.sseConnectionManager.getConnection(
           event.payload.noteId
         );
