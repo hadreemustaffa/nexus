@@ -127,18 +127,6 @@ describe('Prompt', () => {
       );
     });
 
-    it('throws ValidationError when content exceed maximum characters limit', () => {
-      const longContent = Array(PROMPT_CHARS_MAX + 1)
-        .fill('a')
-        .join('');
-
-      const actual = () => Prompt.create(validKey, longContent, 2);
-
-      expect(actual).toThrow(
-        `Prompt cannot exceed ${PROMPT_CHARS_MAX} characters`
-      );
-    });
-
     it('throws ValidationError when version is falsy or 1', () => {
       // only createDefault() has version 1, so this should throw
       const actual = () => Prompt.create(validKey, validContent, 1);

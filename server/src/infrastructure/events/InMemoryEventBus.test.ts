@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { buildEvent } from '../../tests/utils/buildEvent';
 import InMemoryEventBus from './InMemoryEventBus';
 

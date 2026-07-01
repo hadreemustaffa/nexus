@@ -5,6 +5,7 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import { importX, createNodeResolver } from 'eslint-plugin-import-x';
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 import checkFile from 'eslint-plugin-check-file';
+import vitest from '@vitest/eslint-plugin';
 
 export default defineConfig([
   globalIgnores([
@@ -71,6 +72,22 @@ export default defineConfig([
 
     rules: {
       'import-x/no-cycle': 'error',
+    },
+  },
+
+  {
+    files: ['**/*.test.ts'],
+    plugins: {
+      vitest,
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
     },
   },
 ]);

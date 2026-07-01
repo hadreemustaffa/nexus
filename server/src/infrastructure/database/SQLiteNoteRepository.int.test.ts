@@ -113,7 +113,7 @@ describe('SQLiteNoteRepository', () => {
   });
 
   describe('findLinks', () => {
-    it(' returns an empty array when note has no links', async () => {
+    it('returns an empty array when note has no links', async () => {
       const note = NoteFactory.build();
       await repository.save(note);
 
