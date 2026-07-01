@@ -5,9 +5,15 @@ export type ApiResponse<T> = {
 
 export type FieldError = { field: string; message: string };
 
+export type ErrorCode =
+  | 'VALIDATION_ERROR'
+  | 'NOT_FOUND'
+  | 'EXTERNAL_SERVICE_ERROR'
+  | 'INTERNAL_ERROR';
+
 export type ApiErrorResponse = {
   error: {
-    code: string;
+    code: ErrorCode;
     message: string;
     details?: FieldError[];
   };
