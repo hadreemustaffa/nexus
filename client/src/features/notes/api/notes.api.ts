@@ -8,7 +8,7 @@ export const createNote = (data: {
   content: string;
   tags?: string[];
 }) =>
-  apiFetch<ApiResponse<NoteWithTags>>(api.notes.root.getRoute(), {
+  apiFetch<ApiResponse<NoteWithTags>>(api.notes.create.getRoute(), {
     method: 'POST',
     body: JSON.stringify(data),
   });
@@ -37,9 +37,7 @@ export const deleteNote = (id: string) =>
   });
 
 export const searchNotes = (query: string) =>
-  apiFetch<ApiResponse<NoteWithTags[]>>(
-    api.notes.search.getRoute(encodeURIComponent(query))
-  );
+  apiFetch<ApiResponse<NoteWithTags[]>>(api.notes.search.getRoute(query));
 
 export const regenerateNoteTags = (id: string) =>
   apiFetch<ApiResponse<NoteWithTags>>(api.notes.tags.getRoute(id), {

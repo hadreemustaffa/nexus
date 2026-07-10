@@ -78,12 +78,12 @@ describe('routes (integration)', () => {
   describe('/api/v1/notes', () => {
     // ----- POST /api/v1/notes -----
 
-    describe('POST /api/v1/notes', () => {
+    describe('POST /api/v1/notes/create', () => {
       it('returns 201 with the created note', async () => {
         const note = NoteFactory.build();
 
         const response = await requestAgent
-          .post('/api/v1/notes')
+          .post('/api/v1/notes/create')
           .send({ title: note.getTitle(), content: note.getContent() });
 
         expect(response.status).toBe(201);
@@ -103,7 +103,7 @@ describe('routes (integration)', () => {
 
       it('returns 400 with field details for an invalid body', async () => {
         const response = await requestAgent
-          .post('/api/v1/notes')
+          .post('/api/v1/notes/create')
           .send({ title: '', content: '' });
 
         expect(response.status).toBe(400);

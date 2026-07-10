@@ -84,7 +84,7 @@ export function createNotesRouter(container: Container) {
   );
 
   router.post(
-    api.notes.root.path,
+    api.notes.create.path,
     validate({ body: createNoteBodySchema }),
     asyncHandler(createNoteController.handle)
   );
