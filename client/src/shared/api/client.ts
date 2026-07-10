@@ -25,10 +25,11 @@ export async function apiFetch<T>(
   options?: RequestInit
 ): Promise<T> {
   const res = await fetch(`${import.meta.env.VITE_API_URL}${path}`, {
+    ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...options?.headers,
     },
-    ...options,
   });
 
   let body: unknown = null;
