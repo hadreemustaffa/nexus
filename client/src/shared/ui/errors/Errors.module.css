@@ -1,0 +1,19 @@
+.error {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  margin-inline: auto;
+  opacity: 0.9;
+  font-weight: normal;
+  font-size: var(--fs-md);
+}
+
+.error_icon {
+  padding: 1rem;
+  border-radius: 50%;
+  background-color: var(--surface);
+}

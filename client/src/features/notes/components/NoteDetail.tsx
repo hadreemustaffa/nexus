@@ -67,6 +67,7 @@ function NoteDetailContent({
         <NoteDetailOptions
           note={note.note}
           onRegenerate={() => setIsGenerating(true)}
+          isRegenerating={isGenerating}
         />
       </div>
 
@@ -108,15 +109,16 @@ function NoteDetailContent({
 function NoteDetailOptions({
   note,
   onRegenerate,
+  isRegenerating,
 }: {
   note: Note;
   onRegenerate: () => void;
+  isRegenerating: boolean;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const fetcher = useFetcher();
-  const isSubmitting = fetcher.state === 'submitting';
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -177,12 +179,9 @@ function NoteDetailOptions({
             id='regenerate-note-tags'
             type='submit'
             className={styles.option}
-            disabled={isSubmitting}
+            disabled={isRegenerating}
           >
-            <RefreshCw
-              size={16}
-              className={`${isSubmitting ? styles.submitting : ''}`}
-            />
+            <RefreshCw size={16} />
             Regenerate Tags
           </button>
         </fetcher.Form>

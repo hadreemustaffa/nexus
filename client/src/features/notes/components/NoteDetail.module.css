@@ -122,6 +122,11 @@
     & .submitting {
       animation: rotate 1s linear infinite;
     }
+
+    &:disabled {
+      color: var(--text-muted);
+      pointer-events: none;
+    }
   }
 
   .error {
