@@ -1,5 +1,4 @@
-import { createBrowserRouter, redirect } from 'react-router';
-import { RouterProvider } from 'react-router/dom';
+import { createBrowserRouter, redirect, RouterProvider } from 'react-router';
 
 import { paths } from '../config/paths';
 import {
