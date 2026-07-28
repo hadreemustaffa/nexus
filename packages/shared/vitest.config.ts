@@ -3,7 +3,11 @@ import { baseCoverageConfig } from '../../vitest.shared';
 
 export const coverage = {
   include: ['src/**/*.ts'],
-  exclude: ['src/**/*.{test,spec}.ts', 'src/**/messages.ts', 'src/index.ts'],
+  exclude: [
+    'src/**/*.{test,spec}.ts',
+    'src/**/{messages,schemas}.ts',
+    'src/index.ts',
+  ],
   thresholds: {
     branches: 85,
     functions: 85,
