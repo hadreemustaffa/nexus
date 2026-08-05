@@ -3,6 +3,7 @@ import Database, { type Database as DB } from 'better-sqlite3';
 import type EventBus from '../application/events/EventBus';
 import type JobDispatcher from '../application/jobs/JobDispatcher';
 import { LinkParser } from '../application/ports/LinkParser';
+import type Logger from '../application/ports/Logger';
 import LinkParsingService from '../application/services/LinkParsingService';
 import type { Env } from '../config/env';
 import type NoteRepository from '../domain/repositories/NoteRepository';
@@ -17,11 +18,13 @@ import SQLiteNoteRepository from '../infrastructure/database/SQLiteNoteRepositor
 import SQLitePromptRepository from '../infrastructure/database/SQLitePromptRepository';
 import SQLiteTagRepository from '../infrastructure/database/SQLiteTagRepository';
 import InMemoryEventBus from '../infrastructure/events/InMemoryEventBus';
+import PinoLogger from '../infrastructure/logging/PinoLogger';
 import SSEConnectionManager from '../infrastructure/realtime/SSEConnectionManager';
 import InMemorySearchService from '../infrastructure/search/InMemorySearchService';
 
 export interface Container {
   db: DB;
+  logger: Logger;
   noteRepository: NoteRepository;
   tagRepository: TagRepository;
   promptRepository: PromptRepository;
@@ -38,16 +41,24 @@ export function createContainer(env: Env): Container {
 
   initDatabase(db);
 
+  const logger = new PinoLogger({
+    logLevel: env.LOG_LEVEL,
+    nodeEnv: env.NODE_ENV,
+  });
+
   const noteRepository = new SQLiteNoteRepository(db);
   const tagRepository = new SQLiteTagRepository(db);
   const promptRepository = new SQLitePromptRepository(db);
   const promptService = new SQLitePromptService(promptRepository);
 
-  const aiService = new OllamaAIService({
-    ollamaUrl: env.OLLAMA_URL,
-    ollamaModel: env.OLLAMA_MODEL,
-    promptService: promptService,
-  });
+  const aiService = new OllamaAIService(
+    {
+      ollamaUrl: env.OLLAMA_URL,
+      ollamaModel: env.OLLAMA_MODEL,
+      promptService: promptService,
+    },
+    logger
+  );
   const eventBus = new InMemoryEventBus();
   const sseConnectionManager = new SSEConnectionManager();
   const searchService = new InMemorySearchService();
@@ -56,6 +67,7 @@ export function createContainer(env: Env): Container {
 
   return {
     db,
+    logger,
     noteRepository,
     tagRepository,
     promptRepository,

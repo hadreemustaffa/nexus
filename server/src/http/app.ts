@@ -28,7 +28,7 @@ export function createApp(deps: { env: Env; container: Container }) {
     });
   });
 
-  app.use(errorHandler);
+  app.use(errorHandler(deps.container.logger));
 
   return app;
 }

@@ -1,6 +1,7 @@
 import type EventBus from '../../../application/events/EventBus';
 import type { GenerateTagsJob } from '../../../application/jobs/GenerateTagsJob';
 import type JobProcessor from '../../../application/jobs/JobProcessor';
+import Logger from '../../../application/ports/Logger';
 import Tag from '../../../domain/entities/Tag';
 import type TagRepository from '../../../domain/repositories/TagRepository';
 import type AIService from '../../../domain/services/AIService';
@@ -9,19 +10,22 @@ export default class GenerateTagsProcessor implements JobProcessor<GenerateTagsJ
   private tagRepository: TagRepository;
   private aiService: AIService;
   private eventBus: EventBus;
+  private logger: Logger;
 
   constructor(
     tagRepository: TagRepository,
     aiService: AIService,
-    eventBus: EventBus
+    eventBus: EventBus,
+    logger: Logger
   ) {
     this.tagRepository = tagRepository;
     this.aiService = aiService;
     this.eventBus = eventBus;
+    this.logger = logger;
   }
 
   async process(job: GenerateTagsJob): Promise<void> {
-    console.log('Processing job for note:', job.noteId);
+    this.logger.info({ noteId: job.noteId }, 'Processing job');
     const tags = await this.aiService.generateTags(job.content);
     const tagsPayload: Tag[] = [];
 

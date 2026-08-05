@@ -38,7 +38,8 @@ export function createNotesRouter(container: Container) {
   const createNoteUseCase = new CreateNoteUseCase(
     container.noteRepository,
     container.tagsDispatcher,
-    container.linkParser
+    container.linkParser,
+    container.logger
   );
   const getAllNotesUseCase = new GetAllNotesUseCase(container.noteRepository);
   const getSingleNoteUseCase = new GetSingleNoteUseCase(

@@ -1,15 +1,18 @@
 import FakeJobProcessor from '../../tests/fakes/JobProcessor.fake';
+import FakeLogger from '../../tests/fakes/Logger.fake';
 import FakeQueue from '../../tests/fakes/Queue.fake';
 import Worker from './Worker';
 
 describe('Worker', () => {
   let queue: FakeQueue<{ id: string }>;
   let processor: FakeJobProcessor<{ id: string }>;
+  let logger: FakeLogger;
 
   beforeEach(() => {
     vi.useFakeTimers();
     queue = new FakeQueue<{ id: string }>();
     processor = new FakeJobProcessor<{ id: string }>();
+    logger = new FakeLogger();
   });
 
   afterEach(() => {
@@ -20,7 +23,7 @@ describe('Worker', () => {
     const job = { id: 'job-1' };
     queue.dequeue.mockReturnValueOnce(job);
 
-    const worker = new Worker(queue, processor, 5000);
+    const worker = new Worker(queue, processor, 5000, logger);
     worker.start();
 
     await vi.advanceTimersByTimeAsync(0);
@@ -33,7 +36,7 @@ describe('Worker', () => {
     queue.dequeue.mockReturnValue(undefined);
     const pollInterval = 1000;
 
-    const worker = new Worker(queue, processor, pollInterval);
+    const worker = new Worker(queue, processor, pollInterval, logger);
     worker.start();
 
     await vi.advanceTimersByTimeAsync(0);
@@ -49,11 +52,9 @@ describe('Worker', () => {
     const job = { id: 'job-1' };
     queue.dequeue.mockReturnValueOnce(job); // subsequent calls return undefined
     processor.process.mockRejectedValueOnce(new Error('process failed'));
-    const consoleErrorSpy = vi
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
+    logger.error = vi.fn();
 
-    const worker = new Worker(queue, processor, 5000);
+    const worker = new Worker(queue, processor, 5000, logger);
     worker.start();
 
     // finally-block has a 0ms reschedule that fires inside the same window, so
@@ -62,10 +63,11 @@ describe('Worker', () => {
     await vi.advanceTimersByTimeAsync(0);
 
     expect(processor.process).toHaveBeenCalledTimes(1);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(expect.any(Error));
+    expect(logger.error).toHaveBeenCalledWith(
+      { error: expect.any(Error) },
+      'Error processing job'
+    );
     expect(queue.dequeue).toHaveBeenCalledTimes(2); // failed job + the retry that followed
-
-    consoleErrorSpy.mockRestore();
   });
 
   it('does not start a second concurrent processNext while one is still running', async () => {
@@ -79,7 +81,7 @@ describe('Worker', () => {
       })
     );
 
-    const worker = new Worker(queue, processor, 5000);
+    const worker = new Worker(queue, processor, 5000, logger);
 
     worker.start();
     worker.start(); // subsequent call while the first job is still in-flight

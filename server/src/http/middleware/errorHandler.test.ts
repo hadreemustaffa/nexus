@@ -4,12 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExternalServiceError } from '../../domain/errors/ExternalServiceError';
 import { NotFoundError } from '../../domain/errors/NotFoundError';
 import { ValidationError } from '../../domain/errors/ValidationError';
+import FakeLogger from '../../tests/fakes/Logger.fake';
 import { errorHandler } from './errorHandler';
 
 describe('errorHandler', () => {
   let req: Request;
   let res: Response;
   let next: NextFunction;
+  let logger: FakeLogger;
 
   beforeEach(() => {
     req = {} as Request;
@@ -19,7 +21,10 @@ describe('errorHandler', () => {
       json: vi.fn().mockReturnThis(),
     } as unknown as Response;
     next = vi.fn();
+    logger = new FakeLogger();
   });
+
+  const createErrorHandler = () => errorHandler(logger);
 
   afterEach(() => {
     vi.restoreAllMocks();
@@ -45,7 +50,7 @@ describe('errorHandler', () => {
   ])(
     'maps %s to its statusCode/code/message',
     (_label, error, statusCode, code) => {
-      errorHandler(error, req, res, next);
+      createErrorHandler()(error, req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(statusCode);
       expect(res.json).toHaveBeenCalledWith({
@@ -58,7 +63,7 @@ describe('errorHandler', () => {
     const details = [{ field: 'title', message: 'Required' }];
     const error = new ValidationError('Invalid request', details);
 
-    errorHandler(error, req, res, next);
+    createErrorHandler()(error, req, res, next);
 
     expect(res.json).toHaveBeenCalledWith({
       error: { code: 'VALIDATION_ERROR', message: 'Invalid request', details },
@@ -68,7 +73,7 @@ describe('errorHandler', () => {
   it('omits details for a ValidationError with an empty details array', () => {
     const error = new ValidationError('Invalid request', []);
 
-    errorHandler(error, req, res, next);
+    createErrorHandler()(error, req, res, next);
 
     expect(res.json).toHaveBeenCalledWith({
       error: { code: 'VALIDATION_ERROR', message: 'Invalid request' },
@@ -78,7 +83,7 @@ describe('errorHandler', () => {
   it('falls back to 500/INTERNAL_ERROR for a non-AppError', () => {
     const error = new Error('unexpected failure');
 
-    errorHandler(error, req, res, next);
+    createErrorHandler()(error, req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
@@ -94,7 +99,7 @@ describe('errorHandler', () => {
     } as unknown as Response;
     const error = new NotFoundError('Note', '123');
 
-    errorHandler(error, req, sentRes, next);
+    createErrorHandler()(error, req, sentRes, next);
 
     expect(next).toHaveBeenCalledWith(error);
     expect(sentRes.status).not.toHaveBeenCalled();

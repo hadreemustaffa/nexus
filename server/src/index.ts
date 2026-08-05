@@ -15,10 +15,13 @@ async function start() {
     const app = createApp({ env, container });
 
     app.listen(env.PORT, () => {
-      console.log(`Nexus server running on http://localhost:${env.PORT}`);
+      container.logger.info(
+        {},
+        `Nexus server running on http://localhost:${env.PORT}`
+      );
     });
   } catch (error) {
-    console.error('Failed to start application:', error);
+    container.logger.error({ error: error }, 'Failed to start application:');
 
     process.exit(1);
   }

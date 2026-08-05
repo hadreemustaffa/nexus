@@ -1,5 +1,6 @@
 import { TagFactory } from '../../tests/factories/Tag.factory';
 import { FakeEventBus } from '../../tests/fakes/EventBus.fake';
+import FakeLogger from '../../tests/fakes/Logger.fake';
 import FakeSSEConnectionManager from '../../tests/fakes/SSEConnectionManager.fake';
 import FakeSSEResponse from '../../tests/fakes/SSEResponse.fake';
 import { buildEvent } from '../../tests/utils/buildEvent';
@@ -10,15 +11,18 @@ describe('SSETagsGeneratedSubscriber', () => {
   let sseConnectionManager: FakeSSEConnectionManager;
   let sseResponse: FakeSSEResponse;
   let eventBus: FakeEventBus;
+  let logger: FakeLogger;
 
   beforeEach(() => {
     sseConnectionManager = new FakeSSEConnectionManager();
     sseResponse = new FakeSSEResponse();
     eventBus = new FakeEventBus();
+    logger = new FakeLogger();
 
     sseTagsGeneratedSubscriber = new SSETagsGeneratedSubscriber(
       eventBus,
-      sseConnectionManager.asConnectionManager()
+      sseConnectionManager.asConnectionManager(),
+      logger
     );
   });
 

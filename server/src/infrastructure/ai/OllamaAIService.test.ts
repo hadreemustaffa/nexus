@@ -1,3 +1,4 @@
+import FakeLogger from '../../tests/fakes/Logger.fake';
 import FakePromptService from '../../tests/fakes/PromptService.fake';
 import { mockOllamaResponse } from '../../tests/mocks/OllamaResponse.mock';
 import OllamaAIService from './OllamaAIService';
@@ -7,17 +8,22 @@ const OLLAMA_MODEL = 'qwen3';
 
 describe('OllamaAIService', () => {
   let service: OllamaAIService;
+  let logger: FakeLogger;
 
   beforeEach(() => {
     global.fetch = vi.fn();
+    logger = new FakeLogger();
 
-    service = new OllamaAIService({
-      ollamaUrl: OLLAMA_URL,
-      ollamaModel: OLLAMA_MODEL,
-      promptService: new FakePromptService({
-        tagging: 'Generate tags',
-      }),
-    });
+    service = new OllamaAIService(
+      {
+        ollamaUrl: OLLAMA_URL,
+        ollamaModel: OLLAMA_MODEL,
+        promptService: new FakePromptService({
+          tagging: 'Generate tags',
+        }),
+      },
+      logger
+    );
   });
 
   it('parses, normalizes and filters tags', async () => {

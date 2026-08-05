@@ -1,4 +1,5 @@
 import type JobProcessor from '../../application/jobs/JobProcessor';
+import type Logger from '../../application/ports/Logger';
 import type Queue from './Queue';
 
 export default class Worker<T> {
@@ -6,16 +7,19 @@ export default class Worker<T> {
   private processor: JobProcessor<T>;
   private isProcessing: boolean;
   private pollInterval: number;
+  private logger: Logger;
 
   constructor(
     queue: Queue<T>,
     processor: JobProcessor<T>,
-    pollInterval: number = 5000
+    pollInterval: number = 5000,
+    logger: Logger
   ) {
     this.queue = queue;
     this.processor = processor;
     this.pollInterval = pollInterval;
     this.isProcessing = false;
+    this.logger = logger;
   }
 
   start(): void {
@@ -39,7 +43,7 @@ export default class Worker<T> {
     try {
       await this.processor.process(job);
     } catch (error) {
-      console.error(error);
+      this.logger.error({ error: error }, 'Error processing job');
     } finally {
       this.isProcessing = false;
 

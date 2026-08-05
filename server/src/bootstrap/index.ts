@@ -8,6 +8,7 @@ export default async function bootstrap(container: Container, env: Env) {
   setupEvents({
     eventBus: container.eventBus,
     sseConnectionManager: container.sseConnectionManager,
+    logger: container.logger,
   });
 
   const { tagsDispatcher } = setupWorkers(
@@ -15,6 +16,7 @@ export default async function bootstrap(container: Container, env: Env) {
       tagRepository: container.tagRepository,
       aiService: container.aiService,
       eventBus: container.eventBus,
+      logger: container.logger,
     },
     env.WORKER_POLL_INTERVAL_MS
   );

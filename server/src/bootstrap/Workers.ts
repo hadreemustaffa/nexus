@@ -1,4 +1,5 @@
 import type EventBus from '../application/events/EventBus';
+import Logger from '../application/ports/Logger';
 import type TagRepository from '../domain/repositories/TagRepository';
 import type AIService from '../domain/services/AIService';
 import GenerateTagsProcessor from '../infrastructure/ai/processors/GenerateTagsProcessor';
@@ -9,6 +10,7 @@ export default function setupWorkers(
     tagRepository: TagRepository;
     aiService: AIService;
     eventBus: EventBus;
+    logger: Logger;
   },
   workerPollIntervalMs: number
 ) {
@@ -17,7 +19,8 @@ export default function setupWorkers(
   const tagsProcessor = new GenerateTagsProcessor(
     deps.tagRepository,
     deps.aiService,
-    deps.eventBus
+    deps.eventBus,
+    deps.logger
   );
 
   const tagsDispatcher = registry.register('GENERATE_TAGS', tagsProcessor);

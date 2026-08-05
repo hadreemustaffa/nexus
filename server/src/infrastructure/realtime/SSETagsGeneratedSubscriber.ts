@@ -1,21 +1,37 @@
 import type EventBus from '../../application/events/EventBus';
+import Logger from '../../application/ports/Logger';
 import type { NoteTagsGeneratedEvent } from '../../domain/events/NoteTagsGeneratedEvent';
 import type SSEConnectionManager from './SSEConnectionManager';
 
 export default class SSETagsGeneratedSubscriber {
   private eventBus: EventBus;
   private sseConnectionManager: SSEConnectionManager;
+  private logger: Logger;
 
-  constructor(eventBus: EventBus, sseConnectionManager: SSEConnectionManager) {
+  constructor(
+    eventBus: EventBus,
+    sseConnectionManager: SSEConnectionManager,
+    logger: Logger
+  ) {
     this.eventBus = eventBus;
     this.sseConnectionManager = sseConnectionManager;
+    this.logger = logger;
   }
 
   subscribe(): void {
     this.eventBus.subscribe(
       'NOTE_TAGS_GENERATED',
       async (event: NoteTagsGeneratedEvent) => {
-        console.log(`SSE received ${event.type} for ${event.payload.noteId}`);
+        this.logger.info(
+          {
+            type: event.type,
+            payload: {
+              noteId: event.payload.noteId,
+              tags: event.payload.tags.map((tag) => tag.getName()),
+            },
+          },
+          'Event received'
+        );
 
         const connection = this.sseConnectionManager.getConnection(
           event.payload.noteId

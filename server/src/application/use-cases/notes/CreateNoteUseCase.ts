@@ -2,20 +2,24 @@ import Note from '../../../domain/entities/Note';
 import NoteRepository from '../../../domain/repositories/NoteRepository';
 import JobDispatcher from '../../jobs/JobDispatcher';
 import { LinkParser } from '../../ports/LinkParser';
+import Logger from '../../ports/Logger';
 
 export default class CreateNoteUseCase {
   private noteRepository: NoteRepository;
   private dispatcher: JobDispatcher<'GENERATE_TAGS'>;
   private linkParser: LinkParser;
+  private logger: Logger;
 
   constructor(
     noteRepository: NoteRepository,
     dispatcher: JobDispatcher<'GENERATE_TAGS'>,
-    linkParser: LinkParser
+    linkParser: LinkParser,
+    logger: Logger
   ) {
     this.noteRepository = noteRepository;
     this.dispatcher = dispatcher;
     this.linkParser = linkParser;
+    this.logger = logger;
   }
 
   async execute(title: string, content: string) {
@@ -30,7 +34,7 @@ export default class CreateNoteUseCase {
       content: note.getContent(),
     });
 
-    console.log('Job dispatched for note:', note.getId());
+    this.logger.info({ noteId: note.getId() }, 'Job dispatched for note');
 
     return {
       note,

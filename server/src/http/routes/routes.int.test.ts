@@ -15,6 +15,7 @@ import { NoteFactory } from '../../tests/factories/Note.factory';
 import { PromptFactory } from '../../tests/factories/Prompt.factory';
 import { FakeAIService } from '../../tests/fakes/AIService.fake';
 import { FakeJobDispatcher } from '../../tests/fakes/JobDispatcher.fake';
+import FakeLogger from '../../tests/fakes/Logger.fake';
 import { FakeNoteRepository } from '../../tests/fakes/NoteRepository.fake';
 import { FakePromptRepository } from '../../tests/fakes/PromptRepository.fake';
 import { FakeTagRepository } from '../../tests/fakes/TagRepository.fake';
@@ -32,6 +33,7 @@ const TEST_ENV: Env = {
   OLLAMA_URL: 'http://localhost:11434',
   OLLAMA_MODEL: 'qwen2.5:7b',
   WORKER_POLL_INTERVAL_MS: 5000,
+  LOG_LEVEL: 'info',
 };
 
 const supertest = _request as unknown as (app: Express) => TestAgent;
@@ -41,6 +43,7 @@ describe('routes (integration)', () => {
   let noteRepository: FakeNoteRepository;
   let promptRepository: FakePromptRepository;
   let tagsDispatcher: FakeJobDispatcher<'GENERATE_TAGS'>;
+  let logger: FakeLogger;
   let sseConnectionManager: SSEConnectionManager;
   let requestAgent: TestAgent;
 
@@ -48,6 +51,7 @@ describe('routes (integration)', () => {
     noteRepository = new FakeNoteRepository();
     promptRepository = new FakePromptRepository();
     tagsDispatcher = new FakeJobDispatcher();
+    logger = new FakeLogger();
     sseConnectionManager = new SSEConnectionManager();
 
     const container: Container = {
@@ -61,14 +65,11 @@ describe('routes (integration)', () => {
       searchService: new InMemorySearchService(),
       linkParser: new LinkParsingService(noteRepository),
       tagsDispatcher,
+      logger,
     };
 
     app = createApp({ env: TEST_ENV, container });
     requestAgent = supertest(app);
-
-    vi.spyOn(console, 'log').mockImplementation(() => {});
-    vi.spyOn(console, 'warn').mockImplementation(() => {});
-    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {

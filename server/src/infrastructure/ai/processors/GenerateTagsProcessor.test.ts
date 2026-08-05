@@ -4,6 +4,7 @@ import { GenerateTagsJob } from '../../../application/jobs/GenerateTagsJob';
 import { TagFactory } from '../../../tests/factories/Tag.factory';
 import { FakeAIService } from '../../../tests/fakes/AIService.fake';
 import { FakeEventBus } from '../../../tests/fakes/EventBus.fake';
+import FakeLogger from '../../../tests/fakes/Logger.fake';
 import { FakeTagRepository } from '../../../tests/fakes/TagRepository.fake';
 import { expectEvent } from '../../../tests/utils/expectEvent';
 import GenerateTagsProcessor from './GenerateTagsProcessor';
@@ -12,6 +13,7 @@ describe('GenerateTagsProcessor', () => {
   let aiService: FakeAIService;
   let tagRepository: FakeTagRepository;
   let eventBus: FakeEventBus;
+  let logger: FakeLogger;
   let generateTagsProcessor: GenerateTagsProcessor;
   let job: GenerateTagsJob;
 
@@ -19,11 +21,13 @@ describe('GenerateTagsProcessor', () => {
     aiService = new FakeAIService();
     tagRepository = new FakeTagRepository();
     eventBus = new FakeEventBus();
+    logger = new FakeLogger();
 
     generateTagsProcessor = new GenerateTagsProcessor(
       tagRepository,
       aiService,
-      eventBus
+      eventBus,
+      logger
     );
 
     const content = Array(NOTE_WORD_MIN).fill('word').join(' ');

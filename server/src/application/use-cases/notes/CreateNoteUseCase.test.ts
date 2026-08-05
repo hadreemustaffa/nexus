@@ -1,6 +1,7 @@
 import { NOTE_WORD_MIN } from '@nexus/shared';
 
 import { FakeJobDispatcher } from '../../../tests/fakes/JobDispatcher.fake';
+import FakeLogger from '../../../tests/fakes/Logger.fake';
 import { FakeNoteRepository } from '../../../tests/fakes/NoteRepository.fake';
 import { LinkParser } from '../../ports/LinkParser';
 import CreateNoteUseCase from './CreateNoteUseCase';
@@ -9,19 +10,21 @@ describe('CreateNoteUseCase', () => {
   let createNoteUseCase: CreateNoteUseCase;
   let noteRepository: FakeNoteRepository;
   let jobDispatcher: FakeJobDispatcher<'GENERATE_TAGS'>;
+  let logger: FakeLogger;
 
   beforeEach(() => {
     const linkParser: LinkParser = {
       parse: vi.fn().mockResolvedValue(undefined),
     };
 
+    logger = new FakeLogger();
     noteRepository = new FakeNoteRepository();
-
     jobDispatcher = new FakeJobDispatcher<'GENERATE_TAGS'>();
     createNoteUseCase = new CreateNoteUseCase(
       noteRepository,
       jobDispatcher,
-      linkParser
+      linkParser,
+      logger
     );
   });
 
