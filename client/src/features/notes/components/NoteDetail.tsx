@@ -1,10 +1,11 @@
 import { api, type ApiResponse } from '@nexus/shared';
 import { Edit, EllipsisVertical, RefreshCw, Trash } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Form, NavLink, useFetcher, useLoaderData } from 'react-router';
 
 import { paths } from '../../../config/paths';
 import Button from '../../../shared/ui/button/Button';
+import MarkdownBody from '../../../shared/ui/markdown-body/MarkdownBody';
 import Tag from '../../tags/Tag';
 import type { Note, NoteWithTags, Tag as TagType } from '../types';
 import styles from './NoteDetail.module.css';
@@ -33,6 +34,14 @@ function NoteDetailContent({
 }) {
   const [tags, setTags] = useState<TagType[]>(note.tags ?? []);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  const relatedByTitle = useMemo(() => {
+    const map = new Map<string, Note>();
+    for (const r of related) {
+      map.set(r.title.toLowerCase(), r);
+    }
+    return map;
+  }, [related]);
 
   useEffect(() => {
     const eventSource = new EventSource(
@@ -86,7 +95,10 @@ function NoteDetailContent({
         </ul>
       )}
 
-      <p className={styles.content__text}>{note.note.content}</p>
+      <MarkdownBody
+        content={note.note.content}
+        relatedByTitle={relatedByTitle}
+      />
 
       {related.length > 0 && (
         <div className={styles.related}>

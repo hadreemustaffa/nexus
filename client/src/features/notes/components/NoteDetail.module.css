@@ -3,6 +3,8 @@
   flex-direction: row;
   gap: 0.5rem;
   flex-wrap: wrap;
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
 }
 
 .content {
@@ -10,25 +12,24 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   text-align: left;
   min-width: 500px;
+  padding-inline: var(--spacing-lg);
 
   .content__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
-  }
-
-  .content__text {
-    white-space: pre-wrap;
+    gap: var(--spacing-md);
+    padding: var(--spacing-xs) 0;
   }
 
   .generating {
     display: flex;
     gap: var(--spacing-xs);
     font-size: var(--fs-sm);
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
 
     svg {
       animation: rotate 1s linear infinite;
@@ -40,6 +41,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  margin-top: var(--spacing-xl);
 
   ul {
     padding-inline-start: var(--spacing-md);

@@ -67,6 +67,7 @@ vi.mock('../../tags/Tag', () => ({
 vi.mock('react-router', () => ({
   useLoaderData: vi.fn(),
   useFetcher: vi.fn(),
+  useNavigate: () => vi.fn(),
   NavLink: ({
     to,
     children,
@@ -124,8 +125,6 @@ function FetcherFormMock({
   );
 }
 
-// ---- EventSource mock -----------------------------------------------
-
 class MockEventSource {
   static instances: MockEventSource[] = [];
 
@@ -157,7 +156,6 @@ class MockEventSource {
     this.closed = true;
   }
 
-  // test helper: simulate the server pushing a named SSE event
   emit(type: string, data: unknown) {
     for (const listener of this.listeners[type] ?? []) {
       listener({ data: JSON.stringify(data) });
@@ -316,9 +314,6 @@ describe('NoteDetail', () => {
       related: { data: [] },
     });
 
-    // NoteDetail keys NoteDetailContent by note id, so a new loader payload
-    // for a different note remounts the child (this is what actually
-    // happens when the user navigates between two note routes).
     rerender(<NoteDetail />);
 
     expect(firstEventSource.closed).toBe(true);
