@@ -38,7 +38,7 @@ const router = createBrowserRouter([
       try {
         return await getNotes();
       } catch (error) {
-        return handleLoaderError(error, 'Failed to load notes');
+        return handleLoaderError(error);
       }
     },
     errorElement: <AppRootErrorBoundary />,
@@ -67,7 +67,7 @@ const router = createBrowserRouter([
                 ]);
                 return { note, related };
               } catch (error) {
-                return handleLoaderError(error, 'Failed to load note');
+                return handleLoaderError(error);
               }
             },
             action: async ({ params }) => {
@@ -77,7 +77,7 @@ const router = createBrowserRouter([
                 await deleteNote(noteId);
                 return redirect(paths.app.notes.path);
               } catch (error) {
-                return handleActionError(error, 'Failed to delete note');
+                return handleActionError(error);
               }
             },
           },
@@ -95,7 +95,7 @@ const router = createBrowserRouter([
 
                 return redirect(paths.app.notes.note.getHref(data.note.id));
               } catch (error) {
-                return handleActionError(error, 'Failed to create note');
+                return handleActionError(error);
               }
             },
           },
@@ -109,7 +109,7 @@ const router = createBrowserRouter([
                 const note = await getNote(noteId);
                 return note;
               } catch (error) {
-                return handleLoaderError(error, 'Failed to load note');
+                return handleLoaderError(error);
               }
             },
             action: async ({ request }) => {
@@ -124,7 +124,7 @@ const router = createBrowserRouter([
 
                 return redirect(paths.app.notes.note.getHref(data.note.id));
               } catch (error) {
-                return handleActionError(error, 'Failed to save note');
+                return handleActionError(error);
               }
             },
           },
@@ -137,7 +137,7 @@ const router = createBrowserRouter([
                 await regenerateNoteTags(noteId);
                 return null;
               } catch (error) {
-                return handleActionError(error, 'Failed to regenerate tags');
+                return handleActionError(error);
               }
             },
           },
@@ -158,7 +158,7 @@ const router = createBrowserRouter([
                     const result = await getAllPrompts();
                     return result;
                   } catch (error) {
-                    return handleLoaderError(error, 'Failed to load prompts');
+                    return handleLoaderError(error);
                   }
                 },
                 Component: PromptList,
@@ -179,7 +179,7 @@ const router = createBrowserRouter([
 
                     return redirect(paths.app.settings.prompts.getHref());
                   } catch (error) {
-                    return handleActionError(error, 'Failed to create prompt');
+                    return handleActionError(error);
                   }
                 },
                 Component: CreatePrompt,

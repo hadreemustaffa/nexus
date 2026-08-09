@@ -10,16 +10,16 @@ export const ERRORS = {
   },
 };
 
-export function handleActionError(error: unknown, message: string) {
+export function handleActionError(error: unknown, message?: string) {
   if (error instanceof ApiError) {
-    return { error: message };
+    return { error: message ?? error.details };
   }
   throw error;
 }
 
-export function handleLoaderError(error: unknown, message: string): never {
+export function handleLoaderError(error: unknown, message?: string): never {
   if (error instanceof ApiError) {
-    throw new Response(message, { status: error.statusCode });
+    throw new Response(message ?? error.message, { status: error.statusCode });
   }
   throw error;
 }
