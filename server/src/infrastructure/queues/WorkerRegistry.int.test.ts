@@ -1,11 +1,14 @@
 import { GenerateTagsJob } from '../../application/jobs/GenerateTagsJob';
 import FakeJobProcessor from '../../tests/fakes/JobProcessor.fake';
+import FakeLogger from '../../tests/fakes/Logger.fake';
 import WorkerRegistry from './WorkerRegistry';
 
 describe('WorkerRegistry', () => {
   const pollIntervalMs = 1000;
+  let logger: FakeLogger;
 
   beforeEach(() => {
+    logger = new FakeLogger();
     vi.useFakeTimers();
   });
 
@@ -17,7 +20,7 @@ describe('WorkerRegistry', () => {
     const registry = new WorkerRegistry(pollIntervalMs);
     const processor = new FakeJobProcessor<GenerateTagsJob>();
 
-    const dispatcher = registry.register('GENERATE_TAGS', processor);
+    const dispatcher = registry.register('GENERATE_TAGS', processor, logger);
 
     const job: GenerateTagsJob = { noteId: 'note-1', content: 'job content' };
     await dispatcher.dispatch(job);

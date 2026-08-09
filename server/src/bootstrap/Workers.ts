@@ -23,7 +23,11 @@ export default function setupWorkers(
     deps.logger
   );
 
-  const tagsDispatcher = registry.register('GENERATE_TAGS', tagsProcessor);
+  const tagsDispatcher = registry.register(
+    'GENERATE_TAGS',
+    tagsProcessor,
+    deps.logger
+  );
 
   return { tagsDispatcher };
 }
