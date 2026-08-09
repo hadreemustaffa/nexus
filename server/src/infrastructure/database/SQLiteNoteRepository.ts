@@ -103,28 +103,30 @@ export default class SQLiteNoteRepository implements NoteRepository {
 
   async findLinks(noteId: string): Promise<string[]> {
     const stmt = this.db.prepare(`
-        SELECT target_id 
-        FROM note_links 
-        WHERE source_id = @noteId
-      `);
+      SELECT n.id AS target_id FROM note_links nl
+      JOIN notes n ON n.title = nl.target_title COLLATE NOCASE
+      WHERE nl.source_id = @noteId
+    `);
 
     const rows = stmt.all({ noteId }) as { target_id: string }[];
 
     return rows.map((row) => row.target_id);
   }
 
-  async saveLink(sourceId: string, targetId: string): Promise<void> {
+  async saveLink(sourceId: string, targetTitle: string): Promise<void> {
+    const normalizedTitle = Note.normalizeTitle(targetTitle);
+
     const stmt = this.db.prepare(`
         INSERT OR IGNORE INTO note_links (
         source_id,
-        target_id
+        target_title
         )
-        VALUES (@source_id, @target_id)
+        VALUES (@source_id, @target_title)
       `);
 
     stmt.run({
       source_id: sourceId,
-      target_id: targetId,
+      target_title: normalizedTitle,
     });
   }
 

@@ -52,8 +52,8 @@ describe('SearchNotesUseCase', () => {
   });
 
   it('returns matched notes with empty tags when a note has no tags', async () => {
-    const noteA = NoteFactory.build();
-    const noteB = NoteFactory.build();
+    const noteA = NoteFactory.build({ title: 'Note A' });
+    const noteB = NoteFactory.build({ title: 'Note B' });
     const tagA = TagFactory.build({ name: 'TagA' });
 
     await noteRepository.save(noteA);

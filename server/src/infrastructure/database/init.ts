@@ -26,10 +26,9 @@ export default function initDatabase(db: Database.Database) {
 
     CREATE TABLE IF NOT EXISTS note_links (
       source_id TEXT NOT NULL,
-      target_id TEXT NOT NULL,
-      PRIMARY KEY (source_id, target_id),
-      FOREIGN KEY (source_id) REFERENCES notes(id) ON DELETE CASCADE,
-      FOREIGN KEY (target_id) REFERENCES notes(id) ON DELETE CASCADE
+      target_title TEXT NOT NULL,
+      PRIMARY KEY (source_id, target_title),
+      FOREIGN KEY (source_id) REFERENCES notes(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS prompts (
@@ -43,5 +42,6 @@ export default function initDatabase(db: Database.Database) {
     );
 
     CREATE INDEX IF NOT EXISTS idx_prompts_key ON prompts(key);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_notes_title_unique ON notes(title COLLATE NOCASE);
   `);
 }

@@ -59,7 +59,7 @@ function createWikilinkExtension(
 
       if (note) {
         const href = paths.app.notes.note.getHref(note.id);
-        return `<a href="${href}" class="wikilink" data-wikilink="${target}" target="_blank">${label}</a>`;
+        return `<a href="${href}" class="wikilink" data-wikilink="${target}">${label}</a>`;
       }
 
       return `<span class="wikilink wikilink--missing" data-wikilink="${target}">${label}</span>`;

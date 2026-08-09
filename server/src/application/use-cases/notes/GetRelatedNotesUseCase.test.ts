@@ -23,8 +23,8 @@ describe('GetRelatedNotesUseCase', () => {
     await noteRepository.save(noteB);
     await noteRepository.save(noteC);
 
-    await noteRepository.saveLink(noteA.getId(), noteB.getId());
-    await noteRepository.saveLink(noteB.getId(), noteC.getId());
+    await noteRepository.saveLink(noteA.getId(), noteB.getTitle());
+    await noteRepository.saveLink(noteB.getId(), noteC.getTitle());
 
     const result = await getRelatedNotesUseCase.execute(
       noteA.getId(),
@@ -45,9 +45,9 @@ describe('GetRelatedNotesUseCase', () => {
     await noteRepository.save(noteC);
     await noteRepository.save(noteD);
 
-    await noteRepository.saveLink(noteA.getId(), noteB.getId());
-    await noteRepository.saveLink(noteB.getId(), noteC.getId());
-    await noteRepository.saveLink(noteC.getId(), noteD.getId());
+    await noteRepository.saveLink(noteA.getId(), noteB.getTitle());
+    await noteRepository.saveLink(noteB.getId(), noteC.getTitle());
+    await noteRepository.saveLink(noteC.getId(), noteD.getTitle());
 
     const result = await getRelatedNotesUseCase.execute(noteA.getId());
 
@@ -70,9 +70,9 @@ describe('GetRelatedNotesUseCase', () => {
     await noteRepository.save(noteC);
     await noteRepository.save(noteD);
 
-    await noteRepository.saveLink(noteA.getId(), noteB.getId());
-    await noteRepository.saveLink(noteB.getId(), noteC.getId());
-    await noteRepository.saveLink(noteC.getId(), noteD.getId());
+    await noteRepository.saveLink(noteA.getId(), noteB.getTitle());
+    await noteRepository.saveLink(noteB.getId(), noteC.getTitle());
+    await noteRepository.saveLink(noteC.getId(), noteD.getTitle());
 
     const result = await getRelatedNotesUseCase.execute(
       noteA.getId(),
@@ -97,10 +97,10 @@ describe('GetRelatedNotesUseCase', () => {
     await noteRepository.save(noteB);
     await noteRepository.save(noteC);
 
-    await noteRepository.saveLink(noteA.getId(), noteB.getId());
-    await noteRepository.saveLink(noteB.getId(), noteC.getId());
+    await noteRepository.saveLink(noteA.getId(), noteB.getTitle());
+    await noteRepository.saveLink(noteB.getId(), noteC.getTitle());
     // related to first note
-    await noteRepository.saveLink(noteC.getId(), noteA.getId());
+    await noteRepository.saveLink(noteC.getId(), noteA.getTitle());
 
     const result = await getRelatedNotesUseCase.execute(
       noteA.getId(),
@@ -121,7 +121,7 @@ describe('GetRelatedNotesUseCase', () => {
 
     await noteRepository.save(noteA);
     await noteRepository.save(noteB);
-    await noteRepository.saveLink(noteA.getId(), noteB.getId());
+    await noteRepository.saveLink(noteA.getId(), noteB.getTitle());
 
     const result = await getRelatedNotesUseCase.execute(
       noteA.getId(),

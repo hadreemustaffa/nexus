@@ -1,4 +1,5 @@
 import Note from '../../../domain/entities/Note';
+import { ValidationError } from '../../../domain/errors/ValidationError';
 import NoteRepository from '../../../domain/repositories/NoteRepository';
 import JobDispatcher from '../../jobs/JobDispatcher';
 import { LinkParser } from '../../ports/LinkParser';
@@ -23,6 +24,18 @@ export default class CreateNoteUseCase {
   }
 
   async execute(title: string, content: string) {
+    const existing = await this.noteRepository.findByTitle(title);
+
+    if (existing) {
+      throw new ValidationError('Duplicate title', [
+        {
+          field: 'title',
+          message:
+            'A note with this title already exists. Choose a different title.',
+        },
+      ]);
+    }
+
     const note = Note.create(title, content);
 
     await this.noteRepository.save(note);

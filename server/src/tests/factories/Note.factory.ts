@@ -25,7 +25,12 @@ export class NoteFactory {
   /**
    * Generates a list of Note objects for bulk testing.
    */
-  static buildList(count: number, overrides: Partial<Note> = {}): Note[] {
-    return Array.from({ length: count }, () => this.build(overrides));
+  static buildList(
+    count: number,
+    overrides: NoteFactoryOverrides = {}
+  ): Note[] {
+    return Array.from({ length: count }, (_, index) =>
+      this.build({ title: `${NOTE_TEST_TITLE} ${index}`, ...overrides })
+    );
   }
 }

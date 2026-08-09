@@ -6,6 +6,12 @@ export class FakeNoteRepository implements NoteRepository {
   private links = new Map<string, Set<string>>();
 
   async save(note: Note): Promise<void> {
+    const existing = await this.findByTitle(note.getTitle());
+
+    if (existing) {
+      throw new Error(`Duplicate title: ${note.getTitle()}`);
+    }
+
     this.notes.set(note.id, note);
   }
 
@@ -35,12 +41,23 @@ export class FakeNoteRepository implements NoteRepository {
   }
 
   async findLinks(noteId: string): Promise<string[]> {
-    return Array.from(this.links.get(noteId) ?? []);
+    const titles = this.links.get(noteId) ?? new Set<string>();
+    const resolvedIds: string[] = [];
+
+    for (const title of titles) {
+      const note = await this.findByTitle(title);
+      if (note) {
+        resolvedIds.push(note.getId());
+      }
+    }
+
+    return resolvedIds;
   }
 
-  async saveLink(sourceId: string, targetId: string): Promise<void> {
+  async saveLink(sourceId: string, targetTitle: string): Promise<void> {
+    const normalizedTitle = Note.normalizeTitle(targetTitle);
     const existing = this.links.get(sourceId) ?? new Set<string>();
-    existing.add(targetId);
+    existing.add(normalizedTitle);
     this.links.set(sourceId, existing);
   }
 
@@ -49,8 +66,10 @@ export class FakeNoteRepository implements NoteRepository {
   }
 
   async findByTitle(title: string): Promise<Note | null> {
+    const normalizedTitle = Note.normalizeTitle(title);
+
     for (const note of this.notes.values()) {
-      if (note.getTitle() === title) return note;
+      if (Note.normalizeTitle(note.getTitle()) === normalizedTitle) return note;
     }
     return null;
   }

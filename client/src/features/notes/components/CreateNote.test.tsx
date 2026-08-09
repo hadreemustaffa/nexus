@@ -1,4 +1,4 @@
-import { NOTE_WORD_MIN } from '@nexus/shared';
+import { type ApiErrorResponse, NOTE_WORD_MIN } from '@nexus/shared';
 import {
   act,
   fireEvent,
@@ -21,6 +21,16 @@ vi.mock('react-router', async (importOriginal) => {
   };
 });
 
+type NoteFixture = { id: string; title: string; content: string };
+
+const validContent = 'Content '.repeat(NOTE_WORD_MIN).trim();
+
+type FetcherOverrides = {
+  submit?: ReturnType<typeof vi.fn>;
+  state?: 'idle' | 'submitting' | 'loading';
+  data?: { error?: ApiErrorResponse['error']['details'] };
+};
+
 /**
  * Finds the error <span> (if any) rendered next to a given labelled field,
  * without depending on CSS module class names.
@@ -30,22 +40,30 @@ function getFieldError(input: HTMLElement) {
   return fieldWrapper?.querySelector('span') ?? null;
 }
 
-function renderCreateNote(submitImpl?: () => Promise<unknown>) {
-  const submit = vi.fn(submitImpl ?? (() => Promise.resolve(undefined)));
+function setFetcher(overrides: FetcherOverrides = {}) {
+  const submit = overrides.submit ?? vi.fn(() => Promise.resolve(undefined));
 
   vi.mocked(useFetcher).mockReturnValue({
     submit,
-    state: 'idle',
-    data: undefined,
+    state: overrides.state ?? 'idle',
+    data: overrides.data,
     Form: (() => null) as unknown,
     load: vi.fn(),
   } as unknown as ReturnType<typeof useFetcher>);
+
+  return submit;
+}
+
+function renderCreateNote(options?: {
+  note?: Partial<NoteFixture>;
+  fetcher?: FetcherOverrides;
+}) {
+  const submit = setFetcher(options?.fetcher);
 
   const utils = render(<CreateNote />);
   return { ...utils, submit };
 }
 
-const validContent = 'Word '.repeat(NOTE_WORD_MIN).trim();
 function fillValidForm() {
   fireEvent.change(screen.getByLabelText('Title:'), {
     target: { value: 'My first note' },
@@ -60,6 +78,27 @@ afterEach(() => {
 });
 
 describe('<CreateNote />', () => {
+  describe('server-side error', () => {
+    it('renders the error message when fetcher.data.error is set', () => {
+      renderCreateNote({
+        fetcher: {
+          data: {
+            error: [{ field: 'title', message: 'Error on title field.' }],
+          },
+        },
+      });
+
+      expect(screen.getByText('Error on title field.')).toBeInTheDocument();
+    });
+
+    it('does not render an error message when the fetcher has no error', () => {
+      renderCreateNote();
+
+      expect(getFieldError(screen.getByLabelText('Title:'))).toBeNull();
+      expect(getFieldError(screen.getByLabelText('Content:'))).toBeNull();
+    });
+  });
+
   describe('validation', () => {
     it('shows an error for each field when submitting an empty form', async () => {
       const user = userEvent.setup();
@@ -221,10 +260,16 @@ describe('<CreateNote />', () => {
     it('ignores a second click while a submission is already in progress', async () => {
       const user = userEvent.setup();
       let resolveSubmit: (value: unknown) => void = () => {};
-      const pending = new Promise((resolve) => {
-        resolveSubmit = resolve;
+      let submitPromise: Promise<unknown> = Promise.resolve();
+      const pending = vi.fn(() => {
+        submitPromise = new Promise((resolve) => {
+          resolveSubmit = resolve;
+        });
+        return submitPromise;
       });
-      const { submit } = renderCreateNote(() => pending);
+      const { submit } = renderCreateNote({
+        fetcher: { submit: pending },
+      });
 
       fillValidForm();
       const submitButton = screen.getByRole('button', { name: 'Create' });
@@ -236,7 +281,7 @@ describe('<CreateNote />', () => {
 
       await act(async () => {
         resolveSubmit(undefined);
-        await pending;
+        await submitPromise;
       });
 
       expect(submit).toHaveBeenCalledTimes(1);

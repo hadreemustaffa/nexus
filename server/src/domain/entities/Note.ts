@@ -110,6 +110,10 @@ export default class Note {
     }
   }
 
+  static normalizeTitle(title: string): string {
+    return title.trim().toLowerCase();
+  }
+
   getId(): string {
     return this.id;
   }

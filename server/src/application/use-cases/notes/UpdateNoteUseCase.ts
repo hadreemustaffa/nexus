@@ -1,4 +1,5 @@
 import { NotFoundError } from '../../../domain/errors/NotFoundError';
+import { ValidationError } from '../../../domain/errors/ValidationError';
 import type NoteRepository from '../../../domain/repositories/NoteRepository';
 import type SearchService from '../../../domain/services/SearchService';
 import { LinkParser } from '../../ports/LinkParser';
@@ -30,6 +31,21 @@ export default class UpdateNoteUseCase {
 
     if (!isTitleChanged && !isContentChanged) {
       return { note };
+    }
+
+    if (isTitleChanged) {
+      const existing = await this.noteRepository.findByTitle(title);
+
+      // must exclude the current note from the duplicate check
+      if (existing && existing.getId() !== note.getId()) {
+        throw new ValidationError('Duplicate title', [
+          {
+            field: 'title',
+            message:
+              'A note with this title already exists. Choose a different title.',
+          },
+        ]);
+      }
     }
 
     if (isTitleChanged && !isContentChanged) {

@@ -9,16 +9,13 @@ export default class LinkParsingService implements LinkParser {
   }
 
   async parse(noteId: string, content: string): Promise<void> {
-    const links = [...content.matchAll(/\[\[([^\]]+)\]\]/g)]
-      .map((match) => match[1])
+    const titles = [...content.matchAll(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g)]
+      .map((match) => match[1].trim())
       .filter(Boolean);
 
     await Promise.all(
-      links.map(async (link) => {
-        const relatedNote = await this.noteRepository.findByTitle(link);
-        if (relatedNote) {
-          await this.noteRepository.saveLink(noteId, relatedNote.getId());
-        }
+      titles.map(async (title) => {
+        await this.noteRepository.saveLink(noteId, title);
       })
     );
   }

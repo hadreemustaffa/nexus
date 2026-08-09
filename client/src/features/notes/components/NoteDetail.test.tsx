@@ -262,31 +262,6 @@ describe('NoteDetail', () => {
     expect(regenerateButton).toBeDisabled();
   });
 
-  describe('related notes', () => {
-    it('does not render the related-notes section when there are none', () => {
-      renderNoteDetail({ related: [] });
-
-      expect(screen.queryByText('Related Notes')).not.toBeInTheDocument();
-    });
-
-    it('renders the related-notes list when notes are present', () => {
-      renderNoteDetail({
-        related: [
-          { id: 'note-2', title: 'Related Note One', content: '' },
-          { id: 'note-3', title: 'Related Note Two', content: '' },
-        ],
-      });
-
-      expect(screen.getByText('Related Notes')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'Related Note One' })
-      ).toHaveAttribute('href', '/notes/note-2');
-      expect(
-        screen.getByRole('link', { name: 'Related Note Two' })
-      ).toHaveAttribute('href', '/notes/note-3');
-    });
-  });
-
   it('closes the EventSource connection on unmount', () => {
     const { unmount } = renderNoteDetail();
 

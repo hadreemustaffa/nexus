@@ -223,11 +223,11 @@ describe('routes (integration)', () => {
 
     describe('GET /api/v1/notes/:id/related', () => {
       it('returns 200 with related notes', async () => {
-        const noteA = NoteFactory.build();
-        const noteB = NoteFactory.build();
+        const noteA = NoteFactory.build({ title: 'Note A' });
+        const noteB = NoteFactory.build({ title: 'Note B' });
         noteRepository.seed([noteA, noteB]);
 
-        await noteRepository.saveLink(noteA.getId(), noteB.getId());
+        await noteRepository.saveLink(noteA.getId(), noteB.getTitle());
 
         const response = await requestAgent.get(
           `/api/v1/notes/${noteA.getId()}/related`

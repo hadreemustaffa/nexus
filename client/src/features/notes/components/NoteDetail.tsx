@@ -37,11 +37,12 @@ function NoteDetailContent({
 
   const relatedByTitle = useMemo(() => {
     const map = new Map<string, Note>();
+    map.set(note.note.title.toLowerCase(), note.note);
     for (const r of related) {
       map.set(r.title.toLowerCase(), r);
     }
     return map;
-  }, [related]);
+  }, [related, note]);
 
   useEffect(() => {
     const eventSource = new EventSource(
@@ -99,21 +100,6 @@ function NoteDetailContent({
         content={note.note.content}
         relatedByTitle={relatedByTitle}
       />
-
-      {related.length > 0 && (
-        <div className={styles.related}>
-          <p>Related Notes</p>
-          <ul>
-            {related.map((note) => (
-              <li key={note.id}>
-                <NavLink to={paths.app.notes.note.getHref(note.id)}>
-                  {note.title}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 }

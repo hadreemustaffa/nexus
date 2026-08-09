@@ -130,4 +130,16 @@ describe('UpdateNoteUseCase', () => {
       )
     ).rejects.toBeInstanceOf(NotFoundError);
   });
+
+  it('throws when updating the note with an existing title', async () => {
+    const noteA = NoteFactory.build({ title: 'Typescript' });
+    const noteB = NoteFactory.build({ title: 'Python' });
+
+    await noteRepository.save(noteA);
+    await noteRepository.save(noteB);
+
+    await expect(
+      updateNoteUseCase.execute(noteB.getId(), 'Typescript', noteB.getContent())
+    ).rejects.toThrow();
+  });
 });

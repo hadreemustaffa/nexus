@@ -124,22 +124,22 @@ describe('SQLiteNoteRepository', () => {
   });
 
   it('saveLink + findLinks + deleteLink round-trip correctly', async () => {
-    const source = NoteFactory.build();
-    const targetA = NoteFactory.build();
-    const targetB = NoteFactory.build();
+    const source = NoteFactory.build({ title: 'Source Note' });
+    const targetA = NoteFactory.build({ title: 'Note A' });
+    const targetB = NoteFactory.build({ title: 'Note B' });
 
     await repository.save(source);
     await repository.save(targetA);
     await repository.save(targetB);
 
-    await repository.saveLink(source.getId(), targetA.getId());
-    await repository.saveLink(source.getId(), targetB.getId());
+    await repository.saveLink(source.getId(), targetA.getTitle());
+    await repository.saveLink(source.getId(), targetB.getTitle());
 
     const linksBeforeDelete = await repository.findLinks(source.getId());
 
     expect(linksBeforeDelete).toHaveLength(2);
     expect(linksBeforeDelete).toEqual(
-      expect.arrayContaining([(targetA.getId(), targetB.getId())])
+      expect.arrayContaining([targetA.getId(), targetB.getId()])
     );
 
     await repository.deleteLink(source.getId());

@@ -1,5 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type ApiResponse, countWords } from '@nexus/shared';
+import {
+  type ApiErrorResponse,
+  type ApiResponse,
+  countWords,
+} from '@nexus/shared';
 import { editNoteFormSchema } from '@nexus/shared/note';
 import { type ChangeEvent, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
@@ -17,12 +21,30 @@ type FormValues = z.infer<typeof editNoteFormSchema>;
 export default function EditNote() {
   const { data } = useLoaderData<ApiResponse<{ note: Note }>>();
 
-  const fetcher = useFetcher<{ error?: string }>();
+  const fetcher = useFetcher<{
+    error?: ApiErrorResponse['error']['details'];
+  }>();
   const isSubmitting = fetcher.state !== 'idle';
 
   const initialWordCount = countWords(data.note.content);
 
   const [contentLength, setContentLength] = useState(initialWordCount);
+  const [clearedFields, setClearedFields] = useState<Set<string>>(new Set());
+  const [prevFetcherData, setPrevFetcherData] = useState(fetcher.data);
+
+  // reset clearedFields whenever a new fetcher response comes in
+  if (fetcher.data !== prevFetcherData) {
+    setPrevFetcherData(fetcher.data);
+    setClearedFields(new Set());
+  }
+
+  const clearApiError = (field: string) => {
+    setClearedFields((prev) => new Set(prev).add(field));
+  };
+
+  const apiFieldErrors = fetcher.data?.error?.filter(
+    (error) => !clearedFields.has(error.field)
+  );
 
   const {
     register,
@@ -48,6 +70,16 @@ export default function EditNote() {
     setContentLength(countWords(value));
   }, 500);
 
+  const titleApiErrors = apiFieldErrors?.filter(
+    (error) => error.field === 'title'
+  );
+  const titleApiErrorMsg = titleApiErrors?.[0]?.message;
+
+  const contentApiErrors = apiFieldErrors?.filter(
+    (error) => error.field === 'content'
+  );
+  const contentApiErrorMsg = contentApiErrors?.[0]?.message;
+
   return (
     <div className={styles.container}>
       <h2>Edit note</h2>
@@ -66,12 +98,16 @@ export default function EditNote() {
               id='title'
               type='text'
               className={styles.form__input_title}
-              {...register('title')}
+              {...register('title', { onChange: () => clearApiError('title') })}
               disabled={isSubmitting}
             />
           </div>
-          {errors.title && (
+          {errors.title ? (
             <span className={styles.form__error}>{errors.title.message}</span>
+          ) : (
+            titleApiErrorMsg && (
+              <span className={styles.form__error}>{titleApiErrorMsg}</span>
+            )
           )}
         </div>
 
@@ -82,18 +118,25 @@ export default function EditNote() {
               id='content'
               className={styles.form__input_content}
               {...register('content', {
-                onChange: (e: ChangeEvent<HTMLTextAreaElement>) =>
-                  handleChange(e.target.value),
+                onChange: (e: ChangeEvent<HTMLTextAreaElement>) => {
+                  handleChange(e.target.value);
+                  clearApiError('content');
+                },
               })}
               disabled={isSubmitting}
             />
           </div>
           <div className={styles.form__input_content_footer}>
-            {errors.content && (
+            {errors.content ? (
               <span className={styles.form__error}>
                 {errors.content.message}
               </span>
+            ) : (
+              contentApiErrorMsg && (
+                <span className={styles.form__error}>{contentApiErrorMsg}</span>
+              )
             )}
+
             {contentLength !== 0 && (
               <p className={styles.form__content_length}>
                 {contentLength} words
@@ -115,10 +158,6 @@ export default function EditNote() {
           </Button>
         </div>
       </form>
-
-      {fetcher.data?.error && (
-        <p className={styles.form__error}>{fetcher.data.error}</p>
-      )}
     </div>
   );
 }

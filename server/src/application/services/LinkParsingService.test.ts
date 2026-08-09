@@ -16,7 +16,7 @@ describe('LinkParsingService', () => {
   const validTitle = 'Test Title';
   const validContent = Array(NOTE_WORD_MIN).fill('word').join(' ');
 
-  it('saves a link only when a wikilink resolves to an existing note', async () => {
+  it('resolves a wikilink to an existing note, and ignores one with no matching note yet', async () => {
     const existing = Note.create(validTitle, validContent);
     await noteRepository.save(existing);
 
@@ -24,14 +24,11 @@ describe('LinkParsingService', () => {
       ` [[${existing.getTitle()}]] and [[Missing Note Title]]`
     );
 
-    const noteId = 'note-1';
+    await linkParser.parse('note-1', content);
 
-    await linkParser.parse(noteId, content);
+    const links = await noteRepository.findLinks('note-1');
 
-    const links = await noteRepository.findLinks(noteId);
-
-    expect(links).toHaveLength(1);
-    expect(links[0]).toBe(existing.getId());
+    expect(links).toEqual([existing.getId()]);
   });
 
   it('does not save any links when content has no wikilinks', async () => {
@@ -45,5 +42,18 @@ describe('LinkParsingService', () => {
     const links = await noteRepository.findLinks(noteId);
 
     expect(links).toEqual([]);
+  });
+
+  it('resolves a previously-missing link once the target note is created', async () => {
+    await linkParser.parse('note-1', 'See [[Later Note]]');
+
+    expect(await noteRepository.findLinks('note-1')).toEqual([]);
+
+    const laterNote = Note.create('Later Note', validContent);
+    await noteRepository.save(laterNote);
+
+    expect(await noteRepository.findLinks('note-1')).toEqual([
+      laterNote.getId(),
+    ]);
   });
 });

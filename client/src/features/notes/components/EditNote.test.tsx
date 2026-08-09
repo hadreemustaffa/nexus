@@ -1,4 +1,8 @@
-import { countWords, NOTE_WORD_MIN } from '@nexus/shared';
+import {
+  type ApiErrorResponse,
+  countWords,
+  NOTE_WORD_MIN,
+} from '@nexus/shared';
 import {
   act,
   fireEvent,
@@ -34,7 +38,7 @@ const defaultNote: NoteFixture = {
 type FetcherOverrides = {
   submit?: ReturnType<typeof vi.fn>;
   state?: 'idle' | 'submitting' | 'loading';
-  data?: { error?: string };
+  data?: { error?: ApiErrorResponse['error']['details'] };
 };
 
 /**
@@ -117,12 +121,14 @@ describe('<EditNote />', () => {
   describe('server-side error', () => {
     it('renders the error message when fetcher.data.error is set', () => {
       renderEditNote({
-        fetcher: { data: { error: 'Something went wrong on the server.' } },
+        fetcher: {
+          data: {
+            error: [{ field: 'title', message: 'Error on title field.' }],
+          },
+        },
       });
 
-      expect(
-        screen.getByText('Something went wrong on the server.')
-      ).toBeInTheDocument();
+      expect(screen.getByText('Error on title field.')).toBeInTheDocument();
     });
 
     it('does not render an error message when the fetcher has no error', () => {

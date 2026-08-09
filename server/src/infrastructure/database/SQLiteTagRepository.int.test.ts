@@ -160,8 +160,8 @@ describe('SQLiteTagRepository', () => {
 
   describe('deleteByNoteId', () => {
     it('removes all tags relation for the given note only', async () => {
-      const noteA = NoteFactory.build();
-      const noteB = NoteFactory.build();
+      const noteA = NoteFactory.build({ title: 'Note A' });
+      const noteB = NoteFactory.build({ title: 'Note B' });
       const tagA = TagFactory.build({ name: 'TagA' });
       const tagB = TagFactory.build({ name: 'TagB' });
 
