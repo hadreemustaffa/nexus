@@ -131,6 +131,19 @@ describe('UpdateNoteUseCase', () => {
     ).rejects.toBeInstanceOf(NotFoundError);
   });
 
+  it('does not throw when the title only changes case, resolving to the same note', async () => {
+    const note = NoteFactory.build({ title: 'Typescript' });
+    await noteRepository.save(note);
+
+    const result = await updateNoteUseCase.execute(
+      note.getId(),
+      'TYPESCRIPT', // only case changed, title resolved to self
+      note.getContent()
+    );
+
+    expect(result.note.getTitle()).toBe('TYPESCRIPT');
+  });
+
   it('throws when updating the note with an existing title', async () => {
     const noteA = NoteFactory.build({ title: 'Typescript' });
     const noteB = NoteFactory.build({ title: 'Python' });

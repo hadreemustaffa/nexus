@@ -62,15 +62,16 @@ describe('CreateNoteUseCase', () => {
   });
 
   it('throws when creating a note with an existing title', async () => {
-    // create first note
     await createNoteUseCase.execute(validTitle, validContent);
 
     await expect(
-      // attempt to create second note with same title
       createNoteUseCase.execute(
         validTitle,
         'content '.repeat(NOTE_WORD_MIN).trim()
       )
-    ).rejects.toThrow();
+    ).rejects.toMatchObject({
+      code: 'VALIDATION_ERROR',
+      details: [{ field: 'title', message: expect.any(String) }],
+    });
   });
 });
