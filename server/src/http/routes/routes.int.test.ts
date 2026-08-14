@@ -14,6 +14,7 @@ import InMemorySearchService from '../../infrastructure/search/InMemorySearchSer
 import { NoteFactory } from '../../tests/factories/Note.factory';
 import { PromptFactory } from '../../tests/factories/Prompt.factory';
 import { FakeAIService } from '../../tests/fakes/AIService.fake';
+import FakeJobCanceller from '../../tests/fakes/JobCanceller.fake';
 import { FakeJobDispatcher } from '../../tests/fakes/JobDispatcher.fake';
 import FakeLogger from '../../tests/fakes/Logger.fake';
 import { FakeNoteRepository } from '../../tests/fakes/NoteRepository.fake';
@@ -66,6 +67,7 @@ describe('routes (integration)', () => {
       linkParser: new LinkParsingService(noteRepository),
       tagsDispatcher,
       logger,
+      jobCanceller: new FakeJobCanceller(),
     };
 
     app = createApp({ env: TEST_ENV, container });

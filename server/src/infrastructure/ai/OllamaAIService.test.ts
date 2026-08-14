@@ -64,4 +64,24 @@ describe('OllamaAIService', () => {
       'Ollama request failed: Internal Server Error'
     );
   });
+
+  it('passes the given AbortSignal to fetch', async () => {
+    mockOllamaResponse(JSON.stringify({ tags: ['tag'] }));
+    const controller = new AbortController();
+
+    await service.generateTags('content', controller.signal);
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ signal: controller.signal })
+    );
+  });
+
+  it('propagates an AbortError without wrapping it into the generic connectivity error', async () => {
+    const abortError = new Error('The operation was aborted');
+    abortError.name = 'AbortError';
+    vi.mocked(fetch).mockRejectedValue(abortError);
+
+    await expect(service.generateTags('content')).rejects.toBe(abortError);
+  });
 });

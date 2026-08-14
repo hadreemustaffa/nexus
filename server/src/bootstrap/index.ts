@@ -11,8 +11,9 @@ export default async function bootstrap(container: Container, env: Env) {
     logger: container.logger,
   });
 
-  const { tagsDispatcher } = setupWorkers(
+  const { tagsDispatcher, jobCanceller } = setupWorkers(
     {
+      noteRepository: container.noteRepository,
       tagRepository: container.tagRepository,
       aiService: container.aiService,
       eventBus: container.eventBus,
@@ -22,6 +23,7 @@ export default async function bootstrap(container: Container, env: Env) {
   );
 
   container.tagsDispatcher = tagsDispatcher;
+  container.jobCanceller = jobCanceller;
 
   const allNotes = await container.noteRepository.findAll();
 

@@ -2,6 +2,7 @@ import Database, { type Database as DB } from 'better-sqlite3';
 
 import type EventBus from '../application/events/EventBus';
 import type JobDispatcher from '../application/jobs/JobDispatcher';
+import type JobCanceller from '../application/ports/JobCanceller';
 import { LinkParser } from '../application/ports/LinkParser';
 import type Logger from '../application/ports/Logger';
 import LinkParsingService from '../application/services/LinkParsingService';
@@ -34,6 +35,7 @@ export interface Container {
   searchService: SearchService;
   linkParser: LinkParser;
   tagsDispatcher?: JobDispatcher<'GENERATE_TAGS'>;
+  jobCanceller?: JobCanceller;
 }
 
 export function createContainer(env: Env): Container {
@@ -62,7 +64,6 @@ export function createContainer(env: Env): Container {
   const eventBus = new InMemoryEventBus();
   const sseConnectionManager = new SSEConnectionManager();
   const searchService = new InMemorySearchService();
-
   const linkParser = new LinkParsingService(noteRepository);
 
   return {

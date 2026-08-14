@@ -1,3 +1,3 @@
 export default interface AIService {
-  generateTags(content: string): Promise<string[]>;
+  generateTags(content: string, signal?: AbortSignal): Promise<string[]>;
 }

@@ -1,6 +1,7 @@
 import Logger from '../../application/ports/Logger';
 import type AIService from '../../domain/services/AIService';
 import type PromptService from '../../domain/services/PromptService';
+import { isAbortError } from './isAbortError';
 
 type TagResponse = {
   tags: string[];
@@ -38,7 +39,7 @@ export default class OllamaAIService implements AIService {
     this.logger = logger;
   }
 
-  async generateTags(content: string): Promise<string[]> {
+  async generateTags(content: string, signal?: AbortSignal): Promise<string[]> {
     const basePrompt = await this.promptService.get('tagging');
 
     let response: Response;
@@ -76,8 +77,13 @@ export default class OllamaAIService implements AIService {
           },
           stream: false,
         }),
+        signal,
       });
     } catch (error) {
+      if (isAbortError(error)) {
+        throw error;
+      }
+
       this.logger.error({ error }, 'Failed to connect to Ollama');
 
       throw new Error(

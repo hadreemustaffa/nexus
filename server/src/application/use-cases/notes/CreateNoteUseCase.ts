@@ -47,7 +47,7 @@ export default class CreateNoteUseCase {
       content: note.getContent(),
     });
 
-    this.logger.info({ noteId: note.getId() }, 'Job dispatched for note');
+    this.logger.info({ noteId: note.getId() }, 'Note created');
 
     return {
       note,

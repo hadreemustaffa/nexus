@@ -1,8 +1,10 @@
 import type EventBus from '../application/events/EventBus';
-import Logger from '../application/ports/Logger';
+import type Logger from '../application/ports/Logger';
+import type NoteRepository from '../domain/repositories/NoteRepository';
 import type TagRepository from '../domain/repositories/TagRepository';
 import type AIService from '../domain/services/AIService';
 import GenerateTagsProcessor from '../infrastructure/ai/processors/GenerateTagsProcessor';
+import JobCancellationRegistry from '../infrastructure/queues/JobCancellationRegistry';
 import WorkerRegistry from '../infrastructure/queues/WorkerRegistry';
 
 export default function setupWorkers(
@@ -11,23 +13,27 @@ export default function setupWorkers(
     aiService: AIService;
     eventBus: EventBus;
     logger: Logger;
+    noteRepository: NoteRepository;
   },
   workerPollIntervalMs: number
 ) {
-  const registry = new WorkerRegistry(workerPollIntervalMs);
+  const workerRegistry = new WorkerRegistry(workerPollIntervalMs);
+  const jobCancellationRegistry = new JobCancellationRegistry();
 
   const tagsProcessor = new GenerateTagsProcessor(
     deps.tagRepository,
     deps.aiService,
     deps.eventBus,
-    deps.logger
+    deps.logger,
+    deps.noteRepository,
+    jobCancellationRegistry
   );
 
-  const tagsDispatcher = registry.register(
+  const tagsDispatcher = workerRegistry.register(
     'GENERATE_TAGS',
     tagsProcessor,
     deps.logger
   );
 
-  return { tagsDispatcher };
+  return { tagsDispatcher, jobCanceller: jobCancellationRegistry };
 }

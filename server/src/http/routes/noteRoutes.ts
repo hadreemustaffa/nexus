@@ -35,6 +35,10 @@ export function createNotesRouter(container: Container) {
     throw new Error('Tags dispatcher is not configured');
   }
 
+  if (!container.jobCanceller) {
+    throw new Error('Job canceller is not configured');
+  }
+
   const createNoteUseCase = new CreateNoteUseCase(
     container.noteRepository,
     container.tagsDispatcher,
@@ -61,7 +65,8 @@ export function createNotesRouter(container: Container) {
   );
   const deleteNoteUseCase = new DeleteNoteUseCase(
     container.noteRepository,
-    container.searchService
+    container.searchService,
+    container.jobCanceller
   );
   const regenerateNoteTagsUseCase = new RegenerateNoteTagsUseCase(
     container.noteRepository,
